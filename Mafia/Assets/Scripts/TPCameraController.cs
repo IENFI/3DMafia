@@ -13,7 +13,7 @@ public class TPCameraController : MonoBehaviour
     [SerializeField]
     private float wheelSpeed = 500; // 마우스 휠 스크롤 속도
     [SerializeField]
-    private float xMoveSpeed = 500; // 카메라의 y축 회전 속도
+    private float xMoveSpeed = 250; // 카메라의 y축 회전 속도
     [SerializeField]
     private float yMoveSpeed = 250; // 카메라의 x축 회전 속도
     private float yMinLimit = -80; // 카메라 x축 회전 제한 최소 값
@@ -35,16 +35,20 @@ public class TPCameraController : MonoBehaviour
     {
         if (target == null) return; // target이 존재하지 않으면 실행하지 않는다.
 
-        // 오른쪽 마우스를 누르고 있을 때
-        if (Input.GetMouseButton(1))
-        {
-            // 마우스의 x, y축 움직임 방향 정보
-            x += Input.GetAxis("Mouse X") * xMoveSpeed * Time.deltaTime;
-            y -= Input.GetAxis("Mouse Y") * yMoveSpeed * Time.deltaTime;
-            // 오브젝트의 위/아래(x축) 한계 범위 설정
-            y = ClampAngle(y, yMinLimit, yMaxLimit);
-            transform.rotation = Quaternion.Euler(y, x, 0);
-        }
+        //// 오른쪽 마우스를 누르고 있을 때
+        //if (Input.GetMouseButton(1))
+        //{
+        //    // 마우스의 x, y축 움직임 방향 정보
+        //    x += Input.GetAxis("Mouse X") * xMoveSpeed * Time.deltaTime;
+        //    y -= Input.GetAxis("Mouse Y") * yMoveSpeed * Time.deltaTime;
+        //    // 오브젝트의 위/아래(x축) 한계 범위 설정
+        //    y = ClampAngle(y, yMinLimit, yMaxLimit);
+        //    transform.rotation = Quaternion.Euler(y, x, 0);
+        //}
+        x += Input.GetAxis("Mouse X") * xMoveSpeed * Time.deltaTime;
+        y -= Input.GetAxis("Mouse Y") * yMoveSpeed * Time.deltaTime;
+        y = ClampAngle(y, yMinLimit, yMaxLimit);
+        transform.rotation = Quaternion.Euler(y, x, 0);
 
         // 마우스 휠 스크롤을 이용해 target과 카메라의 거리 값(distance) 조절
         distance -= Input.GetAxis("Mouse ScrollWheel") * wheelSpeed * Time.deltaTime;

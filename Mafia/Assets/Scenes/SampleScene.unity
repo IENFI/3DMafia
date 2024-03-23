@@ -159,11 +159,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9a8296afd67542f4aa7830b1f8f4e1ee, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  target: {fileID: 0}
-  minDistance: 30
-  maxDistance: 50
+  target: {fileID: 1458833710}
+  minDistance: 1
+  maxDistance: 3
   wheelSpeed: 500
-  xMoveSpeed: 500
+  xMoveSpeed: 250
   yMoveSpeed: 250
 --- !u!81 &63236602
 AudioListener:
@@ -232,7 +232,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 63236600}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: -1}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
