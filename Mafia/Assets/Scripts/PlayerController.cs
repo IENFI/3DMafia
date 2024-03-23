@@ -9,7 +9,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField]
     private Transform cameraTransform;
     [SerializeField]
-    private POVCameraController cameraController;
+    private FPCameraController cameraController;
     private Movement movement;
     private PlayerAnimator playerAnimator;
 

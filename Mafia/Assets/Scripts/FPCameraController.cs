@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class POVCameraController : MonoBehaviour
+public class FPCameraController : MonoBehaviour
 {
     private float rotateSpeedX = 3;
     private float rotateSpeedY = 5;
