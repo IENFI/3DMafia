@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Movement : MonoBehaviour
@@ -10,7 +8,7 @@ public class Movement : MonoBehaviour
     private float gravity = -9.81f; // 중력 계수
     [SerializeField]
     private float jumpForce = 3.0f; // 뛰어 오르는 힘
-    private Vector3 moveDirection;      // 이동 방향
+    private Vector3 moveDirection = Vector3.zero;      // 이동 방향
 
     private CharacterController characterController;
 
