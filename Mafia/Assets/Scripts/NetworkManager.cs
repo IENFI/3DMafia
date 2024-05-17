@@ -114,6 +114,14 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
     public override void OnDisconnected(DisconnectCause cause)
     {
+        if (DisconnectPanel != null)
+        {
+            DisconnectPanel.SetActive(true);
+        }
+        else
+        {
+            Debug.LogWarning("disconnectPanel has already been destroyed.");
+        }
         DisconnectPanel.SetActive(true);
         LobbyPanel.SetActive(false);
         RoomPanel.SetActive(false);
@@ -122,7 +130,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
 
     #region 방
-    public void CreateRoom() => PhotonNetwork.CreateRoom(RoomInput.text == "" ? "Room" + Random.Range(0, 100) : RoomInput.text, new RoomOptions { MaxPlayers = 2 });
+    public void CreateRoom() => PhotonNetwork.CreateRoom(RoomInput.text == "" ? "Room" + Random.Range(0, 100) : RoomInput.text, new RoomOptions { MaxPlayers = 12 });
 
     public void JoinRandomRoom() => PhotonNetwork.JoinRandomRoom();
 
@@ -171,7 +179,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     public override void OnPlayerLeftRoom(Player otherPlayer)
     {
         RoomRenewal();
-        ChatRPC("<color=yellow>" + otherPlayer.NickName + "has left</color>");
+        ChatRPC("<color=yellow>" + otherPlayer.NickName + " has left</color>");
     }
 
     void RoomRenewal()
