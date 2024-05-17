@@ -130,12 +130,32 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
     public override void OnJoinedRoom()
     {
+        if (ChatInput == null)
+        {
+            Debug.LogError("ChatInput is not assigned.");
+            return;
+        }
+
+        if (ChatText == null)
+        {
+            
+            Debug.LogError("ChatText array is not assigned.");
+            return;
+        }
+
         DisconnectPanel.SetActive(false);
         LobbyPanel.SetActive(false);
         RoomPanel.SetActive(true);
         RoomRenewal();
         ChatInput.text = "";
-        for (int i = 0; i < ChatText.Length; i++) ChatText[i].text = "";
+        for (int i = 0; i < ChatText.Length; i++) {
+            if (ChatText[i] == null)
+            {
+                Debug.LogError($"ChatText[{i}] is not assigned.");
+                continue;
+            }
+            ChatText[i].text = "";
+        }
     }
 
     public override void OnCreateRoomFailed(short returnCode, string message) { RoomInput.text = ""; CreateRoom(); }
