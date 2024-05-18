@@ -28,6 +28,9 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     public TextMeshProUGUI[] ChatText;
     public TMP_InputField ChatInput;
 
+    [Header("CreateRoomUI")]
+    public GameObject CreateRoomUI;
+
     [Header("ETC")]
     public TextMeshProUGUI StatusText;
     public PhotonView PV;
@@ -35,6 +38,8 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     List<RoomInfo> myList = new List<RoomInfo>();
     int currentPage = 1, maxPage, multiple;
 
+    [SerializeField]
+    private CreateRoomUI createRoomUI;
 
 
     #region 방리스트 갱신
@@ -88,7 +93,10 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
 
     #region 서버연결
-    void Awake() => Screen.SetResolution(1500, 1080, false);
+    void Awake()
+    {
+        Screen.SetResolution(1500, 1080, false);
+    }
 
     void Update()
     {
@@ -105,6 +113,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         DisconnectPanel.SetActive(false);
         LobbyPanel.SetActive(true);
         RoomPanel.SetActive(false);
+        CreateRoomUI.SetActive(false);
         PhotonNetwork.LocalPlayer.NickName = NickNameInput.text;
         WelcomeText.text = "Welcome " + PhotonNetwork.LocalPlayer.NickName ;
         myList.Clear();
@@ -122,15 +131,26 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         {
             Debug.LogWarning("disconnectPanel has already been destroyed.");
         }
+
         DisconnectPanel.SetActive(true);
         LobbyPanel.SetActive(false);
         RoomPanel.SetActive(false);
+        CreateRoomUI.SetActive(false);
     }
     #endregion
 
+    #region 방 설정
+    public void SettingRoom()
+    {
+        DisconnectPanel.SetActive(false);
+        LobbyPanel.SetActive(false);
+        RoomPanel.SetActive(false);
+        CreateRoomUI.SetActive(true);
+    }
+    #endregion
 
     #region 방
-    public void CreateRoom() => PhotonNetwork.CreateRoom(RoomInput.text == "" ? "Room" + Random.Range(0, 100) : RoomInput.text, new RoomOptions { MaxPlayers = 12 });
+    
 
     public void JoinRandomRoom() => PhotonNetwork.JoinRandomRoom();
 
@@ -138,22 +158,10 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
     public override void OnJoinedRoom()
     {
-        if (ChatInput == null)
-        {
-            Debug.LogError("ChatInput is not assigned.");
-            return;
-        }
-
-        if (ChatText == null)
-        {
-            
-            Debug.LogError("ChatText array is not assigned.");
-            return;
-        }
-
         DisconnectPanel.SetActive(false);
         LobbyPanel.SetActive(false);
         RoomPanel.SetActive(true);
+        CreateRoomUI.SetActive(false);
         RoomRenewal();
         ChatInput.text = "";
         for (int i = 0; i < ChatText.Length; i++) {
@@ -165,6 +173,8 @@ public class NetworkManager : MonoBehaviourPunCallbacks
             ChatText[i].text = "";
         }
     }
+
+    public void CreateRoom() => PhotonNetwork.CreateRoom(RoomInput.text == "" ? "Room" + Random.Range(0, 100) : RoomInput.text, new RoomOptions { MaxPlayers = createRoomUI.roomData.maxPlayerCount });
 
     public override void OnCreateRoomFailed(short returnCode, string message) { RoomInput.text = ""; CreateRoom(); }
 

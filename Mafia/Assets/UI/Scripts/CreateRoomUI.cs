@@ -2,10 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using Photon.Pun;
+using Photon.Realtime;
 using UnityEngine.UI;
 
 public class CreateRoomUI : MonoBehaviour
 {
+
     //[SerializeField]
     //private List<Image> playerImgs;
     [SerializeField]
@@ -13,7 +16,7 @@ public class CreateRoomUI : MonoBehaviour
     [SerializeField]
     private List<Button> maxPlayerCountButtons;
 
-    private CreateGameRoomData roomData;
+    public CreateGameRoomData roomData;
 
     // Start is called before the first frame update
     void Start()
@@ -28,7 +31,7 @@ public class CreateRoomUI : MonoBehaviour
         roomData = new CreateGameRoomData() { mapiaCount = 1, maxPlayerCount = 10 };
         //UpdatePlayerImages();
     }
-
+    
     public void UpdateMapiaCount(int count)
     {
         roomData.mapiaCount = count;

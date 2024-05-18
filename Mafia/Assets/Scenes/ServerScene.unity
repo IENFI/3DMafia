@@ -9229,7 +9229,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1636829679}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1680489780}
+        m_TargetAssemblyTypeName: NetworkManager, Assembly-CSharp
+        m_MethodName: CreateRoom
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1636829679
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9877,6 +9889,7 @@ MonoBehaviour:
   - {fileID: 1795433009}
   - {fileID: 538034332}
   ChatInput: {fileID: 1046146682}
+  CreateRoomUI: {fileID: 499294355}
   StatusText: {fileID: 1846675252}
   PV: {fileID: 1680489781}
 --- !u!114 &1680489781
@@ -13319,7 +13332,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1680489780}
         m_TargetAssemblyTypeName: NetworkManager, Assembly-CSharp
-        m_MethodName: CreateRoom
+        m_MethodName: SettingRoom
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
