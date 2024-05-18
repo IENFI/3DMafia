@@ -150,7 +150,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     #endregion
 
     #region 방
-    
+    public void CreateRoom() => PhotonNetwork.CreateRoom(RoomInput.text == "" ? "Room" + Random.Range(0, 100) : RoomInput.text, new RoomOptions { MaxPlayers = createRoomUI.roomData.maxPlayerCount });
 
     public void JoinRandomRoom() => PhotonNetwork.JoinRandomRoom();
 
@@ -173,8 +173,6 @@ public class NetworkManager : MonoBehaviourPunCallbacks
             ChatText[i].text = "";
         }
     }
-
-    public void CreateRoom() => PhotonNetwork.CreateRoom(RoomInput.text == "" ? "Room" + Random.Range(0, 100) : RoomInput.text, new RoomOptions { MaxPlayers = createRoomUI.roomData.maxPlayerCount });
 
     public override void OnCreateRoomFailed(short returnCode, string message) { RoomInput.text = ""; CreateRoom(); }
 
