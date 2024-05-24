@@ -7,12 +7,6 @@ using TMPro;
 public class PlayerCtrl : MonoBehaviourPunCallbacks // Photon 관련 클래스를 상속
 {
     private new Rigidbody rigidbody;
-    [Header("RoomPanel")]
-    public GameObject RoomPanel;
-    public TextMeshProUGUI ListText;
-    public TextMeshProUGUI RoomInfoText;
-    public TextMeshProUGUI[] ChatText;
-    public TMP_InputField ChatInput;
     private float v;
     private float h;
     private float r;
@@ -49,10 +43,6 @@ public class PlayerCtrl : MonoBehaviourPunCallbacks // Photon 관련 클래스�
                 {
                     rigidbody.AddForce(Vector3.up * jumpPower, ForceMode.Impulse);
                 }
-            }
-            if (Input.GetKeyDown(KeyCode.T))
-            {
-                RoomPanel.SetActive(true);
             }
         }
     }

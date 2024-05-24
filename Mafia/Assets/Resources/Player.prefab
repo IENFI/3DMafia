@@ -189,23 +189,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1da7d6b344e508d478e18258326e4b60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  RoomPanel: {fileID: 0}
-  ListText: {fileID: 0}
-  RoomInfoText: {fileID: 0}
-  ChatText:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  ChatInput: {fileID: 0}
   moveSpeed: 8
   turnSpeed: 0
   jumpPower: 5
