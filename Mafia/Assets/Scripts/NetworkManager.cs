@@ -8,6 +8,9 @@ using TMPro;
 
 public class NetworkManager : MonoBehaviourPunCallbacks
 {
+    private readonly string gameVersion = "v1.0";
+    private string userId = "Ojui";
+
     [Header("DisconnectPanel")]
     public GameObject DisconnectPanel;
     public TMP_InputField NickNameInput;
@@ -96,7 +99,16 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     void Awake()
     {
         Screen.SetResolution(1500, 1080, false);
+        // 방장이 혼자 씬을 로딩하면, 나머지 사람들은 자동으로 싱크가 됨
+        PhotonNetwork.AutomaticallySyncScene = true;
+
+        // 게임 버전 지정
+        PhotonNetwork.GameVersion = gameVersion;
+
+        
     }
+
+
 
     void Update()
     {
@@ -150,7 +162,12 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     #endregion
 
     #region 방
-    public void CreateRoom() => PhotonNetwork.CreateRoom(RoomInput.text == "" ? "Room" + Random.Range(0, 100) : RoomInput.text, new RoomOptions { MaxPlayers = createRoomUI.roomData.maxPlayerCount });
+    public void CreateRoom()
+    {
+        string roomName = RoomInput.text == "" ? "Room" + Random.Range(0, 100) : RoomInput.text;
+        RoomOptions roomOptions = new RoomOptions { MaxPlayers = createRoomUI.roomData.maxPlayerCount };
+        PhotonNetwork.CreateRoom(roomName, roomOptions);
+    }
 
     public void JoinRandomRoom() => PhotonNetwork.JoinRandomRoom();
 
@@ -160,17 +177,25 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     {
         DisconnectPanel.SetActive(false);
         LobbyPanel.SetActive(false);
-        RoomPanel.SetActive(true);
         CreateRoomUI.SetActive(false);
+
         RoomRenewal();
         ChatInput.text = "";
-        for (int i = 0; i < ChatText.Length; i++) {
+
+        for (int i = 0; i < ChatText.Length; i++)
+        {
             if (ChatText[i] == null)
             {
                 Debug.LogError($"ChatText[{i}] is not assigned.");
                 continue;
             }
             ChatText[i].text = "";
+        }
+
+        if (PhotonNetwork.IsMasterClient)
+        {
+            PhotonNetwork.LoadLevel("Level_1");
+            Debug.Log("04. 방 입장 완료");
         }
     }
 
