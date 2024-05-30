@@ -9,23 +9,17 @@ public class PlayerCtrl : MonoBehaviourPunCallbacks // Photon 관련 클래스�
     private new Rigidbody rigidbody;
     private float v;
     private float h;
-    private float r;
 
     [Header("이동 및 회전 속도")]
     public float moveSpeed = 8.0f;
-    public float turnSpeed = 0.0f;
     public float jumpPower = 5.0f;
 
-    private float turnSpeedValue = 200.0f;
-
     RaycastHit hit;
+
     IEnumerator Start()
     {
         rigidbody = GetComponent<Rigidbody>();
-
-        turnSpeed = 0.0f;
-        yield return new WaitForSeconds(0.5f);
-        turnSpeed = turnSpeedValue;
+        yield return null; // 0.5초 기다릴 필요가 없으므로 null을 반환하여 즉시 실행
     }
 
     void Update()
@@ -35,6 +29,9 @@ public class PlayerCtrl : MonoBehaviourPunCallbacks // Photon 관련 클래스�
         {
             v = Input.GetAxis("Vertical");
             h = Input.GetAxis("Horizontal");
+
+            // Debug.Log를 통해 입력값을 확인
+            Debug.Log($"v: {v}, h: {h}");
 
             Debug.DrawRay(transform.position, -transform.up * 0.6f, Color.green);
             if (Input.GetKeyDown("space"))
@@ -54,7 +51,6 @@ public class PlayerCtrl : MonoBehaviourPunCallbacks // Photon 관련 클래스�
         {
             Vector3 dir = (Vector3.forward * v) + (Vector3.right * h);
             transform.Translate(dir.normalized * Time.deltaTime * moveSpeed, Space.Self);
-            transform.Rotate(Vector3.up * Time.smoothDeltaTime * turnSpeed * r);
         }
     }
 }
