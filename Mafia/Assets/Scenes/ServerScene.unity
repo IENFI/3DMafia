@@ -1992,6 +1992,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 1321470870}
   - {fileID: 72902385}
   - {fileID: 1766424203}
   - {fileID: 843697385}
@@ -2001,7 +2002,6 @@ RectTransform:
   - {fileID: 1223587131}
   - {fileID: 2129527584}
   - {fileID: 1668812613}
-  - {fileID: 1321470870}
   m_Father: {fileID: 1054746784}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -5355,8 +5355,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 14
-  m_fontSizeBase: 14
+  m_fontSize: 30
+  m_fontSizeBase: 30
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18

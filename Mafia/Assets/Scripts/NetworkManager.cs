@@ -6,11 +6,8 @@ using Photon.Realtime;
 using UnityEngine.UI;
 using TMPro;
 
-public class NetworkManager : MonoBehaviourPunCallbacks
+public class NetworkManager : MonoBehaviourPunCallbacks // 안현석 똑바로해라
 {
-    private readonly string gameVersion = "v1.0";
-    private string userId = "Ojui";
-
     [Header("DisconnectPanel")]
     public GameObject DisconnectPanel;
     public TMP_InputField NickNameInput;
@@ -94,7 +91,6 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     }
     #endregion
 
-
     #region 서버연결
     void Awake()
     {
@@ -103,8 +99,6 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         PhotonNetwork.AutomaticallySyncScene = true;
 
         // 게임 버전 지정
-        PhotonNetwork.GameVersion = gameVersion;
-
         
     }
 
@@ -192,11 +186,17 @@ public class NetworkManager : MonoBehaviourPunCallbacks
             ChatText[i].text = "";
         }
 
+        PhotonNetwork.LoadLevel("Level_1");
+        Debug.Log("04. 방 입장 완료");
+        
+        /*
         if (PhotonNetwork.IsMasterClient)
         {
             PhotonNetwork.LoadLevel("Level_1");
             Debug.Log("04. 방 입장 완료");
+            
         }
+        */
     }
 
     public override void OnCreateRoomFailed(short returnCode, string message) { RoomInput.text = ""; CreateRoom(); }

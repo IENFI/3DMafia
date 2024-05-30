@@ -190,5 +190,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   moveSpeed: 8
-  turnSpeed: 0
   jumpPower: 5

@@ -41,7 +41,11 @@ public class PlayerCtrl : MonoBehaviourPunCallbacks // Photon 관련 클래스�
                     rigidbody.AddForce(Vector3.up * jumpPower, ForceMode.Impulse);
                 }
             }
+
+
+
         }
+
     }
 
     private void FixedUpdate()

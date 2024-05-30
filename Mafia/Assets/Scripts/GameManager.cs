@@ -8,7 +8,8 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager instance = null;
     public bool isConnect = false;
-    public Transform[] spawnPoints;
+    public GameObject playerPrefab;
+
 
     private void Awake()
     {
@@ -22,27 +23,21 @@ public class GameManager : MonoBehaviour
             Destroy(this.gameObject);
         }
     }
-
+    // Start is called before the first frame update
     void Start()
     {
         StartCoroutine(CreatePlayer());
     }
 
+    // Update is called once per frame
     void Update()
     {
-
 
     }
 
     IEnumerator CreatePlayer()
     {
         yield return new WaitUntil(() => isConnect);
-
-        spawnPoints = GameObject.Find("SpawnPointGroup").GetComponentsInChildren<Transform>();
-
-        Vector3 pos = spawnPoints[PhotonNetwork.CurrentRoom.PlayerCount].position;
-        Quaternion rot = spawnPoints[PhotonNetwork.CurrentRoom.PlayerCount].rotation;
-
-        GameObject playerTemp = PhotonNetwork.Instantiate("Player", pos, rot, 0);
+        GameObject playerTemp = PhotonNetwork.Instantiate(this.playerPrefab.name, new Vector3(0f, 5f), Quaternion.identity, 0);
     }
 }
