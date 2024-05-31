@@ -18,6 +18,8 @@ public class Timer : MonoBehaviour
 
     [SerializeField] private GameObject Merchent; // NPC 캐릭터 GameObject를 저장할 변수
 
+    private bool isDaytime = true; // 낮/밤 상태를 추적하는 변수
+
     private void Awake()
     {
         directionalLight = GameObject.Find("Directional Light").GetComponent<Light>();
@@ -66,6 +68,26 @@ public class Timer : MonoBehaviour
 
             // NPC 캐릭터 표시 여부 변경
             Merchent.SetActive(!directionalLight.enabled);
+
+            // 밤으로 전활 될 때만 코인 2배 효과 및 속도 증가 효과 해제
+            if (isDaytime)
+            {
+                CoinScript[] allCoinPlayers = FindObjectsOfType<CoinScript>();
+                SpeedUpScript[] allSpeedUpPlayers = FindObjectsOfType<SpeedUpScript>();
+
+                // 코인 2배 효과 및 속도 증가 효과 해제
+                foreach (var coinPlayer in allCoinPlayers)
+                {
+                    coinPlayer.DeactivateDoubleCoins();
+                }
+                foreach (var speedUpPlayer in allSpeedUpPlayers)
+                {
+                    speedUpPlayer.DeactivateSpeedUp();
+                }
+            }
+
+            // 낮/밤 상태 전환
+            isDaytime = !isDaytime;
 
             // 반짝임 멈추기
             if (blinkCoroutine != null)

@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Movement : MonoBehaviour
 {
+    // 이속 증가 아이템 편하게 쓰려고 moveSpeed를 public으로 둠
     [SerializeField]
     private float moveSpeed = 4;        // 이동 속도
     [SerializeField]
@@ -17,7 +18,8 @@ public class Movement : MonoBehaviour
     public float MoveSpeed
     {
         // 이동속도는 2 ~ 4 사이의 값만 설정 가능
-        set => moveSpeed = Mathf.Clamp(value, 2.0f, 4.0f);
+        // .....이속제한... "50배"(두등-!)
+        set => moveSpeed = Mathf.Clamp(value, 2.0f, 100.0f);
     }
 
     private void Awake()

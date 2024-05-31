@@ -14,6 +14,9 @@ public class PlayerController : MonoBehaviourPun
     private Movement movement;
     private PlayerAnimator playerAnimator;
 
+    [SerializeField]
+    public float playerMoveSpeedUnit = 1;
+
     private void Awake()
     {
         // Cursor.visible = false;                 // 마우스 커서를 보이지 않게
@@ -27,7 +30,7 @@ public class PlayerController : MonoBehaviourPun
     private void Update()
     {
         // PhotonView가 로컬 플레이어의 것인지 확인
-        
+
         /*
         if (photonView.IsMine)
         {
@@ -96,17 +99,18 @@ public class PlayerController : MonoBehaviourPun
         Debug.Log(offset);
         // 애니메이션 값 설정 (-1 : 왼쪽, 0 : 가운데, 1 : 오른쪽)
         // 애니메이션 파라미터 설정 (horizontal, vertical)
-        playerAnimator.OnMovement(x*offset, z*offset);
+        playerAnimator.OnMovement(x * offset, z * offset);
 
         // 이동 속도 설정 (앞으로 이동할때만 5, 나머지는 2)
-        if ( offset == 1 ) {
-            movement.MoveSpeed = z > 0 ? 5.0f : 2.0f;
+        if (offset == 1)
+        {
+            movement.MoveSpeed = z > 0 ? playerMoveSpeedUnit * 5.0f : playerMoveSpeedUnit * 2.0f;
         }
         else
         {
-            movement.MoveSpeed = z > 0 ? 3.0f : 2.0f;
+            movement.MoveSpeed = z > 0 ? playerMoveSpeedUnit * 3.0f : playerMoveSpeedUnit * 2.0f;
         }
-        
+
         // 이동 함수 호출 (카메라가 보고있는 방향을 기준으로 방향키에 따라 이동)
         movement.MoveTo(cameraTransform.rotation * new Vector3(x, 0, z));
 
@@ -120,6 +124,7 @@ public class PlayerController : MonoBehaviourPun
             movement.JumpTo();        // 점프 함수 호출
         }
 
+        /*
         // 마우스 왼쪽 버튼을 누르면 발차기 공격
         if (Input.GetMouseButtonDown(0))
         {
@@ -131,6 +136,7 @@ public class PlayerController : MonoBehaviourPun
         {
             //playerAnimator.OnWeaponAttack();
         }
+        */
 
         float mouseX = Input.GetAxis("Mouse X");
         float mouseY = Input.GetAxis("Mouse Y");

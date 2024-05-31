@@ -1,38 +1,46 @@
+using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class CoinScript : MonoBehaviour
+public class CoinScript : MonoBehaviourPun
 {
-    public static int CoinInt; // 코인이 저장되는 변수
-    public static TMP_Text CoinText; // 코인을 표시할 오브젝트
-    public static GameObject Message; // 메시지 오브젝트
-    public static TMP_Text MSG; // 메시지 내용
+    public int CoinInt; // 코인이 저장되는 변수
+    public TMP_Text CoinText; // 코인을 표시할 오브젝트
+    public GameObject Message; // 메시지 오브젝트
+    public TMP_Text MSG; // 메시지 내용
+    public Image doubleCoinsImage; // 코인 2배 아이템 활성화 이미지
 
-    public static float Timer; // 타이머
-    public static bool TimeSet; // 타이머 작동여부
+    private float Timer; // 타이머
+    private bool TimeSet; // 타이머 작동여부
+    private bool IsDoubleCoins; // 코인 2배 여부
+
+    [SerializeField]
+    private GameObject Player;
+
     // Start is called before the first frame update
     void Start()
     {
-        CoinText = GameObject.Find("Canvas").transform.Find("CoinTest").transform.Find("Coin").transform.Find("Text").gameObject.GetComponent<TMP_Text>(); // CoinText는 Canvas/Coin/Text에 있는 Text입니다.
+        CoinText = GameObject.FindWithTag("CoinText").GetComponent<TMP_Text>();
+        Message = GameObject.Find("Canvas/CoinTest/Message").gameObject; // Message는 플레이어 객체 내부에 있는 Message 오브젝트입니다.
+        MSG = Message.transform.Find("Text").GetComponent<TMP_Text>();
+        doubleCoinsImage = GameObject.Find("Canvas/CoinTest/ItemApplyImage/DoubleCoinImage").GetComponent<Image>(); // 코인 2배 아이템 활성화 이미지
 
-        Message = GameObject.Find("Canvas").transform.Find("CoinTest").transform.Find("Message").gameObject; // Message는 Canvas안에 있는 Message 란 오브젝트입니다.
-        MSG = GameObject.Find("Canvas").transform.Find("CoinTest").transform.Find("Message").transform.Find("Text").gameObject.GetComponent<TMP_Text>();
-
-
-        CoinInt = PlayerPrefs.GetInt("Coin", 0); // PlayerPrefs 내에 저장되어있는 'Coin'을 불러와 CoinInt에 저장합니다. 만약에 저장된 정보가 없다면 0을 저장합니다.
-
+        CoinInt = PlayerPrefs.GetInt("Coin_" + gameObject.name, 0); // PlayerPrefs 내에 저장되어있는 'Coin'을 불러와 CoinInt에 저장합니다. 만약에 저장된 정보가 없다면 0을 저장합니다.
         Message.SetActive(false);
+        IsDoubleCoins = false; // 초기 상태에서는 코인 2배가 아님
+        doubleCoinsImage.enabled = false; // 코인 2배 아이템 활성화 이미지 비활성화
     }
 
     // Update is called once per frame
     void Update()
     {
-        PlayerPrefs.SetInt("Coin", CoinInt); // CoinInt를 PlayerPrefs 내에  저장되어있는 'Coin'에 저장합니다.
+        //if (!Player.GetComponent<PhotonView>().IsMine) return;
 
-        CoinText.text = CoinInt.ToString(); //CoinText의 Text에 CoinInt를 출력합니다.
+        PlayerPrefs.SetInt("Coin_" + gameObject.name, CoinInt); // CoinInt를 PlayerPrefs 내에 저장되어있는 'Coin'에 저장합니다.
+        CoinText.text = CoinInt.ToString(); // CoinText의 Text에 CoinInt를 출력합니다.
 
         if (TimeSet == true) // TimeSet이 True면
         {
@@ -47,9 +55,10 @@ public class CoinScript : MonoBehaviour
         }
     }
 
-    public void GetMoney() //돈을 얻습니다.
+    public void GetMoney() // 돈을 얻습니다.
     {
-        CoinInt += 40;
+        int amount = IsDoubleCoins ? 80 : 40; // 코인 2배일 경우 80, 아니면 40
+        CoinInt += amount;
         Debug.Log("Get coin");
     }
 
@@ -62,9 +71,32 @@ public class CoinScript : MonoBehaviour
         }
         else // 만약에 부족하다면
         {
-            Message.SetActive(true); // 메시지 오브젝트를 활성화합니다. 
+            Message.SetActive(true); // 메시지 오브젝트를 활성화합니다.
             MSG.text = "돈이 부족합니다!!".ToString(); // MSG의 Text를 "돈이 부족합니다"로 출력합니다.
             TimeSet = true; // TimeSet를 true로 합니다.
         }
+    }
+
+    public void ActivateDoubleCoins() // 코인 2배 아이템 사용
+    {
+        if (CoinInt >= 40) // CoinInt가 40이상이라면
+        {
+            lostMoney();
+            IsDoubleCoins = true;
+            doubleCoinsImage.enabled = true; // 코인 2배 아이템 활성화 이미지 활성화
+        }
+        else // 만약에 부족하다면
+        {
+            Message.SetActive(true); // 메시지 오브젝트를 활성화합니다.
+            MSG.text = "돈이 부족합니다!!".ToString(); // MSG의 Text를 "돈이 부족합니다"로 출력합니다.
+            TimeSet = true; // TimeSet를 true로 합니다.
+        }
+        
+    }
+
+    public void DeactivateDoubleCoins() // 코인 2배 효과 해제
+    {
+        IsDoubleCoins = false;
+        doubleCoinsImage.enabled = false; // 코인 2배 아이템 활성화 이미지 비활성화
     }
 }

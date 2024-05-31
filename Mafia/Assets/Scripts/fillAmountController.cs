@@ -18,6 +18,8 @@ public class fillAmountController : MonoBehaviour
         if (fillAmount < 1)
         {
             fillAmount += Time.deltaTime / totalTime;
+            // 최대값이 1이 되도록 제한합니다.
+            fillAmount = Mathf.Clamp01(fillAmount);
             myImage.fillAmount = fillAmount;
         }
     }
