@@ -48,7 +48,11 @@ public class NetworkManager : MonoBehaviourPunCallbacks // 안현석 똑바로�
     {
         if (num == -2) --currentPage;
         else if (num == -1) ++currentPage;
-        else PhotonNetwork.JoinRoom(myList[multiple + num].Name);
+        else
+        {
+            GameManager.instance.isConnected = true;
+            PhotonNetwork.JoinRoom(myList[multiple + num].Name);
+        }
         MyListRenewal();
     }
 
@@ -163,7 +167,11 @@ public class NetworkManager : MonoBehaviourPunCallbacks // 안현석 똑바로�
         PhotonNetwork.CreateRoom(roomName, roomOptions);
     }
 
-    public void JoinRandomRoom() => PhotonNetwork.JoinRandomRoom();
+    public void JoinRandomRoom()
+    {
+        GameManager.instance.isConnected = true;
+        PhotonNetwork.JoinRandomRoom();
+    }
 
     public void LeaveRoom() => PhotonNetwork.LeaveRoom();
 
@@ -186,17 +194,23 @@ public class NetworkManager : MonoBehaviourPunCallbacks // 안현석 똑바로�
             ChatText[i].text = "";
         }
 
+        /*
+        GameManager.instance.isConnected = true;
         PhotonNetwork.LoadLevel("Level_1");
         Debug.Log("04. 방 입장 완료");
+        */
         
-        /*
+        
         if (PhotonNetwork.IsMasterClient)
         {
+            GameManager.instance.isConnected = true;
             PhotonNetwork.LoadLevel("Level_1");
             Debug.Log("04. 방 입장 완료");
             
         }
-        */
+        
+        //GameManager.instance.StartCoroutine(GameManager.instance.CreatePlayer());
+
     }
 
     public override void OnCreateRoomFailed(short returnCode, string message) { RoomInput.text = ""; CreateRoom(); }

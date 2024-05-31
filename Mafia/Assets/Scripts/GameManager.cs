@@ -1,3 +1,4 @@
+
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -7,9 +8,8 @@ using Photon.Realtime;
 public class GameManager : MonoBehaviour
 {
     public static GameManager instance = null;
-    public bool isConnect = false;
     public GameObject playerPrefab;
-
+    public bool isConnected = false;
 
     private void Awake()
     {
@@ -23,21 +23,24 @@ public class GameManager : MonoBehaviour
             Destroy(this.gameObject);
         }
     }
+
     // Start is called before the first frame update
     void Start()
     {
+        StartCoroutine(WaitForConnectionAndCreatePlayer());
+    }
+
+    private IEnumerator WaitForConnectionAndCreatePlayer()
+    {
+        yield return new WaitUntil(() => isConnected);
         StartCoroutine(CreatePlayer());
     }
 
-    // Update is called once per frame
-    void Update()
+    public IEnumerator CreatePlayer()
     {
-
-    }
-
-    IEnumerator CreatePlayer()
-    {
-        yield return new WaitUntil(() => isConnect);
-        GameObject playerTemp = PhotonNetwork.Instantiate(this.playerPrefab.name, new Vector3(0f, 5f), Quaternion.identity, 0);
+        yield return new WaitForSeconds(1); // Adding a small delay to ensure the scene is loaded
+        PhotonNetwork.Instantiate(this.playerPrefab.name, new Vector3(0f, 5f, 0f), Quaternion.identity, 0);
+        Debug.Log("캐릭터 생성");
+        isConnected = false;
     }
 }

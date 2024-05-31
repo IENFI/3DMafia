@@ -1952,7 +1952,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 628de5e48cddcc84e84a167150b5b65f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  CoinInt: 0
+  CoinInt: 80
   CoinText: {fileID: 2076149309}
   Message: {fileID: 931507293}
   MSG: {fileID: 2145294978}
@@ -7211,6 +7211,10 @@ PrefabInstance:
     - target: {fileID: 3432362266963976815, guid: 8d9e43699e1242f4ead758f199d34695, type: 3}
       propertyPath: m_TagString
       value: Player
+      objectReference: {fileID: 0}
+    - target: {fileID: 5542252087544625255, guid: 8d9e43699e1242f4ead758f199d34695, type: 3}
+      propertyPath: sceneViewId
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 6363748984593560106, guid: 8d9e43699e1242f4ead758f199d34695, type: 3}
       propertyPath: sceneViewId

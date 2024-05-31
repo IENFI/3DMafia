@@ -1,8 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Photon.Pun;
+using Photon.Realtime;
 
-public class CameraController : MonoBehaviour
+public class CameraController : MonoBehaviourPun
 {
     public Camera FPCamera;
     public Camera TPCamera;
@@ -12,13 +14,23 @@ public class CameraController : MonoBehaviour
 
     private void Awake()
     {
-        FPCamera.enabled = true;
-        TPCamera.enabled = true;
-        ShowFPCamera();
+        if (photonView.IsMine)
+        {
+            FPCamera.enabled = true;
+            TPCamera.enabled = true;
+            ShowFPCamera();
+        }
+        else
+        {
+            FPCamera.enabled = false;
+            TPCamera.enabled = false;
+        }
     }
 
     private void Update()
     {
+        if (!photonView.IsMine) return;
+
         if (Input.GetKeyDown(KeyCode.Tab) && cam_check == false)
         {
             ShowTPCamera();
