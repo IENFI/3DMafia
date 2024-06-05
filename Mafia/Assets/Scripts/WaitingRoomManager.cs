@@ -127,4 +127,12 @@ public class WaitingRoomManager : MonoBehaviourPunCallbacks
             Debug.Log("Level_1 입장 완료");
         }
     }
+
+    public void LeaveRoom() => PhotonNetwork.LeaveRoom();
+
+    public override void OnLeftRoom()
+    {
+        // 서버 씬으로 전환
+        PhotonNetwork.LoadLevel("ServerScene");
+    }
 }

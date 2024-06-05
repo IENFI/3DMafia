@@ -20,13 +20,8 @@ public class NetworkManager : MonoBehaviourPunCallbacks // 안현석 똑바로�
     public Button[] CellBtn;
     public Button PreviousBtn;
     public Button NextBtn;
-
-    [Header("RoomPanel")]
-    public GameObject RoomPanel;
     public TextMeshProUGUI ListText;
     public TextMeshProUGUI RoomInfoText;
-    public TextMeshProUGUI[] ChatText;
-    public TMP_InputField ChatInput;
 
     [Header("CreateRoomUI")]
     public GameObject CreateRoomUI;
@@ -103,10 +98,8 @@ public class NetworkManager : MonoBehaviourPunCallbacks // 안현석 똑바로�
         PhotonNetwork.AutomaticallySyncScene = true;
 
         // 게임 버전 지정
-        
+
     }
-
-
 
     void Update()
     {
@@ -122,10 +115,9 @@ public class NetworkManager : MonoBehaviourPunCallbacks // 안현석 똑바로�
     {
         DisconnectPanel.SetActive(false);
         LobbyPanel.SetActive(true);
-        RoomPanel.SetActive(false);
         CreateRoomUI.SetActive(false);
         PhotonNetwork.LocalPlayer.NickName = NickNameInput.text;
-        WelcomeText.text = "Welcome " + PhotonNetwork.LocalPlayer.NickName ;
+        WelcomeText.text = "Welcome " + PhotonNetwork.LocalPlayer.NickName;
         myList.Clear();
     }
 
@@ -144,7 +136,6 @@ public class NetworkManager : MonoBehaviourPunCallbacks // 안현석 똑바로�
 
         DisconnectPanel.SetActive(true);
         LobbyPanel.SetActive(false);
-        RoomPanel.SetActive(false);
         CreateRoomUI.SetActive(false);
     }
     #endregion
@@ -154,7 +145,6 @@ public class NetworkManager : MonoBehaviourPunCallbacks // 안현석 똑바로�
     {
         DisconnectPanel.SetActive(false);
         LobbyPanel.SetActive(false);
-        RoomPanel.SetActive(false);
         CreateRoomUI.SetActive(true);
     }
     #endregion
@@ -181,34 +171,21 @@ public class NetworkManager : MonoBehaviourPunCallbacks // 안현석 똑바로�
         LobbyPanel.SetActive(false);
         CreateRoomUI.SetActive(false);
 
-        RoomRenewal();
-        ChatInput.text = "";
-
-        for (int i = 0; i < ChatText.Length; i++)
-        {
-            if (ChatText[i] == null)
-            {
-                Debug.LogError($"ChatText[{i}] is not assigned.");
-                continue;
-            }
-            ChatText[i].text = "";
-        }
-
         /*
         GameManager.instance.isConnected = true;
         PhotonNetwork.LoadLevel("Level_1");
         Debug.Log("04. 방 입장 완료");
         */
-        
-        
+
+
         if (PhotonNetwork.IsMasterClient)
         {
             GameManager.instance.isConnected = true;
             PhotonNetwork.LoadLevel("Level_0");
             Debug.Log("04. 방 입장 완료");
-            
+
         }
-        
+
         //GameManager.instance.StartCoroutine(GameManager.instance.CreatePlayer());
 
     }
@@ -216,52 +193,5 @@ public class NetworkManager : MonoBehaviourPunCallbacks // 안현석 똑바로�
     public override void OnCreateRoomFailed(short returnCode, string message) { RoomInput.text = ""; CreateRoom(); }
 
     public override void OnJoinRandomFailed(short returnCode, string message) { RoomInput.text = ""; CreateRoom(); }
-
-    public override void OnPlayerEnteredRoom(Player newPlayer)
-    {
-        RoomRenewal();
-        ChatRPC("<color=yellow>" + newPlayer.NickName + "has joined</color>");
-    }
-
-    public override void OnPlayerLeftRoom(Player otherPlayer)
-    {
-        RoomRenewal();
-        ChatRPC("<color=yellow>" + otherPlayer.NickName + " has left</color>");
-    }
-
-    void RoomRenewal()
-    {
-        ListText.text = "";
-        for (int i = 0; i < PhotonNetwork.PlayerList.Length; i++)
-            ListText.text += PhotonNetwork.PlayerList[i].NickName + ((i + 1 == PhotonNetwork.PlayerList.Length) ? "" : ", ");
-        RoomInfoText.text = PhotonNetwork.CurrentRoom.Name + " / " + PhotonNetwork.CurrentRoom.PlayerCount + "people / " + PhotonNetwork.CurrentRoom.MaxPlayers + "max";
-    }
-    #endregion
-
-
-    #region 채팅
-    public void Send()
-    {
-        PV.RPC("ChatRPC", RpcTarget.All, PhotonNetwork.NickName + " : " + ChatInput.text);
-        ChatInput.text = "";
-    }
-
-    [PunRPC] // RPC는 플레이어가 속해있는 방 모든 인원에게 전달한다
-    void ChatRPC(string msg)
-    {
-        bool isInput = false;
-        for (int i = 0; i < ChatText.Length; i++)
-            if (ChatText[i].text == "")
-            {
-                isInput = true;
-                ChatText[i].text = msg;
-                break;
-            }
-        if (!isInput) // 꽉차면 한칸씩 위로 올림
-        {
-            for (int i = 1; i < ChatText.Length; i++) ChatText[i - 1].text = ChatText[i].text;
-            ChatText[ChatText.Length - 1].text = msg;
-        }
-    }
     #endregion
 }
