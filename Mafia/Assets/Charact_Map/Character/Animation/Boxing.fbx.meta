@@ -1,5 +1,9 @@
 fileFormatVersion: 2
+<<<<<<<< HEAD:Mafia/Assets/Charact_Map/Character/Animation/Boxing.fbx.meta
 guid: a7ceec9f597be4069a7d77efdb6972e2
+========
+guid: 6eda8042fb6a14692a1294ea146a9b6f
+>>>>>>>> main:Mafia/Assets/Character/Animation/Fast Run.fbx.meta
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable: []

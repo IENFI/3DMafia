@@ -1,5 +1,9 @@
 fileFormatVersion: 2
+<<<<<<<< HEAD:Mafia/Assets/Scenes/Level_0.unity.meta
 guid: 5be25311d4aafdd4e85faa1177269bfd
+========
+guid: d2c4eed59bfea49fb98e9a8cf7481697
+>>>>>>>> main:Mafia/Assets/Scenes/Character.unity.meta
 DefaultImporter:
   externalObjects: {}
   userData: 

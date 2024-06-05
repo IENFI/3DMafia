@@ -1,9 +1,5 @@
 fileFormatVersion: 2
-<<<<<<<< HEAD:Mafia/Assets/Charact_Map/Character/Animation/Dying-3.fbx.meta
-guid: 0b69066a42463434cb7b9cde76038db1
-========
-guid: 43d211347819c4ee9a5df66d43f949e9
->>>>>>>> main:Mafia/Assets/Character/Animation/Standing Idle.fbx.meta
+guid: c618fdbbd5547db499ee339737c8ece7
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable: []
