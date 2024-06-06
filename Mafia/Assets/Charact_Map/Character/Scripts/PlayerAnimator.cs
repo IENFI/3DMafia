@@ -35,4 +35,10 @@ public class PlayerAnimator : MonoBehaviour
     {
         attackCollision.SetActive(true);
     }
+
+    // 애니메이션의 동작 시간을 얻는 함수
+    public AnimatorStateInfo GetAnimatorTime()
+    {
+        return animator.GetCurrentAnimatorStateInfo(0);
+    }
 }

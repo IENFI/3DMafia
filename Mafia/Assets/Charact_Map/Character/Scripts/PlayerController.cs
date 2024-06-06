@@ -17,10 +17,20 @@ public class PlayerController : MonoBehaviourPun
     [SerializeField]
     public float playerMoveSpeedUnit = 1;
 
+    private float lastKillTime; // 킬한 시간 저장
+    public float killCooldown = 5.0f; // 쿨타임 설정 (5초)
+
+    [SerializeField]
+    public GameObject ghostPrefab; // 유령 프리팹
+    [SerializeField]
+    public GameObject corpsePrefab; // 시체 프리팹
+
+    private bool isDead = false;
+
     void Start()
     {
-        // Cursor.visible = false;                 // ���콺 Ŀ���� ������ �ʰ�
-        // Cursor.lockState = CursorLockMode.Locked;   // ���콺 Ŀ�� ��ġ ����
+        // Cursor.visible = false;                 // 마우스 커서를 보이지 않게
+        // Cursor.lockState = CursorLockMode.Locked;   // 마우스 커서 위치 고정
 
         movement = GetComponent<Movement>();
         playerAnimator = GetComponentInChildren<PlayerAnimator>();
@@ -32,51 +42,62 @@ public class PlayerController : MonoBehaviourPun
     {
         if (photonView.IsMine)
         {
-            // ����Ű�� ���� �̵�
+            if (isDead) return;
+            // 방향키를 눌러 이동
             float x = Input.GetAxis("Horizontal");
             float z = Input.GetAxis("Vertical");
 
-            // shift Ű�� �� ������ �ִ� 0.5, ������ �ִ� 1����
+            // shift 키를 안 누르면 최대 0.5, 누르면 최대 1까지
             bool isShiftKeyPressed = Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift);
             float offset = isShiftKeyPressed ? 1.0f : 0.5f;
             Debug.Log(offset);
-            // �ִϸ��̼� �� ���� (-1 : ����, 0 : ���, 1 : ������)
-            // �ִϸ��̼� �Ķ���� ���� (horizontal, vertical)
+            // 애니메이션 값 설정 (-1 : 왼쪽, 0 : 가운데, 1 : 오른쪽)
+            // 애니메이션 파라미터 설정 (horizontal, vertical)
             playerAnimator.OnMovement(x * offset, z * offset);
 
-            // �̵� �ӵ� ���� (������ �̵��Ҷ��� 5, �������� 2)
+            // 이동 속도 설정
             if (offset == 1)
             {
-                movement.MoveSpeed = z > 0 ? 10.0f : 5.0f;
+                movement.MoveSpeed = z >= 0 ? 10.0f : 5.0f;
             }
             else
             {
-                movement.MoveSpeed = z > 0 ? 6.0f : 4.0f;
+                movement.MoveSpeed = z >= 0 ? 6.0f : 4.0f;
             }
 
-            // �̵� �Լ� ȣ�� (ī�޶� �����ִ� ������ �������� ����Ű�� ���� �̵�)
+            // 이동 함수 호출 (카메라가 보고있는 방향을 기준으로 방향키에 따라 이동)
             movement.MoveTo(cameraTransform.rotation * new Vector3(x, 0, z));
 
-            // ȸ�� ���� (�׻� �ո� ������ ĳ������ ȸ���� ī�޶�� ���� ȸ�� ������ ����)
+            // 회전 설정 (항상 앞만 보도록 캐릭터의 회전은 카메라와 같은 회전 값으로 설정)
             transform.rotation = Quaternion.Euler(0, cameraTransform.eulerAngles.y, 0);
 
-            // SpaceŰ�� ������ ����
+            // Space키를 누르면 점프
             if (Input.GetKeyDown(jumpKeyCode))
             {
-                //playerAnimator.OnJump();    // �ִϸ��̼� �Ķ���� ���� (onJump)
-                movement.JumpTo();        // ���� �Լ� ȣ��
+                //playerAnimator.OnJump();    // 애니메이션 파라미터 설정 (onJump)
+                movement.JumpTo();        // 점프 함수 호출
             }
 
-            // ���콺 ���� ��ư�� ������ ������ ����
+            // 마우스 왼쪽 버튼을 누르면 발차기 공격
             if (Input.GetMouseButtonDown(0))
             {
-                playerAnimator.Kill();
+                if (Time.time - lastKillTime >= killCooldown)
+                {
+                    playerAnimator.Kill();
+                    lastKillTime = Time.time;
+                }
             }
 
-            // ���콺 ������ ��ư�� ������ ���� ���� (����)
+            // 마우스 오른쪽 버튼을 누르면 무기 공격 (연계)
             if (Input.GetMouseButtonDown(1))
             {
                 //playerAnimator.OnWeaponAttack();
+            }
+
+            // 예시로 D키를 눌러 죽음을 시뮬레이트 (테스트용)
+            if (Input.GetKeyDown(KeyCode.K) && !isDead)
+            {
+                photonView.RPC("Death", RpcTarget.All);
             }
 
             float mouseX = Input.GetAxis("Mouse X");
@@ -85,4 +106,28 @@ public class PlayerController : MonoBehaviourPun
             cameraController.RotateTo(mouseX, mouseY);
         }
     }
+
+    [PunRPC]
+    void Death()
+    {
+        if (!photonView.IsMine) return; // 로컬 플레이어가 아니면 중지
+
+        if (isDead) return;
+        isDead = true;
+        playerAnimator.Death();
+        StartCoroutine(HandleDeath());
+    }
+
+    private IEnumerator HandleDeath()
+    {
+        // 애니메이션의 길이를 대기합니다.
+        yield return new WaitForSeconds(playerAnimator.GetAnimatorTime().length);
+
+        PhotonNetwork.Instantiate(ghostPrefab.name, transform.position, transform.rotation);
+        PhotonNetwork.Instantiate(corpsePrefab.name, transform.position, transform.rotation);
+
+        // 원래 캐릭터를 비활성화합니다.
+        gameObject.SetActive(false);
+    }
+
 }

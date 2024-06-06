@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.18028378, g: 0.22571412, b: 0.30692285, a: 1}
+  m_IndirectSpecularColor: {r: 0.18028373, g: 0.22571398, b: 0.30692294, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -892,12 +892,16 @@ MonoBehaviour:
   m_GameObject: {fileID: 6311513340881588520}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9e435c24361ff4c3dbb82668fdfcc4e0, type: 3}
+  m_Script: {fileID: 11500000, guid: 640bdbbe7cb5e584cadc51b8b49981cd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   jumpKeyCode: 32
-  cameraTransform: {fileID: 5742024726116395548}
-  cameraController: {fileID: 0}
+  cameraTransform: {fileID: 4180445974623205355}
+  cameraController: {fileID: 3018114678804089680}
+  playerMoveSpeedUnit: 1
+  killCooldown: 5
+  ghostPrefab: {fileID: 0}
+  corpsePrefab: {fileID: 0}
 --- !u!1 &337139016170127116
 GameObject:
   m_ObjectHideFlags: 0
@@ -1043,7 +1047,7 @@ SkinnedMeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: -1796300093539065552, guid: 43d211347819c4ee9a5df66d43f949e9, type: 3}
+  - {fileID: 2100000, guid: bd7e813f606d6bf40a3e33fd727c6559, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -2955,6 +2959,7 @@ GameObject:
   - component: {fileID: 125701954447610282}
   - component: {fileID: 994941636724697716}
   - component: {fileID: 3915832981187307407}
+  - component: {fileID: 8677372883407856468}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -3680,6 +3685,28 @@ Transform:
   - {fileID: 5039323414732821712}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &8677372883407856468
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6311513340881588520}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 1
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &8766688828050256392
 GameObject:
   m_ObjectHideFlags: 0

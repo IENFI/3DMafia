@@ -23,6 +23,13 @@ public class Movement : MonoBehaviour
         set => moveSpeed = Mathf.Clamp(value, 2.0f, 100.0f);
     }
 
+    public float Gravity
+    {
+        // 이동속도는 2 ~ 4 사이의 값만 설정 가능
+        // .....이속제한... "50배"(두등-!)
+        set => gravity = Mathf.Clamp(value, -8.0f, -10.0f);
+    }
+
     private void Awake()
     {
         characterController = GetComponent<CharacterController>();
