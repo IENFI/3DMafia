@@ -25,6 +25,12 @@ public class PlayerAnimator : MonoBehaviour
         animator.SetTrigger("kill");
     }
 
+    public void Death()
+    {
+        animator.SetTrigger("death");
+        // 필드에서 추방하는 코드 추가하기
+    }
+
     public void OnAttackCollision()
     {
         attackCollision.SetActive(true);

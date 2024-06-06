@@ -19,8 +19,8 @@ public class PlayerController : MonoBehaviourPun
 
     void Start()
     {
-        // Cursor.visible = false;                 // ¸¶¿ì½º Ä¿¼­¸¦ º¸ÀÌÁö ¾Ê°Ô
-        // Cursor.lockState = CursorLockMode.Locked;   // ¸¶¿ì½º Ä¿¼­ À§Ä¡ °íÁ¤
+        // Cursor.visible = false;                 // ï¿½ï¿½ï¿½ì½º Ä¿ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê°ï¿½
+        // Cursor.lockState = CursorLockMode.Locked;   // ï¿½ï¿½ï¿½ì½º Ä¿ï¿½ï¿½ ï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½ï¿½
 
         movement = GetComponent<Movement>();
         playerAnimator = GetComponentInChildren<PlayerAnimator>();
@@ -32,48 +32,48 @@ public class PlayerController : MonoBehaviourPun
     {
         if (photonView.IsMine)
         {
-            // ¹æÇâÅ°¸¦ ´­·¯ ÀÌµ¿
+            // ï¿½ï¿½ï¿½ï¿½Å°ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ìµï¿½
             float x = Input.GetAxis("Horizontal");
             float z = Input.GetAxis("Vertical");
 
-            // shift Å°¸¦ ¾È ´©¸£¸é ÃÖ´ë 0.5, ´©¸£¸é ÃÖ´ë 1±îÁö
+            // shift Å°ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½ 0.5, ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½ 1ï¿½ï¿½ï¿½ï¿½
             bool isShiftKeyPressed = Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift);
             float offset = isShiftKeyPressed ? 1.0f : 0.5f;
             Debug.Log(offset);
-            // ¾Ö´Ï¸ÞÀÌ¼Ç °ª ¼³Á¤ (-1 : ¿ÞÂÊ, 0 : °¡¿îµ¥, 1 : ¿À¸¥ÂÊ)
-            // ¾Ö´Ï¸ÞÀÌ¼Ç ÆÄ¶ó¹ÌÅÍ ¼³Á¤ (horizontal, vertical)
+            // ï¿½Ö´Ï¸ï¿½ï¿½Ì¼ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ (-1 : ï¿½ï¿½ï¿½ï¿½, 0 : ï¿½ï¿½ï¿½îµ¥, 1 : ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½)
+            // ï¿½Ö´Ï¸ï¿½ï¿½Ì¼ï¿½ ï¿½Ä¶ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ (horizontal, vertical)
             playerAnimator.OnMovement(x * offset, z * offset);
 
-            // ÀÌµ¿ ¼Óµµ ¼³Á¤ (¾ÕÀ¸·Î ÀÌµ¿ÇÒ¶§¸¸ 5, ³ª¸ÓÁö´Â 2)
+            // ï¿½Ìµï¿½ ï¿½Óµï¿½ ï¿½ï¿½ï¿½ï¿½ (ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ìµï¿½ï¿½Ò¶ï¿½ï¿½ï¿½ 5, ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ 2)
             if (offset == 1)
             {
-                movement.MoveSpeed = z > 0 ? 5.0f : 2.0f;
+                movement.MoveSpeed = z > 0 ? 10.0f : 5.0f;
             }
             else
             {
-                movement.MoveSpeed = z > 0 ? 3.0f : 2.0f;
+                movement.MoveSpeed = z > 0 ? 6.0f : 4.0f;
             }
 
-            // ÀÌµ¿ ÇÔ¼ö È£Ãâ (Ä«¸Þ¶ó°¡ º¸°íÀÖ´Â ¹æÇâÀ» ±âÁØÀ¸·Î ¹æÇâÅ°¿¡ µû¶ó ÀÌµ¿)
+            // ï¿½Ìµï¿½ ï¿½Ô¼ï¿½ È£ï¿½ï¿½ (Ä«ï¿½Þ¶ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Å°ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ìµï¿½)
             movement.MoveTo(cameraTransform.rotation * new Vector3(x, 0, z));
 
-            // È¸Àü ¼³Á¤ (Ç×»ó ¾Õ¸¸ º¸µµ·Ï Ä³¸¯ÅÍÀÇ È¸ÀüÀº Ä«¸Þ¶ó¿Í °°Àº È¸Àü °ªÀ¸·Î ¼³Á¤)
+            // È¸ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ (ï¿½×»ï¿½ ï¿½Õ¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ä³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ È¸ï¿½ï¿½ï¿½ï¿½ Ä«ï¿½Þ¶ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ È¸ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½)
             transform.rotation = Quaternion.Euler(0, cameraTransform.eulerAngles.y, 0);
 
-            // SpaceÅ°¸¦ ´©¸£¸é Á¡ÇÁ
+            // SpaceÅ°ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
             if (Input.GetKeyDown(jumpKeyCode))
             {
-                //playerAnimator.OnJump();    // ¾Ö´Ï¸ÞÀÌ¼Ç ÆÄ¶ó¹ÌÅÍ ¼³Á¤ (onJump)
-                movement.JumpTo();        // Á¡ÇÁ ÇÔ¼ö È£Ãâ
+                //playerAnimator.OnJump();    // ï¿½Ö´Ï¸ï¿½ï¿½Ì¼ï¿½ ï¿½Ä¶ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ (onJump)
+                movement.JumpTo();        // ï¿½ï¿½ï¿½ï¿½ ï¿½Ô¼ï¿½ È£ï¿½ï¿½
             }
 
-            // ¸¶¿ì½º ¿ÞÂÊ ¹öÆ°À» ´©¸£¸é ¹ßÂ÷±â °ø°Ý
+            // ï¿½ï¿½ï¿½ì½º ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Æ°ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
             if (Input.GetMouseButtonDown(0))
             {
                 playerAnimator.Kill();
             }
 
-            // ¸¶¿ì½º ¿À¸¥ÂÊ ¹öÆ°À» ´©¸£¸é ¹«±â °ø°Ý (¿¬°è)
+            // ï¿½ï¿½ï¿½ì½º ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Æ°ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ (ï¿½ï¿½ï¿½ï¿½)
             if (Input.GetMouseButtonDown(1))
             {
                 //playerAnimator.OnWeaponAttack();
