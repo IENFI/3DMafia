@@ -6,6 +6,9 @@ TagManager:
   tags:
   - Enemy
   - CoinText
+  - Canvas
+  - CoinTest
+  - ShopNPC
   layers:
   - Default
   - TransparentFX
