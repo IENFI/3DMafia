@@ -10,7 +10,7 @@ public class GhostController : MonoBehaviourPun, IPunObservable
     [SerializeField]
     private Transform cameraTransform;
     [SerializeField]
-    private FPCameraController cameraController;
+    private GhostFPCamera cameraController;
     private Movement movement;
 
     public void InitializeAsGhost()
@@ -37,7 +37,7 @@ public class GhostController : MonoBehaviourPun, IPunObservable
         }
         InitializeAsGhost();
         movement = GetComponent<Movement>();
-        cameraController = GetComponentInChildren<FPCameraController>();
+        cameraController = GetComponentInChildren<GhostFPCamera>();
     }
 
 
