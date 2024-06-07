@@ -6,16 +6,16 @@ using UnityEngine;
 public class PlayerController : MonoBehaviourPun
 {
     [SerializeField]
-    private KeyCode jumpKeyCode = KeyCode.Space;
+    private KeyCode jumpKeyCode = KeyCode.Space; // 점프 키 (Space 키)
     [SerializeField]
-    private Transform cameraTransform;
+    private Transform cameraTransform; // 카메라의 Transform
     [SerializeField]
-    private FPCameraController cameraController;
-    private Movement movement;
-    private PlayerAnimator playerAnimator;
+    private FPCameraController cameraController; // 1인칭 카메라 컨트롤러
+    private Movement movement; // 이동을 담당하는 Movement 컴포넌트
+    private PlayerAnimator playerAnimator; // 플레이어 애니메이터
 
     [SerializeField]
-    public float playerMoveSpeedUnit = 1;
+    public float playerMoveSpeedUnit = 1; // 플레이어 이동 속도 단위
 
     private float lastKillTime; // 킬한 시간 저장
     public float killCooldown = 5.0f; // 쿨타임 설정 (5초)
@@ -35,11 +35,16 @@ public class PlayerController : MonoBehaviourPun
         movement = GetComponent<Movement>();
         playerAnimator = GetComponentInChildren<PlayerAnimator>();
         cameraController = GetComponentInChildren<FPCameraController>();
+
+        // 커서를 숨기고 잠금 (필요에 따라 주석 해제)
+        // Cursor.visible = false; 
+        // Cursor.lockState = CursorLockMode.Locked; 
     }
 
-    // Update is called once per frame
+    // 매 프레임마다 호출되는 Update 함수
     void Update()
     {
+        // 이 객체가 로컬 플레이어의 객체인지 확인
         if (photonView.IsMine)
         {
             if (isDead) return;
@@ -58,11 +63,11 @@ public class PlayerController : MonoBehaviourPun
             // 이동 속도 설정
             if (offset == 1)
             {
-                movement.MoveSpeed = z >= 0 ? 10.0f : 5.0f;
+                movement.MoveSpeed = z >= 0 ? playerMoveSpeedUnit * 10.0f : playerMoveSpeedUnit * 5.0f;
             }
             else
             {
-                movement.MoveSpeed = z >= 0 ? 6.0f : 4.0f;
+                movement.MoveSpeed = z >= 0 ? playerMoveSpeedUnit * 6.0f : playerMoveSpeedUnit * 4.0f;
             }
 
             // 이동 함수 호출 (카메라가 보고있는 방향을 기준으로 방향키에 따라 이동)
@@ -91,7 +96,7 @@ public class PlayerController : MonoBehaviourPun
             // 마우스 오른쪽 버튼을 누르면 무기 공격 (연계)
             if (Input.GetMouseButtonDown(1))
             {
-                //playerAnimator.OnWeaponAttack();
+                // playerAnimator.OnWeaponAttack(); // 무기 공격 애니메이션 실행 (주석 처리됨)
             }
 
             // 예시로 D키를 눌러 죽음을 시뮬레이트 (테스트용)
@@ -103,7 +108,7 @@ public class PlayerController : MonoBehaviourPun
             float mouseX = Input.GetAxis("Mouse X");
             float mouseY = Input.GetAxis("Mouse Y");
 
-            cameraController.RotateTo(mouseX, mouseY);
+            cameraController.RotateTo(mouseX, mouseY); // 카메라 회전 함수 호출
         }
     }
 
@@ -136,4 +141,8 @@ public class PlayerController : MonoBehaviourPun
         photonView.RPC("DisableGameObject", RpcTarget.All);
     }
 
+    public void ChangeMoveSpeed()
+    {
+        playerMoveSpeedUnit *= 5; 
+    }
 }

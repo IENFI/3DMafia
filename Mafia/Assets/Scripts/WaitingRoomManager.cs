@@ -125,6 +125,10 @@ public class WaitingRoomManager : MonoBehaviourPunCallbacks
         {
             PhotonNetwork.LoadLevel("Level_1");
             Debug.Log("Level_1 입장 완료");
+
+            // 커스텀 이벤트 전송
+            RaiseEventOptions options = new RaiseEventOptions { Receivers = ReceiverGroup.All };
+            PhotonNetwork.RaiseEvent(CustomEventCodes.GameSceneLoaded, null, options, SendOptions.SendReliable);
         }
     }
 
@@ -135,4 +139,9 @@ public class WaitingRoomManager : MonoBehaviourPunCallbacks
         // 서버 씬으로 전환
         PhotonNetwork.LoadLevel("ServerScene");
     }
+}
+
+public class CustomEventCodes
+{
+    public const byte GameSceneLoaded = 1; // 사용자 정의 이벤트 코드
 }
