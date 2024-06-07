@@ -55,7 +55,7 @@ public class PlayerController : MonoBehaviourPun
             // shift 키를 안 누르면 최대 0.5, 누르면 최대 1까지
             bool isShiftKeyPressed = Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift);
             float offset = isShiftKeyPressed ? 1.0f : 0.5f;
-            Debug.Log(offset);
+            // Debug.Log(offset);
             // 애니메이션 값 설정 (-1 : 왼쪽, 0 : 가운데, 1 : 오른쪽)
             // 애니메이션 파라미터 설정 (horizontal, vertical)
             playerAnimator.OnMovement(x * offset, z * offset);
@@ -143,6 +143,11 @@ public class PlayerController : MonoBehaviourPun
 
     public void ChangeMoveSpeed()
     {
-        playerMoveSpeedUnit *= 5; 
+        playerMoveSpeedUnit *= 5;
+    }
+
+    public void OriginMoveSpeed()
+    {
+        playerMoveSpeedUnit /= 5;
     }
 }

@@ -260,7 +260,7 @@ Transform:
   m_GameObject: {fileID: 1716301044859447867}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: 0.7074934, z: -0, w: 0.70671993}
-  m_LocalPosition: {x: 0.10691343, y: -0.07349988, z: 0.031973623}
+  m_LocalPosition: {x: 0.035, y: -0.07349988, z: -0.021}
   m_LocalScale: {x: 0.75, y: 0.25, z: 0.75}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -642,7 +642,7 @@ Transform:
   m_GameObject: {fileID: 6151347696171040967}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.016681269, y: 0.005946001, z: 0.031479135}
+  m_LocalPosition: {x: -0.016681269, y: 0.1, z: 0.031479135}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -747,7 +747,7 @@ GameObject:
   - component: {fileID: 229656937877972215}
   - component: {fileID: 170967081599129894}
   m_Layer: 0
-  m_Name: merchentTest
+  m_Name: merchent
   m_TagString: ShopNPC
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -762,7 +762,7 @@ Transform:
   m_GameObject: {fileID: 6466255740485963697}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0.4507374, z: -0, w: 0.89265656}
-  m_LocalPosition: {x: 2.7435741, y: 0.294, z: 1.7013798}
+  m_LocalPosition: {x: 2.7435741, y: 0.294, z: 1.74}
   m_LocalScale: {x: 2, y: 2, z: 2}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -953,7 +953,7 @@ Light:
   m_Shape: 0
   m_Color: {r: 1, g: 0.7077543, b: 0.3066038, a: 1}
   m_Intensity: 1
-  m_Range: 5
+  m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
   m_CookieSize: 10

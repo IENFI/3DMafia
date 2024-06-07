@@ -109,8 +109,8 @@ public class ShopInteraction : MonoBehaviourPun
                 speedUpImage.enabled = true; // 스피드업 이미지 활성화
 
                 // 10초 후에 플레이어의 속도를 원래대로 되돌리는 코루틴 호출
+                StartCoroutine(ResetPlayerSpeedAfterDelay(playerController, 10.0f));
 
-                // 상점 UI 비활성화
             }
             else
             {
@@ -126,12 +126,12 @@ public class ShopInteraction : MonoBehaviourPun
         player.DeactivateDoubleCoin();
         doubleCoinsImage.enabled = false; // 코인 두배 아이콘 비활성화
     }
-   
+
     // 10초 후에 플레이어의 속도를 원래대로 되돌리는 코루틴
     private IEnumerator ResetPlayerSpeedAfterDelay(PlayerController playerController, float delay)
     {
         yield return new WaitForSeconds(delay);
-        playerController.playerMoveSpeedUnit = originalSpeed; // 플레이어의 속도를 원래대로 되돌림
+        playerController.OriginMoveSpeed(); // 플레이어의 속도를 원래대로 되돌림
         speedUpImage.enabled = false; // 스피드업 이미지 비활성화
     }
 }
