@@ -6,45 +6,48 @@ using UnityEngine;
 public class PlayerController : MonoBehaviourPun
 {
     [SerializeField]
-    private KeyCode jumpKeyCode = KeyCode.Space;
+    private KeyCode jumpKeyCode = KeyCode.Space; // ì í”„ í‚¤ (Space í‚¤)
     [SerializeField]
-    private Transform cameraTransform;
+    private Transform cameraTransform; // ì¹´ë©”ë¼ì˜ Transform
     [SerializeField]
-    private FPCameraController cameraController;
-    private Movement movement;
-    private PlayerAnimator playerAnimator;
+    private FPCameraController cameraController; // 1ì¸ì¹­ ì¹´ë©”ë¼ ì»¨íŠ¸ë¡¤ëŸ¬
+    private Movement movement; // ì´ë™ì„ ë‹´ë‹¹í•˜ëŠ” Movement ì»´í¬ë„ŒíŠ¸
+    private PlayerAnimator playerAnimator; // í”Œë ˆì´ì–´ ì• ë‹ˆë©”ì´í„°
 
     [SerializeField]
-    public float playerMoveSpeedUnit = 1;
+    public float playerMoveSpeedUnit = 1; // í”Œë ˆì´ì–´ ì´ë™ ì†ë„ ë‹¨ìœ„
 
     void Start()
     {
-        // Cursor.visible = false;                 // ¸¶¿ì½º Ä¿¼­¸¦ º¸ÀÌÁö ¾Ê°Ô
-        // Cursor.lockState = CursorLockMode.Locked;   // ¸¶¿ì½º Ä¿¼­ À§Ä¡ °íÁ¤
-
+        // ì´ë™ ë° ì• ë‹ˆë©”ì´ì…˜ ì»´í¬ë„ŒíŠ¸ ì´ˆê¸°í™”
         movement = GetComponent<Movement>();
         playerAnimator = GetComponentInChildren<PlayerAnimator>();
         cameraController = GetComponentInChildren<FPCameraController>();
+
+        // ì»¤ì„œë¥¼ ìˆ¨ê¸°ê³  ì ê¸ˆ (í•„ìš”ì— ë”°ë¼ ì£¼ì„ í•´ì œ)
+        // Cursor.visible = false; 
+        // Cursor.lockState = CursorLockMode.Locked; 
     }
 
-    // Update is called once per frame
+    // ë§¤ í”„ë ˆì„ë§ˆë‹¤ í˜¸ì¶œë˜ëŠ” Update í•¨ìˆ˜
     void Update()
     {
+        // ì´ ê°ì²´ê°€ ë¡œì»¬ í”Œë ˆì´ì–´ì˜ ê°ì²´ì¸ì§€ í™•ì¸
         if (photonView.IsMine)
         {
-            // ¹æÇâÅ°¸¦ ´­·¯ ÀÌµ¿
+            // í‚¤ë³´ë“œ ì…ë ¥ì„ ë°›ì•„ ì´ë™ ê°’ ì„¤ì •
             float x = Input.GetAxis("Horizontal");
             float z = Input.GetAxis("Vertical");
 
-            // shift Å°¸¦ ¾È ´©¸£¸é ÃÖ´ë 0.5, ´©¸£¸é ÃÖ´ë 1±îÁö
+            // Shift í‚¤ê°€ ëˆŒë ¤ ìˆëŠ”ì§€ í™•ì¸í•˜ê³  ì†ë„ ë°°ìœ¨ ì„¤ì •
             bool isShiftKeyPressed = Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift);
             float offset = isShiftKeyPressed ? 1.0f : 0.5f;
-            Debug.Log(offset);
-            // ¾Ö´Ï¸ŞÀÌ¼Ç °ª ¼³Á¤ (-1 : ¿ŞÂÊ, 0 : °¡¿îµ¥, 1 : ¿À¸¥ÂÊ)
-            // ¾Ö´Ï¸ŞÀÌ¼Ç ÆÄ¶ó¹ÌÅÍ ¼³Á¤ (horizontal, vertical)
+
+            // ì• ë‹ˆë©”ì´í„°ì— ì´ë™ ê°’ ì „ë‹¬
+            // -1 : ë’¤ë¡œ ì´ë™, 0 : ì •ì§€, 1 : ì•ìœ¼ë¡œ ì´ë™
             playerAnimator.OnMovement(x * offset, z * offset);
 
-            // ÀÌµ¿ ¼Óµµ ¼³Á¤ (¾ÕÀ¸·Î ÀÌµ¿ÇÒ¶§¸¸ 5, ³ª¸ÓÁö´Â 2)
+            // ì´ë™ ì†ë„ ì„¤ì • (ì•ìœ¼ë¡œ ì´ë™ ì‹œ 5, ë’¤ë¡œ ì´ë™ ì‹œ 2)
             if (offset == 1)
             {
                 movement.MoveSpeed = z > 0 ? 5.0f : 2.0f;
@@ -54,35 +57,39 @@ public class PlayerController : MonoBehaviourPun
                 movement.MoveSpeed = z > 0 ? 3.0f : 2.0f;
             }
 
-            // ÀÌµ¿ ÇÔ¼ö È£Ãâ (Ä«¸Ş¶ó°¡ º¸°íÀÖ´Â ¹æÇâÀ» ±âÁØÀ¸·Î ¹æÇâÅ°¿¡ µû¶ó ÀÌµ¿)
+            // ì´ë™ í•¨ìˆ˜ í˜¸ì¶œ (ì¹´ë©”ë¼ ë°©í–¥ì„ ê¸°ì¤€ìœ¼ë¡œ ì´ë™)
             movement.MoveTo(cameraTransform.rotation * new Vector3(x, 0, z));
 
-            // È¸Àü ¼³Á¤ (Ç×»ó ¾Õ¸¸ º¸µµ·Ï Ä³¸¯ÅÍÀÇ È¸ÀüÀº Ä«¸Ş¶ó¿Í °°Àº È¸Àü °ªÀ¸·Î ¼³Á¤)
+            // ìºë¦­í„°ì˜ íšŒì „ ì„¤ì • (ì¹´ë©”ë¼ì˜ yì¶• íšŒì „ ê°’ìœ¼ë¡œ ì„¤ì •)
             transform.rotation = Quaternion.Euler(0, cameraTransform.eulerAngles.y, 0);
 
-            // SpaceÅ°¸¦ ´©¸£¸é Á¡ÇÁ
+            // ì í”„ í‚¤ ì…ë ¥ ì²˜ë¦¬
             if (Input.GetKeyDown(jumpKeyCode))
             {
-                //playerAnimator.OnJump();    // ¾Ö´Ï¸ŞÀÌ¼Ç ÆÄ¶ó¹ÌÅÍ ¼³Á¤ (onJump)
-                movement.JumpTo();        // Á¡ÇÁ ÇÔ¼ö È£Ãâ
+                // ì í”„ ì• ë‹ˆë©”ì´ì…˜ íŠ¸ë¦¬ê±° (ì£¼ì„ ì²˜ë¦¬ë¨)
+                // playerAnimator.OnJump();    
+
+                // ì í”„ í•¨ìˆ˜ í˜¸ì¶œ
+                movement.JumpTo();
             }
 
-            // ¸¶¿ì½º ¿ŞÂÊ ¹öÆ°À» ´©¸£¸é ¹ßÂ÷±â °ø°İ
+            // ë§ˆìš°ìŠ¤ ì™¼ìª½ ë²„íŠ¼ í´ë¦­ ì‹œ ì²˜ë¦¬ (ê³µê²©)
             if (Input.GetMouseButtonDown(0))
             {
-                playerAnimator.Kill();
+                playerAnimator.Kill(); // í‚¬ ì• ë‹ˆë©”ì´ì…˜ ì‹¤í–‰
             }
 
-            // ¸¶¿ì½º ¿À¸¥ÂÊ ¹öÆ°À» ´©¸£¸é ¹«±â °ø°İ (¿¬°è)
+            // ë§ˆìš°ìŠ¤ ì˜¤ë¥¸ìª½ ë²„íŠ¼ í´ë¦­ ì‹œ ì²˜ë¦¬ (ì¶”ê°€ ê¸°ëŠ¥ ì£¼ì„ ì²˜ë¦¬ë¨)
             if (Input.GetMouseButtonDown(1))
             {
-                //playerAnimator.OnWeaponAttack();
+                // playerAnimator.OnWeaponAttack(); // ë¬´ê¸° ê³µê²© ì• ë‹ˆë©”ì´ì…˜ ì‹¤í–‰ (ì£¼ì„ ì²˜ë¦¬ë¨)
             }
 
+            // ë§ˆìš°ìŠ¤ ì›€ì§ì„ì— ë”°ë¥¸ ì¹´ë©”ë¼ íšŒì „
             float mouseX = Input.GetAxis("Mouse X");
             float mouseY = Input.GetAxis("Mouse Y");
 
-            cameraController.RotateTo(mouseX, mouseY);
+            cameraController.RotateTo(mouseX, mouseY); // ì¹´ë©”ë¼ íšŒì „ í•¨ìˆ˜ í˜¸ì¶œ
         }
     }
 }

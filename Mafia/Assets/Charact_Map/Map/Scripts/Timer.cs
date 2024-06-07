@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
@@ -16,19 +17,24 @@ public class Timer : MonoBehaviour
     int minute;
     int second;
 
-    [SerializeField] private GameObject Merchent; // NPC 캐릭터 GameObject를 저장할 변수
+    [SerializeField] private List<GameObject> Merchants; // 상인 GameObject 리스트
 
     private bool isDaytime = true; // 낮/밤 상태를 추적하는 변수
 
     private void Awake()
     {
         directionalLight = GameObject.Find("Directional Light").GetComponent<Light>();
-        curTime = time;
         fillController = FindObjectOfType<fillAmountController>(); // fillAmountController 찾기
-        StartCoroutine(StartTimer());
+        Debug.Log("Timer Awake: directionalLight and fillController initialized.");
     }
 
-    IEnumerator StartTimer()
+    public void StartTimer()
+    {
+        curTime = time;
+        StartCoroutine(TimerCoroutine());
+    }
+
+    private IEnumerator TimerCoroutine()
     {
         while (true)
         {
@@ -66,10 +72,17 @@ public class Timer : MonoBehaviour
             // 자연광 전환
             directionalLight.enabled = !directionalLight.enabled;
 
-            // NPC 캐릭터 표시 여부 변경
-            Merchent.SetActive(!directionalLight.enabled);
+            // 밤으로 전환될 때만 상인 활성화
+            if (isDaytime)
+            {
+                ActivateRandomMerchants();
+            }
+            else
+            {
+                DeactivateAllMerchants();
+            }
 
-            // 밤으로 전활 될 때만 코인 2배 효과 및 속도 증가 효과 해제
+            // 낮으로 전환될 때만 코인 2배 효과 및 속도 증가 효과 해제
             if (isDaytime)
             {
                 CoinScript[] allCoinPlayers = FindObjectsOfType<CoinScript>();
@@ -104,6 +117,35 @@ public class Timer : MonoBehaviour
 
             // 다음 사이클을 위해 잠시 대기
             yield return new WaitForSeconds(1f);  // 전환 후 1초 대기 (선택 사항)
+        }
+    }
+
+    private void ActivateRandomMerchants()
+    {
+        // 모든 상인 비활성화
+        foreach (var merchant in Merchants)
+        {
+            merchant.SetActive(false);
+        }
+
+        // 상인 중 2명을 무작위로 선택하여 활성화
+        List<int> selectedIndices = new List<int>();
+        while (selectedIndices.Count < 2)
+        {
+            int randomIndex = Random.Range(0, Merchants.Count);
+            if (!selectedIndices.Contains(randomIndex))
+            {
+                selectedIndices.Add(randomIndex);
+                Merchants[randomIndex].SetActive(true);
+            }
+        }
+    }
+
+    private void DeactivateAllMerchants()
+    {
+        foreach (var merchant in Merchants)
+        {
+            merchant.SetActive(false);
         }
     }
 

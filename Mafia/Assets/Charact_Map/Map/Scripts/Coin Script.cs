@@ -1,14 +1,14 @@
 using Photon.Pun;
-using System.Collections;
-using System.Collections.Generic;
+using Photon.Realtime;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class CoinScript : MonoBehaviourPun
+public class CoinScript : MonoBehaviourPunCallbacks
 {
     public int CoinInt; // 코인이 저장되는 변수
-    public TMP_Text CoinText; // 코인을 표시할 오브젝트
+    public TMP_Text CoinTextPrefab; // 코인을 표시할 오브젝트 프리팹
+    public TMP_Text CoinTextInstance; // 코인을 표시할 오브젝트 인스턴스
     public GameObject Message; // 메시지 오브젝트
     public TMP_Text MSG; // 메시지 내용
     public Image doubleCoinsImage; // 코인 2배 아이템 활성화 이미지
@@ -20,32 +20,57 @@ public class CoinScript : MonoBehaviourPun
     [SerializeField]
     private GameObject Player;
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        CoinText = GameObject.FindWithTag("CoinText").GetComponent<TMP_Text>();
-        Message = GameObject.Find("Canvas/CoinTest/Message").gameObject; // Message는 플레이어 객체 내부에 있는 Message 오브젝트입니다.
-        MSG = Message.transform.Find("Text").GetComponent<TMP_Text>();
-        doubleCoinsImage = GameObject.Find("Canvas/CoinTest/ItemApplyImage/DoubleCoinImage").GetComponent<Image>(); // 코인 2배 아이템 활성화 이미지
+    private PhotonView photonView;
 
-        CoinInt = PlayerPrefs.GetInt("Coin_" + gameObject.name, 0); // PlayerPrefs 내에 저장되어있는 'Coin'을 불러와 CoinInt에 저장합니다. 만약에 저장된 정보가 없다면 0을 저장합니다.
-        Message.SetActive(false);
-        IsDoubleCoins = false; // 초기 상태에서는 코인 2배가 아님
-        doubleCoinsImage.enabled = false; // 코인 2배 아이템 활성화 이미지 비활성화
+    void Awake()
+    {
+        // 필요한 오브젝트들을 초기화
+        photonView = GetComponent<PhotonView>();
     }
 
-    // Update is called once per frame
+    void Start()
+    {
+        // 필요한 오브젝트들을 초기화
+        Message = GameObject.Find("Canvas/CoinTest/Message").gameObject;
+        MSG = Message.transform.Find("Text").GetComponent<TMP_Text>();
+        doubleCoinsImage = GameObject.Find("Canvas/ItemApplyImage/DoubleCoinImage").GetComponent<Image>();
+
+        Message.SetActive(false);
+        IsDoubleCoins = false;
+        doubleCoinsImage.enabled = false;
+
+        if (photonView == null)
+        {
+            Debug.LogError("PhotonView is null");
+            return;
+        }
+
+        if (photonView.IsMine)
+        {
+            // 자신의 코인 상태를 로드
+            CoinInt = PlayerPrefs.GetInt("Coin_" + PhotonNetwork.LocalPlayer.UserId, 0);
+            PhotonNetwork.LocalPlayer.SetCustomProperties(new ExitGames.Client.Photon.Hashtable { { "CoinInt", CoinInt } });
+            Debug.Log("CoinInt loaded and set: " + CoinInt);
+        }
+        else
+        {
+            CoinInt = (int)PhotonNetwork.LocalPlayer.CustomProperties["CoinInt"];
+            Debug.Log("CoinInt from other player: " + CoinInt);
+        }
+        UpdateCoinText();
+    }
+
     void Update()
     {
-        //if (!Player.GetComponent<PhotonView>().IsMine) return;
+        if (photonView == null || !photonView.IsMine) return;
 
-        PlayerPrefs.SetInt("Coin_" + gameObject.name, CoinInt); // CoinInt를 PlayerPrefs 내에 저장되어있는 'Coin'에 저장합니다.
-        CoinText.text = CoinInt.ToString(); // CoinText의 Text에 CoinInt를 출력합니다.
+        PlayerPrefs.SetInt("Coin_" + PhotonNetwork.LocalPlayer.UserId, CoinInt);
+        UpdateCoinText();
 
-        if (TimeSet == true) // TimeSet이 True면
+        if (TimeSet)
         {
-            Timer += Time.deltaTime; // 타이머가 작동합니다.
-            if (Timer > 2.0f) // 2초가 지나면
+            Timer += Time.deltaTime;
+            if (Timer > 2.0f)
             {
                 Message.SetActive(false);
                 MSG.text = null;
@@ -55,48 +80,92 @@ public class CoinScript : MonoBehaviourPun
         }
     }
 
-    public void GetMoney() // 돈을 얻습니다.
+    private void UpdateCoinText()
     {
-        int amount = IsDoubleCoins ? 80 : 40; // 코인 2배일 경우 80, 아니면 40
+        if (CoinTextInstance != null)
+        {
+            CoinTextInstance.text = CoinInt.ToString();
+        }
+    }
+
+    public void GetMoney()
+    {
+        if (photonView == null || !photonView.IsMine) return;
+
+        int amount = IsDoubleCoins ? 80 : 40;
         CoinInt += amount;
-        Debug.Log("Get coin");
+        PhotonNetwork.LocalPlayer.SetCustomProperties(new ExitGames.Client.Photon.Hashtable { { "CoinInt", CoinInt } });
+        Debug.Log("Get coin. New CoinInt: " + CoinInt);
     }
 
-    public void lostMoney() // 돈을 잃습니다.
+    public void LostMoney()
     {
-        if (CoinInt >= 40) // CoinInt가 40이상이라면
+        if (photonView == null || !photonView.IsMine) return;
+
+        if (CoinInt >= 40)
         {
-            CoinInt -= 40; // CoinInt가 40 줄어듭니다.
-            Debug.Log("lost coin");
+            CoinInt -= 40;
+            PhotonNetwork.LocalPlayer.SetCustomProperties(new ExitGames.Client.Photon.Hashtable { { "CoinInt", CoinInt } });
+            Debug.Log("Lost coin. New CoinInt: " + CoinInt);
         }
-        else // 만약에 부족하다면
+        else
         {
-            Message.SetActive(true); // 메시지 오브젝트를 활성화합니다.
-            MSG.text = "돈이 부족합니다!!".ToString(); // MSG의 Text를 "돈이 부족합니다"로 출력합니다.
-            TimeSet = true; // TimeSet를 true로 합니다.
+            ShowMessage("돈이 부족합니다!!");
         }
     }
 
-    public void ActivateDoubleCoins() // 코인 2배 아이템 사용
+    public void ActivateDoubleCoins()
     {
-        if (CoinInt >= 40) // CoinInt가 40이상이라면
+        if (photonView == null || !photonView.IsMine) return;
+
+        if (CoinInt >= 40)
         {
-            lostMoney();
             IsDoubleCoins = true;
-            doubleCoinsImage.enabled = true; // 코인 2배 아이템 활성화 이미지 활성화
+            doubleCoinsImage.enabled = true;
+            LostMoney();
+            Debug.Log("Double coins activated.");
         }
-        else // 만약에 부족하다면
+        else
         {
-            Message.SetActive(true); // 메시지 오브젝트를 활성화합니다.
-            MSG.text = "돈이 부족합니다!!".ToString(); // MSG의 Text를 "돈이 부족합니다"로 출력합니다.
-            TimeSet = true; // TimeSet를 true로 합니다.
+            Debug.Log("Not enough coins to activate double coins.");
         }
-        
     }
 
-    public void DeactivateDoubleCoins() // 코인 2배 효과 해제
+    public void DeactivateDoubleCoins()
     {
+        if (photonView == null || !photonView.IsMine) return;
+
         IsDoubleCoins = false;
-        doubleCoinsImage.enabled = false; // 코인 2배 아이템 활성화 이미지 비활성화
+        doubleCoinsImage.enabled = false;
+        Debug.Log("Double coins deactivated.");
+    }
+
+    private void ShowMessage(string message)
+    {
+        Message.SetActive(true);
+        MSG.text = message;
+        TimeSet = true;
+    }
+
+    public override void OnPlayerPropertiesUpdate(Player targetPlayer, ExitGames.Client.Photon.Hashtable changedProps)
+    {
+        if (changedProps.ContainsKey("CoinInt"))
+        {
+            int newCoinInt = (int)changedProps["CoinInt"];
+            if (targetPlayer == PhotonNetwork.LocalPlayer)
+            {
+                CoinInt = newCoinInt;
+                UpdateCoinText();
+                Debug.Log("CoinInt updated for local player: " + CoinInt);
+            }
+            else
+            {
+                // 다른 플레이어의 코인 상태를 업데이트
+                TMP_Text otherPlayerCoinText = Instantiate(CoinTextPrefab, GameObject.FindWithTag("Canvas").transform);
+                otherPlayerCoinText.text = newCoinInt.ToString();
+                // 위치나 스타일을 조정하는 코드 추가 가능
+                Debug.Log("CoinInt updated for other player: " + newCoinInt);
+            }
+        }
     }
 }
