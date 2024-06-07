@@ -1236,6 +1236,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   coin: 0
   coinText: {fileID: 0}
+  coinTextPrefab: {fileID: 0}
 --- !u!1 &3574194229686626952
 GameObject:
   m_ObjectHideFlags: 0

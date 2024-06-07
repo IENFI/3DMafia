@@ -38,6 +38,7 @@ public class SceneInitializer : MonoBehaviourPunCallbacks
 
         // 모든 플레이어의 프리팹을 찾습니다.
         GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+        Debug.Log("Number of players found: " + players.Length);
 
         foreach (GameObject player in players)
         {
@@ -46,16 +47,28 @@ public class SceneInitializer : MonoBehaviourPunCallbacks
             PlayerCoinController playerCoinController = player.GetComponent<PlayerCoinController>();
             if (playerCoinController != null)
             {
-                // CoinText 프리팹을 할당합니다.
-                // 이전에는 코인 UI를 Canvas의 자식으로 설정했지만, 이제는 원하는 위치에 설정합니다.
-                Transform coinTextLocation = GameObject.FindWithTag("CoinText").transform;
-                playerCoinController.coinText.transform.SetParent(coinTextLocation, false);
+                Debug.Log("PlayerCoinController found on player: " + player.name); // PlayerCoinController 확인
 
-                Debug.Log("PlayerCoinController properties assigned for player: " + player.name);
+                // CoinText 프리팹을 할당합니다.
+                if (playerCoinController.coinText == null)
+                {
+                    Transform coinTextLocation = GameObject.FindWithTag("CoinText")?.transform;
+                    if (coinTextLocation != null)
+                    {
+                        playerCoinController.coinTextPrefab = coinTextPrefab;
+                        playerCoinController.coinText = Instantiate(coinTextPrefab, coinTextLocation);
+                        playerCoinController.coinText.transform.SetParent(coinTextLocation, false);
+                        Debug.Log("PlayerCoinController properties assigned for player: " + player.name);
+                    }
+                    else
+                    {
+                        Debug.LogWarning("CoinText location not found!");
+                    }
+                }
             }
             else
             {
-                Debug.Log("PlayerCoinController not found on player: " + player.name);
+                Debug.LogWarning("PlayerCoinController not found on player: " + player.name);
             }
         }
 
