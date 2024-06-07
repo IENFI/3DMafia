@@ -261,7 +261,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: 0.7074934, z: -0, w: 0.70671993}
   m_LocalPosition: {x: 0.10691343, y: -0.07349988, z: 0.031973623}
-  m_LocalScale: {x: 0.25, y: 0.25, z: 0.25}
+  m_LocalScale: {x: 0.75, y: 0.25, z: 0.75}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 5109577104829968342}
@@ -855,8 +855,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 37d9f71258893a545b86fddf80fc01ac, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Player: {fileID: 0}
+  increasedSpeed: 4
   outlineRenderer: {fileID: 3185023304053855671}
   ShopUI: {fileID: 0}
+  doubleCoinsImage: {fileID: 0}
+  speedUpImage: {fileID: 0}
 --- !u!114 &170967081599129894
 MonoBehaviour:
   m_ObjectHideFlags: 0

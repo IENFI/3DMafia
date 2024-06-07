@@ -22,9 +22,10 @@ public class PlayerCoinController : MonoBehaviourPunCallbacks, IPunObservable
             }
             if (coinText != null)
             {
-                coinText.text = "Coins: " + coin;
+                coinText.text = " " + coin;
             }
         }
+
     }
 
     void Update()
@@ -52,22 +53,24 @@ public class PlayerCoinController : MonoBehaviourPunCallbacks, IPunObservable
     }
 
     // 코인 UI 업데이트 메서드
-    private void UpdateCoinUI()
+    public void UpdateCoinUI()
     {
         if (coinText != null)
         {
-            coinText.text = "Coins: " + coin;
+            coinText.text = "" + coin;
         }
     }
 
     public void ActivateDoubleCoin()
     {
         doubleCoinActive = true;
-        if (doubleCoinActive) { Debug.Log("코인 2배 구매/적용완료 (\"잔여 Coins: \" + coin)"); }
-        Invoke("DeactivateDoubleCoin", 10.0f);
+        if (doubleCoinActive)
+        {
+            Debug.Log($"코인 2배 구매/적용완료 (잔여 Coins: {coin})"); 
+        }
+        UpdateCoinUI();
     }
-
-    private void DeactivateDoubleCoin()
+    public void DeactivateDoubleCoin()
     {
         doubleCoinActive = false;
     }

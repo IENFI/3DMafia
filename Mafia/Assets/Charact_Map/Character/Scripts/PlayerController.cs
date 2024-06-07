@@ -50,11 +50,11 @@ public class PlayerController : MonoBehaviourPun
             // 이동 속도 설정 (앞으로 이동 시 5, 뒤로 이동 시 2)
             if (offset == 1)
             {
-                movement.MoveSpeed = z > 0 ? 5.0f : 2.0f;
+                movement.MoveSpeed = z >= 0 ? playerMoveSpeedUnit * 10.0f : playerMoveSpeedUnit * 5.0f;
             }
             else
             {
-                movement.MoveSpeed = z > 0 ? 3.0f : 2.0f;
+                movement.MoveSpeed = z >= 0 ? playerMoveSpeedUnit * 6.0f : playerMoveSpeedUnit * 4.0f;
             }
 
             // 이동 함수 호출 (카메라 방향을 기준으로 이동)
@@ -91,5 +91,10 @@ public class PlayerController : MonoBehaviourPun
 
             cameraController.RotateTo(mouseX, mouseY); // 카메라 회전 함수 호출
         }
+    }
+
+    public void ChangeMoveSpeed()
+    {
+        playerMoveSpeedUnit *= 5; 
     }
 }

@@ -82,7 +82,7 @@ public class Timer : MonoBehaviour
                 DeactivateAllMerchants();
             }
 
-            // 낮으로 전환될 때만 코인 2배 효과 및 속도 증가 효과 해제
+            /*// 낮으로 전환될 때만 코인 2배 효과 및 속도 증가 효과 해제
             if (isDaytime)
             {
                 CoinScript[] allCoinPlayers = FindObjectsOfType<CoinScript>();
@@ -97,7 +97,7 @@ public class Timer : MonoBehaviour
                 {
                     speedUpPlayer.DeactivateSpeedUp();
                 }
-            }
+            }*/
 
             // 낮/밤 상태 전환
             isDaytime = !isDaytime;

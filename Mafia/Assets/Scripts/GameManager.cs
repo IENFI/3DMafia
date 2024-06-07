@@ -40,7 +40,7 @@ public class GameManager : MonoBehaviour
     {
         yield return new WaitForSeconds(1); // Adding a small delay to ensure the scene is loaded
         PhotonNetwork.Instantiate(this.playerPrefab.name, new Vector3(0f, 5f, 0f), Quaternion.identity, 0);
-        Debug.Log("Ä³¸¯ÅÍ »ı¼º");
+        Debug.Log("í”Œë ˆì´ì–´ ìƒì„±");
         isConnected = false;
     }
 }
