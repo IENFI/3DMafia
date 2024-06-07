@@ -1309,6 +1309,7 @@ MonoBehaviour:
   jumpKeyCode: 32
   cameraTransform: {fileID: 4006806921693108571}
   cameraController: {fileID: 0}
+  FPcamera: {fileID: 7920338108819746856}
   playerMoveSpeedUnit: 1
   killCooldown: 5
   ghostPrefab: {fileID: 498253721416304272, guid: 5d038d49c0a8549e1a9990876c743077, type: 3}

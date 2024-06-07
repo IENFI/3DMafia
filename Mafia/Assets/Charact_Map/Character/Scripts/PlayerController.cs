@@ -11,6 +11,8 @@ public class PlayerController : MonoBehaviourPun
     private Transform cameraTransform;
     [SerializeField]
     private FPCameraController cameraController;
+    [SerializeField]
+    private Camera FPcamera;
     private Movement movement;
     private PlayerAnimator playerAnimator;
 
@@ -35,6 +37,7 @@ public class PlayerController : MonoBehaviourPun
         movement = GetComponent<Movement>();
         playerAnimator = GetComponentInChildren<PlayerAnimator>();
         cameraController = GetComponentInChildren<FPCameraController>();
+        FPcamera.cullingMask &= ~LayerMask.GetMask("Ghost");
     }
 
     // Update is called once per frame
