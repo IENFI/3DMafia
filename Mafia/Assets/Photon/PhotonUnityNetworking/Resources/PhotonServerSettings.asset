@@ -41,6 +41,7 @@ MonoBehaviour:
   - RespawnSpaceship
   - ChatRPC
   - Death
+  - DisableGameObject
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

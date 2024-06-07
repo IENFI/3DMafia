@@ -118,6 +118,12 @@ public class PlayerController : MonoBehaviourPun
         StartCoroutine(HandleDeath());
     }
 
+    [PunRPC]
+    public void DisableGameObject()
+    {
+        gameObject.SetActive(false);
+    }
+
     private IEnumerator HandleDeath()
     {
         // 애니메이션의 길이를 대기합니다.
@@ -126,8 +132,8 @@ public class PlayerController : MonoBehaviourPun
         PhotonNetwork.Instantiate(ghostPrefab.name, transform.position, transform.rotation);
         PhotonNetwork.Instantiate(corpsePrefab.name, transform.position, transform.rotation);
 
-        // 원래 캐릭터를 비활성화합니다.
-        gameObject.SetActive(false);
+        // RPC를 통해 모든 클라이언트에서 gameObject를 비활성화합니다.
+        photonView.RPC("DisableGameObject", RpcTarget.All);
     }
 
 }

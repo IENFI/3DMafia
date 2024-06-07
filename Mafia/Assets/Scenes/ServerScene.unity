@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.12731749, g: 0.13414757, b: 0.1210787, a: 1}
+  m_IndirectSpecularColor: {r: 0.12731722, g: 0.13414752, b: 0.1210787, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -4038,7 +4038,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 676751587}
-  - component: {fileID: 676751586}
   - component: {fileID: 676751585}
   m_Layer: 0
   m_Name: GameManager
@@ -4061,28 +4060,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerPrefab: {fileID: 3432362266963976815, guid: 8d9e43699e1242f4ead758f199d34695, type: 3}
   isConnected: 0
---- !u!114 &676751586
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 676751584}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ObservedComponentsFoldoutOpen: 1
-  Group: 0
-  prefixField: -1
-  Synchronization: 3
-  OwnershipTransfer: 0
-  observableSearch: 2
-  ObservedComponents: []
-  sceneViewId: 3
-  InstantiationId: 0
-  isRuntimeInstantiated: 0
 --- !u!4 &676751587
 Transform:
   m_ObjectHideFlags: 0
@@ -9040,23 +9017,8 @@ MonoBehaviour:
   - {fileID: 1940088288}
   PreviousBtn: {fileID: 1038304846}
   NextBtn: {fileID: 392713682}
-  RoomPanel: {fileID: 831361561}
   ListText: {fileID: 66612697}
   RoomInfoText: {fileID: 963753126}
-  ChatText:
-  - {fileID: 2019200148}
-  - {fileID: 945044097}
-  - {fileID: 1861301091}
-  - {fileID: 1449387991}
-  - {fileID: 1590105979}
-  - {fileID: 537841593}
-  - {fileID: 1745490958}
-  - {fileID: 584404773}
-  - {fileID: 216947510}
-  - {fileID: 1645218}
-  - {fileID: 1795433009}
-  - {fileID: 538034332}
-  ChatInput: {fileID: 1046146682}
   CreateRoomUI: {fileID: 499294355}
   StatusText: {fileID: 1846675252}
   PV: {fileID: 0}
