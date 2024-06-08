@@ -18,11 +18,19 @@ public class ChatManager : MonoBehaviour
     public TextMeshProUGUI[] ChatText;
     public TMP_InputField ChatInput;
 
+    bool chat_check = false;
+
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.T))
+        if (Input.GetKeyDown(KeyCode.T) && chat_check == false)
         {
             RoomPanel.SetActive(true);
+            chat_check = true;
+        }
+        else if (Input.GetKeyDown(KeyCode.T) && chat_check == true)
+        {
+            RoomPanel.SetActive(false);
+            chat_check = false;
         }
     }
 
