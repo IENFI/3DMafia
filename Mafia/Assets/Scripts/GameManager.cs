@@ -32,7 +32,7 @@ public class GameManager : MonoBehaviour
 
     private IEnumerator WaitForConnectionAndCreatePlayer()
     {
-        yield return new WaitUntil(() => isConnected);
+        yield return new WaitUntil(() => isConnected && PhotonNetwork.InRoom);
         StartCoroutine(CreatePlayer());
     }
 
