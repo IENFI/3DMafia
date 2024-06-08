@@ -104,7 +104,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks // 안현석 똑바로�
     void Update()
     {
         StatusText.text = PhotonNetwork.NetworkClientState.ToString();
-        LobbyInfoText.text = (PhotonNetwork.CountOfPlayers - PhotonNetwork.CountOfPlayersInRooms) + "Lobby / " + PhotonNetwork.CountOfPlayers + "Connected";
+        LobbyInfoText.text = "전체: " + PhotonNetwork.CountOfPlayers + ",     로비: " + (PhotonNetwork.CountOfPlayers - PhotonNetwork.CountOfPlayersInRooms);
     }
 
     public void Connect() => PhotonNetwork.ConnectUsingSettings();
@@ -117,7 +117,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks // 안현석 똑바로�
         LobbyPanel.SetActive(true);
         CreateRoomUI.SetActive(false);
         PhotonNetwork.LocalPlayer.NickName = NickNameInput.text;
-        WelcomeText.text = "Welcome " + PhotonNetwork.LocalPlayer.NickName;
+        WelcomeText.text = "닉네임: " + PhotonNetwork.LocalPlayer.NickName + "";
         myList.Clear();
     }
 
@@ -144,7 +144,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks // 안현석 똑바로�
     public void SettingRoom()
     {
         DisconnectPanel.SetActive(false);
-        LobbyPanel.SetActive(false);
+        // LobbyPanel.SetActive(false);
         CreateRoomUI.SetActive(true);
     }
     #endregion
