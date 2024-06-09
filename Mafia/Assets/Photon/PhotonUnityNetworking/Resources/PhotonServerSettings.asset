@@ -46,6 +46,7 @@ MonoBehaviour:
   - Fire
   - RespawnSpaceship
   - MafiaSelecting
+  - StartVote
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1
