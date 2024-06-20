@@ -46,6 +46,7 @@ public class GhostController : MonoBehaviourPun, IPunObservable
         InitializeAsGhost();
         movement = GetComponent<Movement>();
         cameraController = GetComponentInChildren<FPCameraController>();
+        // 유령은 모든 레이어를 볼 수 있도록 설정
         ghostCamera.cullingMask = ~0;
     }
 
