@@ -39500,6 +39500,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mafiaText: {fileID: 2402290921939517565}
   isMafia: 0
+  mafiaNum: 1
 --- !u!4 &3234329523133409425
 Transform:
   m_ObjectHideFlags: 0

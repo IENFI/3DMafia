@@ -13,16 +13,19 @@ public class ChoosingMafiaManager : MonoBehaviourPunCallbacks
     public TMP_Text mafiaText;
     // Start is called before the first frame update
     public bool isMafia = false;
+    public int mafiaNum = 1;
 
     void Awake()
     {
         if (PhotonNetwork.IsMasterClient)
         {
             int playerNum;
-            int mafiaNum;
             List<int> MafiaList;
             playerNum = PhotonNetwork.PlayerList.Length;
-            mafiaNum = (int)(Math.Sqrt((double)playerNum) + 0.5);
+            mafiaNum = GameManager.instance.mafiaNum;
+            if (mafiaNum > playerNum)
+                mafiaNum = playerNum;
+            //mafiaNum = (int)(Math.Sqrt((double)playerNum) + 0.5);
             MafiaList = SelectRandomNumbers(playerNum, mafiaNum);
             //Initializing();
             MafiaSelecting(mafiaNum, MafiaList);
@@ -62,11 +65,11 @@ public class ChoosingMafiaManager : MonoBehaviourPunCallbacks
         {
             if (isMafia)
             {
-                mafiaText.text = "마피아";
+                mafiaText.text = "Mafia";
             }
             else
             {
-                mafiaText.text = "시민";
+                mafiaText.text = "Citizen";
             }
         }
     /*

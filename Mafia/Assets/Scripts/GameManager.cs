@@ -10,6 +10,7 @@ public class GameManager : MonoBehaviour
     public static GameManager instance = null;
     public GameObject playerPrefab;
     public bool isConnected = false;
+    public int mafiaNum = 1;
 
     private void Awake()
     {
