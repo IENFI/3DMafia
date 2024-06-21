@@ -33,6 +33,7 @@ public class CreateRoomUI : MonoBehaviour
     public void UpdateMapiaCount(int count)
     {
         roomData.mapiaCount = count;
+        GameManager.instance.mafiaNum = count;
         for (int i = 0; i < mapiaCountButtons.Count; i++)
         {
             if (i == count - 1)

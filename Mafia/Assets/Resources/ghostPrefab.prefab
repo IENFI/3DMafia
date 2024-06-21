@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 498253720752047375}
   - component: {fileID: 498253720752047373}
   - component: {fileID: 498253720752047374}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Kid_ghost_v1:Devil_head1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -92,7 +92,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 498253720759241920}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Kid_ghost_v1:joint5
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -128,7 +128,7 @@ GameObject:
   - component: {fileID: 498253720819006891}
   - component: {fileID: 498253720819006889}
   - component: {fileID: 498253720819006890}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Kid_ghost_v1:Devil_head2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -210,7 +210,7 @@ GameObject:
   m_Component:
   - component: {fileID: 498253721392136721}
   - component: {fileID: 498253721392136720}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Kid_ghost_v1:Ghost_Kid_S2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -300,14 +300,13 @@ GameObject:
   m_Component:
   - component: {fileID: 498253721416304299}
   - component: {fileID: 498253721416304276}
-  - component: {fileID: 498253721416304279}
   - component: {fileID: 515477959225966827}
   - component: {fileID: 2873326990564427701}
   - component: {fileID: 7083465359978966174}
   - component: {fileID: 2187187885530343510}
   - component: {fileID: 4480294694130566226}
   - component: {fileID: 5438603245726841553}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: ghostPrefab
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -356,29 +355,6 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!136 &498253721416304279
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 498253721416304272}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 0.145118
-  m_Height: 0.73960495
-  m_Direction: 1
-  m_Center: {x: -0.0075883865, y: 0.33836842, z: 0.00768137}
 --- !u!114 &515477959225966827
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -416,7 +392,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   jumpKeyCode: 32
   cameraTransform: {fileID: 8533226331200603997}
-  cameraController: {fileID: 385179082211888841}
+  cameraController: {fileID: 5641851858794631345}
+  ghostCamera: {fileID: 1702662082678770931}
 --- !u!114 &7083465359978966174
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -495,7 +472,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 498253721421649740}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Kid_ghost_v1:joint4
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -527,7 +504,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 498253721534698297}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Kid_ghost_v1:Devil_Head
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -560,7 +537,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 498253721774935695}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Kid_ghost_v1:joint3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -594,7 +571,7 @@ GameObject:
   - component: {fileID: 498253721879894974}
   - component: {fileID: 498253721879894972}
   - component: {fileID: 498253721879894973}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Kid_ghost_v1:Axe
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -677,7 +654,7 @@ GameObject:
   - component: {fileID: 498253721886506419}
   - component: {fileID: 498253721886506418}
   - component: {fileID: 498253721886506428}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Kid_ghost_v1:Witch_Hat
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -759,7 +736,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 498253722011017873}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: JNTs
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -791,7 +768,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 498253722086282862}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Kid_ghost_v1:joint2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -824,7 +801,7 @@ GameObject:
   m_Component:
   - component: {fileID: 498253722092276482}
   - component: {fileID: 498253722092276481}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Kid_ghost_v1:Ghost_Kid_S1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -913,7 +890,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 498253722147989391}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Kid_ghost_v1:joint1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -947,9 +924,9 @@ GameObject:
   - component: {fileID: 4298605202276594459}
   - component: {fileID: 3032213549617891890}
   - component: {fileID: 8218261109118896862}
+  - component: {fileID: 5646354149628574349}
   - component: {fileID: 8050385199543547900}
-  - component: {fileID: 6612273507391616480}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: TPCamera
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -964,8 +941,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3581094645607799378}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1, z: 0}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 2.172, y: 1.891, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1030,6 +1007,22 @@ AudioListener:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3581094645607799378}
   m_Enabled: 0
+--- !u!114 &5646354149628574349
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3581094645607799378}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bc5f8bfe465a9f047a2315b284997040, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  target: {fileID: 7116093971015978497}
+  minDistance: 3
+  maxDistance: 5
+  wheelSpeed: 500
 --- !u!114 &8050385199543547900
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1074,22 +1067,6 @@ MonoBehaviour:
     mipBias: 0
     varianceClampScale: 0.9
     contrastAdaptiveSharpening: 0
---- !u!114 &6612273507391616480
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3581094645607799378}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f91981f8fb1e0c447a19da2bf6576810, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  target: {fileID: 7116093971015978497}
-  minDistance: 1
-  maxDistance: 5
-  wheelSpeed: 500
 --- !u!1 &7154791414777206883
 GameObject:
   m_ObjectHideFlags: 0
@@ -1101,9 +1078,9 @@ GameObject:
   - component: {fileID: 8533226331200603997}
   - component: {fileID: 1702662082678770931}
   - component: {fileID: 3748069694027131509}
+  - component: {fileID: 5641851858794631345}
   - component: {fileID: 356245089324914348}
-  - component: {fileID: 385179082211888841}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: FPCamera
   m_TagString: MainCamera
   m_Icon: {fileID: 0}
@@ -1184,6 +1161,18 @@ AudioListener:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7154791414777206883}
   m_Enabled: 1
+--- !u!114 &5641851858794631345
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7154791414777206883}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bd41dea329852f54e839a2ca41f8980f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &356245089324914348
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1228,18 +1217,6 @@ MonoBehaviour:
     mipBias: 0
     varianceClampScale: 0.9
     contrastAdaptiveSharpening: 0
---- !u!114 &385179082211888841
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7154791414777206883}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3274ee438f2bf0249a063560b6c788f3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &7203538046365535801
 GameObject:
   m_ObjectHideFlags: 0
@@ -1249,7 +1226,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7116093971015978497}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: CameraTarget
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1265,8 +1242,8 @@ Transform:
   m_GameObject: {fileID: 7203538046365535801}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 1, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: 0, y: 2.6, z: 0}
+  m_LocalScale: {x: 2.6, y: 2.6, z: 2.6}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 498253721416304299}

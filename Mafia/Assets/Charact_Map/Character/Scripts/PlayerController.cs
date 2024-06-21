@@ -10,9 +10,11 @@ public class PlayerController : MonoBehaviourPun
     [SerializeField]
     private Transform cameraTransform; // 카메라의 Transform
     [SerializeField]
-    private FPCameraController cameraController; // 1인칭 카메라 컨트롤러
-    private Movement movement; // 이동을 담당하는 Movement 컴포넌트
-    private PlayerAnimator playerAnimator; // 플레이어 애니메이터
+    private FPCameraController cameraController;
+    [SerializeField]
+    private Camera FPcamera;
+    private Movement movement;
+    private PlayerAnimator playerAnimator;
 
     [SerializeField]
     public float playerMoveSpeedUnit = 1; // 플레이어 이동 속도 단위
@@ -35,6 +37,16 @@ public class PlayerController : MonoBehaviourPun
         movement = GetComponent<Movement>();
         playerAnimator = GetComponentInChildren<PlayerAnimator>();
         cameraController = GetComponentInChildren<FPCameraController>();
+        FPcamera.cullingMask &= ~LayerMask.GetMask("Ghost");
+
+        // 유령으로 변환할 때 필요한 설정
+        int playerLayer = LayerMask.NameToLayer("Player");
+        if (playerLayer == -1)
+        {
+            Debug.LogError("The 'Ghost' layer does not exist. Please add it to the Tags and Layers settings.");
+            return;
+        }
+        gameObject.layer = playerLayer;
 
         // 커서를 숨기고 잠금 (필요에 따라 주석 해제)
         // Cursor.visible = false; 

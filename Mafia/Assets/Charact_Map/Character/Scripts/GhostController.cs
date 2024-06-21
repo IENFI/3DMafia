@@ -10,22 +10,30 @@ public class GhostController : MonoBehaviourPun, IPunObservable
     [SerializeField]
     private Transform cameraTransform;
     [SerializeField]
-    private GhostFPCamera cameraController;
+    private FPCameraController cameraController;
     private Movement movement;
+    [SerializeField]
+    private Camera ghostCamera;
 
     public void InitializeAsGhost()
     {
-        //// 유령으로 변환할 때 필요한 설정
-        //gameObject.layer = LayerMask.NameToLayer("Ghost");
+        // 유령으로 변환할 때 필요한 설정
+        int ghostLayer = LayerMask.NameToLayer("Ghost");
+        if (ghostLayer == -1)
+        {
+            Debug.LogError("The 'Ghost' layer does not exist. Please add it to the Tags and Layers settings.");
+            return;
+        }
+        gameObject.layer = ghostLayer;
 
-        //// 필요 시 유령만 볼 수 있는 오브젝트 레이어 설정
-        //Renderer[] renderers = GetComponentsInChildren<Renderer>();
-        //foreach (Renderer renderer in renderers)
-        //{
-        //    Color ghostColor = renderer.material.color;
-        //    ghostColor.a = 0.5f; // 반투명하게 설정
-        //    renderer.material.color = ghostColor;
-        //}
+        // 필요 시 유령만 볼 수 있는 오브젝트 레이어 설정
+        Renderer[] renderers = GetComponentsInChildren<Renderer>();
+        foreach (Renderer renderer in renderers)
+        {
+            Color ghostColor = renderer.material.color;
+            ghostColor.a = 0.5f; // 반투명하게 설정
+            renderer.material.color = ghostColor;
+        }
     }
 
     private void Start()
@@ -37,7 +45,9 @@ public class GhostController : MonoBehaviourPun, IPunObservable
         }
         InitializeAsGhost();
         movement = GetComponent<Movement>();
-        cameraController = GetComponentInChildren<GhostFPCamera>();
+        cameraController = GetComponentInChildren<FPCameraController>();
+        // 유령은 모든 레이어를 볼 수 있도록 설정
+        ghostCamera.cullingMask = ~0;
     }
 
 
@@ -95,6 +105,28 @@ public class GhostController : MonoBehaviourPun, IPunObservable
             // 예를 들어,
             transform.position = (Vector3)stream.ReceiveNext();
             transform.rotation = (Quaternion)stream.ReceiveNext();
+        }
+    }
+
+    private void SetupGhostCamera()
+    {
+        // 유령만 볼 수 있는 카메라를 찾거나 생성합니다.
+        Camera ghostCamera = Camera.main;
+        if (ghostCamera == null)
+        {
+            Debug.Log("There is not ghostCamera's main camera");
+        }
+
+        // 유령은 모든 레이어를 볼 수 있도록 설정합니다.
+        ghostCamera.cullingMask = ~0;
+
+        // 기존 카메라는 유령 레이어를 렌더링하지 않도록 설정합니다.
+        Camera mainCamera = Camera.main;
+        if (mainCamera != null && mainCamera != ghostCamera)
+        {
+            // 메인 카메라가 존재하고 그것이 유령 카메라가 아닐 때
+            // 유령 레이어를 제외한 모든 레이어를 렌더링하도록 설정합니다.
+            mainCamera.cullingMask &= ~LayerMask.GetMask("Ghost");
         }
     }
 }

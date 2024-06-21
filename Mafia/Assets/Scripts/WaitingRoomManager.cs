@@ -50,7 +50,7 @@ public class WaitingRoomManager : MonoBehaviourPunCallbacks
         }
     }
 
-        void Update()
+    void Update()
     {
         ReadAllReadyStates();
 
