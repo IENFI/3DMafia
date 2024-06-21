@@ -7,6 +7,7 @@ using Photon.Pun;
 using Photon.Realtime;
 using ExitGames.Client.Photon;
 using TMPro;
+using System.Security.Cryptography;
 
 public class VoteManager : MonoBehaviourPunCallbacks
 {
@@ -316,12 +317,34 @@ public class VoteManager : MonoBehaviourPunCallbacks
 
     private void VotingResult()
     {
+        PhotonView photonView = null;
+
+        Debug.Log("VotingResult");
         for (int i = 0; i < 10; i++)
         {
-            if (voteList[i] > criterion)
+            if (voteList[i] >= criterion)
             {
-                //PhotonNetwork.PlayerList[i]    ̴   ̺ Ʈ  ߻ 
-                break;
+                foreach (PhotonView pv in PhotonNetwork.PhotonViewCollection)
+                {
+                    Debug.Log(pv.Owner.NickName + "     " + PhotonNetwork.PlayerList[i].NickName);
+
+                    if (pv.Owner.NickName == PhotonNetwork.PlayerList[i].NickName && pv.gameObject.GetComponent<PlayerController>() != null)
+                    {
+                        photonView = pv;
+                        break;
+                    }
+                }
+
+                if (photonView == null)
+                {
+                    Debug.Log($"{PhotonNetwork.PlayerList[i].NickName}을 찾을 수 없음");
+                    return;
+                }
+                else
+                {
+                    // RPC 호출
+                    photonView.RPC("Death", RpcTarget.All);
+                }
             }
         }
     }

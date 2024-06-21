@@ -48,6 +48,9 @@ public class PlayerController : MonoBehaviourPun
         }
         gameObject.layer = playerLayer;
 
+        // 플레이어의 PhotonView를 PlayerList의 TagObject에 저장
+        PhotonNetwork.LocalPlayer.TagObject = GetComponent<PhotonView>();
+
         // 커서를 숨기고 잠금 (필요에 따라 주석 해제)
         // Cursor.visible = false; 
         // Cursor.lockState = CursorLockMode.Locked; 

@@ -12,6 +12,9 @@ public class WaitingRoomManager : MonoBehaviourPunCallbacks
     public Button ReadyBtn;
     public Button StartBtn;
 
+    public GameObject LoadingUI; // 로딩 화면 UI
+    private CanvasGroup loadingCanvasGroup; // 로딩 화면의 CanvasGroup
+
     private bool isReady = false;
     static bool gameReady = false;
 
@@ -31,23 +34,37 @@ public class WaitingRoomManager : MonoBehaviourPunCallbacks
         readyBtnText = ReadyBtn.GetComponentInChildren<TMP_Text>();
         startBtnText = StartBtn.GetComponentInChildren<TMP_Text>();
 
+        loadingCanvasGroup = LoadingUI.GetComponent<CanvasGroup>();
+
         StartCoroutine(InitialState());
     }
 
     public IEnumerator InitialState()
     {
-        yield return new WaitForSeconds(2);
+        // 로딩 UI를 활성화
+        LoadingUI.SetActive(true);
+
+        yield return new WaitForSeconds(4); // 4초 대기
+
         if (PhotonNetwork.IsMasterClient)
         {
             isReady = true;
             SetReadyState(isReady);
+
             ReadyBtn.GetComponent<Button>().interactable = false;
+            // 레디 버튼 숨기기
+            ReadyBtn.gameObject.SetActive(false);
         }
         else
         {
             SetReadyState(isReady);
             StartBtn.GetComponent<Button>().interactable = false;
+            // 시작 버튼 숨기기
+            StartBtn.gameObject.SetActive(false);
         }
+
+        // 로딩 UI를 페이드 아웃
+        yield return StartCoroutine(FadeOutLoadingUI());
     }
 
     void Update()
@@ -62,20 +79,22 @@ public class WaitingRoomManager : MonoBehaviourPunCallbacks
         // 버튼 텍스트 변경
         if (isReady)
         {
-            readyBtnText.text = "Unready";
+            readyBtnText.text = "준비완료";
+            ReadyBtn.GetComponent<Image>().color = Color.green;
         }
         else
         {
-            readyBtnText.text = "Ready";
+            readyBtnText.text = "준비하기";
+            ReadyBtn.GetComponent<Image>().color = Color.white;
         }
 
         if (gameReady)
         {
-            startBtnText.text = "Game Start";
+            startBtnText.text = "게임 시작";
         }
         else
         {
-            startBtnText.text = "Waiting for Players";
+            startBtnText.text = "모두 준비해야 합니다";
         }
     }
 
@@ -138,6 +157,21 @@ public class WaitingRoomManager : MonoBehaviourPunCallbacks
     {
         // 서버 씬으로 전환
         PhotonNetwork.LoadLevel("ServerScene");
+    }
+    private IEnumerator FadeOutLoadingUI()
+    {
+        float duration = 0.5f; // 페이드 아웃 지속 시간
+        float elapsedTime = 0f;
+
+        while (elapsedTime < duration)
+        {
+            elapsedTime += Time.deltaTime;
+            loadingCanvasGroup.alpha = 1f - Mathf.Clamp01(elapsedTime / duration);
+            yield return null;
+        }
+
+        loadingCanvasGroup.alpha = 0f;
+        LoadingUI.SetActive(false);
     }
 }
 

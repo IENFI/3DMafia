@@ -2177,7 +2177,7 @@ GameObject:
   - component: {fileID: 7934640324022835414}
   m_Layer: 6
   m_Name: Builder
-  m_TagString: Untagged
+  m_TagString: Builder
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2236,6 +2236,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   attackCollision: {fileID: 5537492812228681814}
+  killTimer: {fileID: 0}
 --- !u!114 &5542252087544625255
 MonoBehaviour:
   m_ObjectHideFlags: 0

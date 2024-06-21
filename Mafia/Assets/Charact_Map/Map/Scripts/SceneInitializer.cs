@@ -1,4 +1,3 @@
-// SceneInitializer.cs
 using Photon.Pun;
 using ExitGames.Client.Photon;
 using UnityEngine;
@@ -69,6 +68,43 @@ public class SceneInitializer : MonoBehaviourPunCallbacks
             else
             {
                 Debug.LogWarning("PlayerCoinController not found on player: " + player.name);
+            }
+
+            // Builder 하위 오브젝트에 있는 PlayerAnimator 스크립트를 찾습니다.
+            Transform builder = player.transform.Find("Builder");
+            if (builder != null)
+            {
+                PlayerAnimator playerAnimator = builder.GetComponent<PlayerAnimator>();
+                if (playerAnimator != null)
+                {
+                    // KillTime 태그가 부착된 오브젝트를 찾습니다.
+                    GameObject killTimeObject = GameObject.FindWithTag("KillTime");
+                    if (killTimeObject != null)
+                    {
+                        KillTimer killTimer = killTimeObject.GetComponent<KillTimer>();
+                        if (killTimer != null)
+                        {
+                            playerAnimator.killTimer = killTimer;
+                            Debug.Log("KillTimer assigned for player: " + player.name);
+                        }
+                        else
+                        {
+                            Debug.LogWarning("KillTimer component not found on KillTime object!");
+                        }
+                    }
+                    else
+                    {
+                        Debug.LogWarning("KillTime object not found!");
+                    }
+                }
+                else
+                {
+                    Debug.LogWarning("PlayerAnimator not found on Builder for player: " + player.name);
+                }
+            }
+            else
+            {
+                Debug.LogWarning("Builder not found for player: " + player.name);
             }
         }
 

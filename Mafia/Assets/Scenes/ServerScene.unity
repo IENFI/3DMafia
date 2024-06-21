@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.12731749, g: 0.13414757, b: 0.1210787, a: 1}
+  m_IndirectSpecularColor: {r: 0, g: 0, b: 0, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -1257,7 +1257,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'Mafia Count : '
+  m_text: "\uB9C8\uD53C\uC544 \uC218: "
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 144c75b7f0627524ea061467a9d76fa3, type: 2}
   m_sharedMaterial: {fileID: -999851989540908713, guid: 144c75b7f0627524ea061467a9d76fa3, type: 2}
@@ -4343,6 +4343,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerPrefab: {fileID: 3432362266963976815, guid: 8d9e43699e1242f4ead758f199d34695, type: 3}
   isConnected: 0
+  mafiaNum: 1
 --- !u!4 &676751587
 Transform:
   m_ObjectHideFlags: 0
@@ -9974,10 +9975,10 @@ RectTransform:
   - {fileID: 1469601160}
   m_Father: {fileID: 464678704}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 894, y: 193}
-  m_SizeDelta: {x: 153.3, y: 67.4}
+  m_AnchorMin: {x: 1, y: 0}
+  m_AnchorMax: {x: 1, y: 0}
+  m_AnchoredPosition: {x: -130, y: 193}
+  m_SizeDelta: {x: 153.30005, y: 67.4}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1668812614
 MonoBehaviour:
@@ -13146,10 +13147,10 @@ RectTransform:
   - {fileID: 598626346}
   m_Father: {fileID: 464678704}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 896, y: 95}
-  m_SizeDelta: {x: 153.3, y: 67.4}
+  m_AnchorMin: {x: 1, y: 0}
+  m_AnchorMax: {x: 1, y: 0}
+  m_AnchoredPosition: {x: -128, y: 95}
+  m_SizeDelta: {x: 153.30005, y: 67.4}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2129527585
 MonoBehaviour:

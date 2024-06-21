@@ -7,6 +7,8 @@ public class PlayerAnimator : MonoBehaviour
     [SerializeField]
     private GameObject attackCollision;
     private Animator animator;
+    // KillTimer 스크립트 참조
+    public KillTimer killTimer;
 
 
     private void Awake()
@@ -22,17 +24,24 @@ public class PlayerAnimator : MonoBehaviour
 
     public void Kill()
     {
+        // KillTimer의 StartCooldown 메서드 호출
+        if (killTimer != null)
+        {
+            killTimer.StartCooldown();
+        }
         animator.SetTrigger("kill");
     }
 
     public void Death()
     {
+
         animator.SetTrigger("death");
         // 필드에서 추방하는 코드 추가하기
     }
 
     public void OnAttackCollision()
     {
+
         attackCollision.SetActive(true);
     }
 
