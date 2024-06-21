@@ -10,6 +10,9 @@ using TMPro;
 
 public class VoteManager : MonoBehaviourPunCallbacks
 {
+    [SerializeField]
+    public GameObject mafiaManager;
+
     [Header("VoteUI")]
     public GameObject VoteUI;
     public Button btn0;
@@ -318,9 +321,29 @@ public class VoteManager : MonoBehaviourPunCallbacks
     {
         for (int i = 0; i < 10; i++)
         {
-            if (voteList[i] > criterion)
+            if (voteList[i] >= criterion)
             {
-                //PhotonNetwork.PlayerList[i]    ̴   ̺ Ʈ  ߻ 
+                Debug.Log(i);
+                if (PhotonNetwork.PlayerList[i].CustomProperties.ContainsKey("isMafia"))
+                {
+                    if (PhotonNetwork.PlayerList[i] == PhotonNetwork.LocalPlayer)
+                    {
+                        GameObject playerGameObject = PhotonNetwork.PlayerList[i].TagObject as GameObject;
+                        playerGameObject.GetComponent<PhotonView>().RPC("Death", RpcTarget.All);
+                        Debug.Log(PhotonNetwork.PlayerList[i].NickName);
+                    }
+                    mafiaManager.GetComponent<MafiaManager>().remainingMafiaNum -= 1;
+                }
+                else
+                {
+                    if (PhotonNetwork.PlayerList[i] == PhotonNetwork.LocalPlayer)
+                    {
+                        GameObject playerGameObject = PhotonNetwork.PlayerList[i].TagObject as GameObject;
+                        playerGameObject.GetComponent<PhotonView>().RPC("Death", RpcTarget.All);
+                        Debug.Log(PhotonNetwork.PlayerList[i].NickName);
+                    }
+                    mafiaManager.GetComponent<MafiaManager>().remainingCitizenNum -= 1;
+                }
                 break;
             }
         }
