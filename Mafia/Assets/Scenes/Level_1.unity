@@ -5938,6 +5938,7 @@ MonoBehaviour:
   btn8: {fileID: 1470739471}
   btn9: {fileID: 1756646637}
   voteManager: {fileID: 1678739323}
+  player: {fileID: 3432362266963976815, guid: 8d9e43699e1242f4ead758f199d34695, type: 3}
   isMeetingActivated: 1
 --- !u!1 &1680064429
 GameObject:

@@ -16,6 +16,7 @@ public class PlayerController : MonoBehaviourPun
     private Camera FPcamera;
     private Movement movement;
     private PlayerAnimator playerAnimator;
+    private PlayerAttack playerAttackCollision;
 
     [SerializeField]
     public float playerMoveSpeedUnit = 1; // 플레이어 이동 속도 단위
@@ -34,6 +35,8 @@ public class PlayerController : MonoBehaviourPun
     public float reportCooldown = 5f; // 신고 쿨타임
     private float lastReportTime;
 
+
+
     void Start()
     {
         // Cursor.visible = false;                 // 마우스 커서를 보이지 않게
@@ -42,6 +45,7 @@ public class PlayerController : MonoBehaviourPun
         movement = GetComponent<Movement>();
         playerAnimator = GetComponentInChildren<PlayerAnimator>();
         cameraController = GetComponentInChildren<FPCameraController>();
+        playerAttackCollision = GetComponentInChildren<PlayerAttack>();
         FPcamera.cullingMask &= ~LayerMask.GetMask("Ghost");
 
         // 유령으로 변환할 때 필요한 설정
@@ -110,6 +114,7 @@ public class PlayerController : MonoBehaviourPun
                 {
                     playerAnimator.Kill();
                     lastKillTime = Time.time;
+                    playerAttackCollision.SeletKillMember();
                 }
             }
 
@@ -119,10 +124,10 @@ public class PlayerController : MonoBehaviourPun
                 // playerAnimator.OnWeaponAttack(); // 무기 공격 애니메이션 실행 (주석 처리됨)
             }
 
-            // 예시로 D키를 눌러 죽음을 시뮬레이트 (테스트용)
-            if (Input.GetKeyDown(KeyCode.K) && !isDead)
+            // 시체 없애기 시뮬레이트 함수
+            if (Input.GetKeyDown(KeyCode.K))
             {
-                photonView.RPC("Death", RpcTarget.All);
+                photonView.RPC("DisableAllCorpses", RpcTarget.All);
             }
 
             if (Input.GetKeyDown(KeyCode.R) && reportRadius.IsCorpseInRange())
@@ -197,5 +202,15 @@ public class PlayerController : MonoBehaviourPun
         }
         // 신고 처리 로직 추가
         // 예: 시체를 삭제하거나 상태를 변경합니다.
+    }
+
+    [PunRPC]
+    public void DisableAllCorpses()
+    {
+        GameObject[] corpses = GameObject.FindGameObjectsWithTag("Corpse");
+        foreach (GameObject corpse in corpses)
+        {
+            corpse.SetActive(false);
+        }
     }
 }
