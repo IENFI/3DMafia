@@ -14,6 +14,10 @@ public class MafiaManager : MonoBehaviourPunCallbacks
     public TMP_Text remainingMafiaText;
     public TMP_Text remainingCitizenText;
 
+    [SerializeField]
+    public GameObject MafiaWin;
+    public GameObject CitizenWin;
+
     public int remainingMafiaNum;
     public int remainingCitizenNum;
 
@@ -36,20 +40,37 @@ public class MafiaManager : MonoBehaviourPunCallbacks
     {
         remainingCitizenText.text = "Remaining Citizens: " + remainingCitizenNum.ToString();
         remainingMafiaText.text = "Remaining Mafias: " + remainingMafiaNum.ToString();
-        // if(leftedMafiaNum == 0)
+
+        if(remainingMafiaNum == 0)
+        {
+            CitizenWin.SetActive(true);
+            //gameover
+        }
+
+        if (remainingCitizenNum == 0)
+        {
+            MafiaWin.SetActive(true);
+            //gameover
+        }
     }
 
     public override void OnPlayerPropertiesUpdate(Player player, ExitGames.Client.Photon.Hashtable props)
     {
-        if (player.CustomProperties.ContainsKey("isDead"))
+        foreach (object key in props.Keys)
         {
-            if (player.CustomProperties.ContainsKey("isMafia"))
+            if (key.ToString().Equals("isDead"))
             {
-                remainingMafiaNum--;
-            }
-            else
-            {
-                remainingCitizenNum--;
+                if (player.CustomProperties.ContainsKey("isDead"))
+                {
+                    if (player.CustomProperties.ContainsKey("isMafia"))
+                    {
+                        remainingMafiaNum--;
+                    }
+                    else
+                    {
+                        remainingCitizenNum--;
+                    }
+                }
             }
         }
     }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -10,8 +11,8 @@ using TMPro;
 
 public class VoteManager : MonoBehaviourPunCallbacks
 {
-    //[SerializeField]
-    //public GameObject mafiaManager;
+    [SerializeField]
+    public GameObject mafiaManager;
 
     [Header("VoteUI")]
     public GameObject VoteUI;
@@ -50,11 +51,14 @@ public class VoteManager : MonoBehaviourPunCallbacks
     //voteList       client 鿡       .
     private int[] voteList = new int[10]; //10    ִ   ÷  ̾    ,     list  ƴϰ  array  , 0      ʱ ȭ
     private int criterion; // ÷  ̾       ݼ 
+    private int remainingPlayerNum;
 
     // Start is called before the first frame update
     void MeetingStart()
     {
-        criterion = (int)((double)PhotonNetwork.PlayerList.Length / 2 + 1);
+        //calculate criterion from remainig users
+        remainingPlayerNum = mafiaManager.GetComponent<MafiaManager>().remainingMafiaNum + mafiaManager.GetComponent<MafiaManager>().remainingCitizenNum;
+        criterion = (int)((double)remainingPlayerNum / 2 + 1);
 
         btnText0 = btn0.GetComponentInChildren<TMP_Text>();
         btnText1 = btn1.GetComponentInChildren<TMP_Text>();
@@ -112,6 +116,9 @@ public class VoteManager : MonoBehaviourPunCallbacks
 
     void Update()
     {
+        if (PhotonNetwork.LocalPlayer.CustomProperties.ContainsKey("isDead"))
+            return;
+
         if (isMeetingActivated)
         {
             MeetingStart();
@@ -152,7 +159,17 @@ public class VoteManager : MonoBehaviourPunCallbacks
 
         for (int i = 0; i < 10; i++)
         {
-            btns[i].GetComponent<Button>().interactable = true;
+            if (i < PhotonNetwork.PlayerList.Length)
+            {
+                if (PhotonNetwork.PlayerList[i].CustomProperties.ContainsKey("isDead"))
+                    btns[i].GetComponent<Button>().interactable = false;
+                else
+                    btns[i].GetComponent<Button>().interactable = true;
+            }
+            else
+            {
+                btns[i].GetComponent<Button>().interactable = false;
+            }
         }
 
         for (int i = 0; i < PhotonNetwork.PlayerList.Length; i++)
@@ -163,40 +180,31 @@ public class VoteManager : MonoBehaviourPunCallbacks
 
     // ÷  ̾     °        Ʈ  Ƿ    OnPlayerPropertiesUpdate       ٷ     
     //         ǥ         ¸     ⼭     ȭ
-    public override void OnPlayerPropertiesUpdate(Player player, Hashtable props)
+    public override void OnPlayerPropertiesUpdate(Player player, ExitGames.Client.Photon.Hashtable props)
     {
         // ÷  ̾      ȣ   Ž   ϰ    ǥ     Ʈ    ݿ 
-        int num;
-        num = (int)player.CustomProperties["voted"];
-        if (num >= 0)
+        foreach (object key in props.Keys)
         {
-            voteList[num]++;
-            //  ǥ  Ϸ             ̻    ǥ     
-            if (PhotonNetwork.LocalPlayer == player)
+            if (key.ToString().Equals("voted"))
             {
-                //  ǥ  Ϸ             ̻    ǥ     
-                for (int i = 0; i < 10; i++)
+                int num;
+                num = (int)player.CustomProperties["voted"];
+                if (num >= 0)
                 {
-                    btns[i].GetComponent<Button>().interactable = false;
+                    voteList[num]++;
+                    //  ǥ  Ϸ             ̻    ǥ     
+                    if (PhotonNetwork.LocalPlayer == player)
+                    {
+                        //  ǥ  Ϸ             ̻    ǥ     
+                        for (int i = 0; i < 10; i++)
+                        {
+                            btns[i].GetComponent<Button>().interactable = false;
+                        }
+                    }
+                    SendText(num, voteList[num]);
                 }
             }
-            SendText(num, voteList[num]);
         }
-        /*
-        else
-        {
-            int playerNum = 0;
-            for (int i = 0; i < PhotonNetwork.PlayerList.Length; i++)
-            {
-                if(player == PhotonNetwork.PlayerList[i])
-                {
-                    playerNum = i;
-                    break;
-                }
-            }
-            SendText(playerNum, 0);
-        }
-        */
     }
 
     private void SendText(int i, int voteCount)
@@ -372,7 +380,7 @@ public class VoteManager : MonoBehaviourPunCallbacks
         {
             count += voteList[i];
         }
-        if (count == PhotonNetwork.PlayerList.Length)
+        if (count == remainingPlayerNum)
         {
             result = true;
         }
