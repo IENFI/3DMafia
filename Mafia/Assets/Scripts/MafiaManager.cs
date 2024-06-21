@@ -21,18 +21,21 @@ public class MafiaManager : MonoBehaviourPunCallbacks
     public int remainingMafiaNum;
     public int remainingCitizenNum;
 
+    private bool isSynced = false;
+
+    void Awake()
+    {
+        if (PhotonNetwork.IsMasterClient)
+        {
+            remainingMafiaNum = GameManager.instance.mafiaNum;
+            photonView.RPC("SyncMafiaNum", RpcTarget.All, remainingMafiaNum);
+        }
+    }
+
     // Start is called before the first frame update
     void Start()
     {
-        int playerNum;
-        playerNum = PhotonNetwork.PlayerList.Length;
-        remainingMafiaNum = GameManager.instance.mafiaNum;
-        if (remainingMafiaNum > playerNum)
-            remainingMafiaNum = playerNum;
-        remainingCitizenNum = playerNum - remainingMafiaNum;
-
-        remainingCitizenText.text = "Remaining Citizens: " + remainingCitizenNum.ToString();
-        remainingMafiaText.text = "Remaining Mafias: " + remainingMafiaNum.ToString();
+        StartCoroutine(WaitForSync());
     }
 
     // Update is called once per frame
@@ -41,16 +44,24 @@ public class MafiaManager : MonoBehaviourPunCallbacks
         remainingCitizenText.text = "Remaining Citizens: " + remainingCitizenNum.ToString();
         remainingMafiaText.text = "Remaining Mafias: " + remainingMafiaNum.ToString();
 
-        if(remainingMafiaNum == 0)
+        if (remainingMafiaNum == 0)
         {
             CitizenWin.SetActive(true);
             //gameover
+        }
+        else
+        {
+            CitizenWin.SetActive(false);
         }
 
         if (remainingCitizenNum == 0)
         {
             MafiaWin.SetActive(true);
             //gameover
+        }
+        else
+        {
+            MafiaWin.SetActive(false);
         }
     }
 
@@ -75,4 +86,28 @@ public class MafiaManager : MonoBehaviourPunCallbacks
         }
     }
 
+    [PunRPC]
+    void SyncMafiaNum(int num)
+    {
+        remainingMafiaNum = num;
+        isSynced = true;
+    }
+
+    IEnumerator WaitForSync()
+    {
+        while (!isSynced)
+        {
+            yield return null;
+        }
+
+        int playerNum;
+        playerNum = PhotonNetwork.PlayerList.Length;
+        if (remainingMafiaNum > playerNum)
+            remainingMafiaNum = playerNum;
+        remainingCitizenNum = playerNum - remainingMafiaNum;
+
+        remainingCitizenText.text = "Remaining Citizens: " + remainingCitizenNum.ToString();
+        remainingMafiaText.text = "Remaining Mafias: " + remainingMafiaNum.ToString();
+
+    }
 }
