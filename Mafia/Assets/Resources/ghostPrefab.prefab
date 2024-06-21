@@ -392,7 +392,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   jumpKeyCode: 32
   cameraTransform: {fileID: 8533226331200603997}
-  cameraController: {fileID: 5641851858794631345}
+  cameraController: {fileID: 0}
   ghostCamera: {fileID: 1702662082678770931}
 --- !u!114 &7083465359978966174
 MonoBehaviour:
@@ -1078,8 +1078,8 @@ GameObject:
   - component: {fileID: 8533226331200603997}
   - component: {fileID: 1702662082678770931}
   - component: {fileID: 3748069694027131509}
-  - component: {fileID: 5641851858794631345}
   - component: {fileID: 356245089324914348}
+  - component: {fileID: 1020549581662898115}
   m_Layer: 3
   m_Name: FPCamera
   m_TagString: MainCamera
@@ -1161,18 +1161,6 @@ AudioListener:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7154791414777206883}
   m_Enabled: 1
---- !u!114 &5641851858794631345
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7154791414777206883}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bd41dea329852f54e839a2ca41f8980f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &356245089324914348
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1217,6 +1205,18 @@ MonoBehaviour:
     mipBias: 0
     varianceClampScale: 0.9
     contrastAdaptiveSharpening: 0
+--- !u!114 &1020549581662898115
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7154791414777206883}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3274ee438f2bf0249a063560b6c788f3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &7203538046365535801
 GameObject:
   m_ObjectHideFlags: 0

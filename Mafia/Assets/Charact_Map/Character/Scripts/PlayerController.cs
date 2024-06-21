@@ -29,6 +29,10 @@ public class PlayerController : MonoBehaviourPun
 
     private bool isDead = false;
 
+    public PlayerReportRadius reportRadius; // ReportRadius 스크립트 참조
+    public float reportCooldown = 5f; // 신고 쿨타임
+    private float lastReportTime;
+
     void Start()
     {
         // Cursor.visible = false;                 // 마우스 커서를 보이지 않게
@@ -47,6 +51,8 @@ public class PlayerController : MonoBehaviourPun
             return;
         }
         gameObject.layer = playerLayer;
+
+        lastReportTime = Time.time;
 
         // 커서를 숨기고 잠금 (필요에 따라 주석 해제)
         // Cursor.visible = false; 
@@ -95,9 +101,10 @@ public class PlayerController : MonoBehaviourPun
                 movement.JumpTo();        // 점프 함수 호출
             }
 
-            // 마우스 왼쪽 버튼을 누르면 발차기 공격
+            // 마우스 왼쪽 버튼을 누르면 Kill
             if (Input.GetMouseButtonDown(0))
             {
+                Debug.Log("Before Kill()");
                 if (Time.time - lastKillTime >= killCooldown)
                 {
                     playerAnimator.Kill();
@@ -115,6 +122,16 @@ public class PlayerController : MonoBehaviourPun
             if (Input.GetKeyDown(KeyCode.K) && !isDead)
             {
                 photonView.RPC("Death", RpcTarget.All);
+            }
+
+            if (Input.GetKeyDown(KeyCode.R) && reportRadius.IsCorpseInRange())
+            {
+                Debug.Log("Before ReportCorpse()");
+
+                if (Time.time - lastReportTime >= reportCooldown)
+                {
+                    ReportCorpse();
+                }
             }
 
             float mouseX = Input.GetAxis("Mouse X");
@@ -161,5 +178,18 @@ public class PlayerController : MonoBehaviourPun
     public void OriginMoveSpeed()
     {
         playerMoveSpeedUnit /= 5;
+    }
+
+    private void ReportCorpse()
+    {
+        Debug.Log("Corpse reported!");
+        lastReportTime = Time.time;
+        PhotonView votingSystemPhotonView = FindObjectOfType<VotingSystem>().GetComponent<PhotonView>();
+        if (votingSystemPhotonView != null)
+        {
+            votingSystemPhotonView.RPC("StartVote", RpcTarget.All);
+        }
+        // 신고 처리 로직 추가
+        // 예: 시체를 삭제하거나 상태를 변경합니다.
     }
 }
