@@ -10,8 +10,8 @@ using TMPro;
 
 public class VoteManager : MonoBehaviourPunCallbacks
 {
-    [SerializeField]
-    public GameObject mafiaManager;
+    //[SerializeField]
+    //public GameObject mafiaManager;
 
     [Header("VoteUI")]
     public GameObject VoteUI;
@@ -332,7 +332,7 @@ public class VoteManager : MonoBehaviourPunCallbacks
                         playerGameObject.GetComponent<PhotonView>().RPC("Death", RpcTarget.All);
                         Debug.Log(PhotonNetwork.PlayerList[i].NickName);
                     }
-                    mafiaManager.GetComponent<MafiaManager>().remainingMafiaNum -= 1;
+                    //mafiaManager.GetComponent<MafiaManager>().remainingMafiaNum -= 1;
                 }
                 else
                 {
@@ -342,7 +342,7 @@ public class VoteManager : MonoBehaviourPunCallbacks
                         playerGameObject.GetComponent<PhotonView>().RPC("Death", RpcTarget.All);
                         Debug.Log(PhotonNetwork.PlayerList[i].NickName);
                     }
-                    mafiaManager.GetComponent<MafiaManager>().remainingCitizenNum -= 1;
+                    //mafiaManager.GetComponent<MafiaManager>().remainingCitizenNum -= 1;
                 }
                 break;
             }

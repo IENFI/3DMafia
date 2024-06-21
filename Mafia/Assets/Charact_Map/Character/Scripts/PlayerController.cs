@@ -2,6 +2,7 @@ using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using ExitGames.Client.Photon;
 
 public class PlayerController : MonoBehaviourPun
 {
@@ -150,6 +151,11 @@ public class PlayerController : MonoBehaviourPun
         isDead = true;
         playerAnimator.Death();
         StartCoroutine(HandleDeath());
+        ExitGames.Client.Photon.Hashtable props = new ExitGames.Client.Photon.Hashtable
+        {
+        { "isDead" , true }
+        };
+        PhotonNetwork.LocalPlayer.SetCustomProperties(props);
     }
 
     [PunRPC]

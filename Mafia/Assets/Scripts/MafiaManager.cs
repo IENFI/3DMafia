@@ -1,11 +1,14 @@
 using System.Collections;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using Photon.Pun;
 using Photon.Realtime;
+using ExitGames.Client.Photon;
 using TMPro;
 
-public class MafiaManager : MonoBehaviour
+public class MafiaManager : MonoBehaviourPunCallbacks
 {
     [SerializeField]
     public TMP_Text remainingMafiaText;
@@ -35,4 +38,20 @@ public class MafiaManager : MonoBehaviour
         remainingMafiaText.text = "Remaining Mafias: " + remainingMafiaNum.ToString();
         // if(leftedMafiaNum == 0)
     }
+
+    public override void OnPlayerPropertiesUpdate(Player player, ExitGames.Client.Photon.Hashtable props)
+    {
+        if (player.CustomProperties.ContainsKey("isDead"))
+        {
+            if (player.CustomProperties.ContainsKey("isMafia"))
+            {
+                remainingMafiaNum--;
+            }
+            else
+            {
+                remainingCitizenNum--;
+            }
+        }
+    }
+
 }
