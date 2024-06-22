@@ -5823,6 +5823,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 332df5b0fa5782744a90491f0917beb6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  mafiaManager: {fileID: 1451524995493739282}
   VoteUI: {fileID: 2091403708}
   btn0: {fileID: 184861266}
   btn1: {fileID: 1721368168}
@@ -22479,6 +22480,7 @@ GameObject:
   - component: {fileID: 5822439895667558435}
   - component: {fileID: 5822439895667558437}
   - component: {fileID: 5822439895667558436}
+  - component: {fileID: 5822439895667558438}
   m_Layer: 0
   m_Name: GameUiManager
   m_TagString: Untagged
@@ -65791,6 +65793,24 @@ MonoBehaviour:
   sceneViewId: 1
   InstantiationId: 0
   isRuntimeInstantiated: 0
+--- !u!114 &5822439895667558438
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1451524995493739282}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f0f79a1eeb20c9f4986a821e4ecd8341, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  remainingMafiaText: {fileID: 0}
+  remainingCitizenText: {fileID: 0}
+  MafiaWin: {fileID: 0}
+  CitizenWin: {fileID: 0}
+  remainingMafiaNum: 0
+  remainingCitizenNum: 0
 --- !u!1 &5824485298246816927
 GameObject:
   m_ObjectHideFlags: 0
