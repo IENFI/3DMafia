@@ -121,16 +121,29 @@ public class WaitingRoomManager : MonoBehaviourPunCallbacks
 
     public void GameStart()
     {
-        if(PhotonNetwork.IsMasterClient && gameReady)
+        if (PhotonNetwork.IsMasterClient && gameReady)
         {
+            if (PhotonNetwork.CurrentRoom != null)
+            {
+                ExitGames.Client.Photon.Hashtable props = new ExitGames.Client.Photon.Hashtable
+            {
+                { "isGameStarted", true }
+            };
+                PhotonNetwork.CurrentRoom.SetCustomProperties(props);
+            }
+            else
+            {
+                Debug.LogError("PhotonNetwork.CurrentRoom is null.");
+                return;
+            }
+
+
+
             PhotonNetwork.LoadLevel("Level_1");
             Debug.Log("Level_1 입장 완료");
-
-            // 커스텀 이벤트 전송
-            RaiseEventOptions options = new RaiseEventOptions { Receivers = ReceiverGroup.All };
-            PhotonNetwork.RaiseEvent(CustomEventCodes.GameSceneLoaded, null, options, SendOptions.SendReliable);
         }
     }
+
 
     public void LeaveRoom() => PhotonNetwork.LeaveRoom();
 
