@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using ExitGames.Client.Photon;
+using TMPro;
 
 public class PlayerController : MonoBehaviourPun
 {
@@ -35,7 +36,8 @@ public class PlayerController : MonoBehaviourPun
     public float reportCooldown = 5f; // 신고 쿨타임
     private float lastReportTime;
 
-
+    public TextMeshProUGUI nickName;
+    public PhotonView PV;
 
     void Start()
     {
@@ -61,7 +63,9 @@ public class PlayerController : MonoBehaviourPun
 
         // 커서를 숨기고 잠금 (필요에 따라 주석 해제)
         // Cursor.visible = false; 
-        // Cursor.lockState = CursorLockMode.Locked; 
+        // Cursor.lockState = CursorLockMode.Locked;
+
+        nickName.text = PV.Owner.NickName;
     }
 
     // 매 프레임마다 호출되는 Update 함수
