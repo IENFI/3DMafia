@@ -81,7 +81,8 @@ public class NetworkManager : MonoBehaviourPunCallbacks // 안현석 똑바로�
         {
             if (!roomList[i].RemovedFromList)
             {
-                if (!myList.Contains(roomList[i])) myList.Add(roomList[i]);
+                if (!myList.Contains(roomList[i])){ 
+                    myList.Add(roomList[i]);}
                 else myList[myList.IndexOf(roomList[i])] = roomList[i];
             }
             else if (myList.IndexOf(roomList[i]) != -1) myList.RemoveAt(myList.IndexOf(roomList[i]));
@@ -108,24 +109,33 @@ public class NetworkManager : MonoBehaviourPunCallbacks // 안현석 똑바로�
             else
             {
                 // Check if the room has started the game
-                if (!room.CustomProperties.ContainsKey("isGameStarted") || !(bool)room.CustomProperties["isGameStarted"])
+                if (room.CustomProperties.ContainsKey("isGameStarted") && (bool)room.CustomProperties["isGameStarted"])
                 {
-                    // Add the room to roomsToShow if it's not already in the list
-                    if (!roomsToShow.Exists(r => r.Name == room.Name))
+                    // If the game has started, we should not add it to myList
+                    if (myList.Contains(room))
                     {
-                        roomsToShow.Add(room);
+                        myList.Remove(room);
+                    }
+                }
+                else
+                {
+                    // Add the room to myList if it's not already in the list
+                    if (!myList.Contains(room))
+                    {
+                        myList.Add(room);
                     }
                 }
             }
         }
 
-        // Clear the current myList and add roomsToShow
-        myList.Clear();
-        myList.AddRange(roomsToShow);
-
-        // Update the UI to reflect the updated room list
+        // Update the UI to display the updated room list
         MyListRenewal();
     }
+
+
+
+
+
 
 
 
