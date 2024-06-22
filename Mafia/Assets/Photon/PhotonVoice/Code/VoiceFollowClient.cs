@@ -70,7 +70,7 @@ namespace Photon.Voice
         /// <summary>
         /// Disconnect voice client from all Photon servers
         /// </summary>
-        public void Disconnect()
+        /*public void Disconnect()
         {
             if (!this.Client.IsConnected)
             {
@@ -79,7 +79,18 @@ namespace Photon.Voice
             }
             this.manualDisconnect = true;
             this.Client.Disconnect();
+        }*/
+        public void Disconnect()
+        {
+            if (!Client.IsConnected)
+            {
+                Logger.Log(LogLevel.Error, "Cannot Disconnect if not connected.");
+                return;
+            }
+            manualDisconnect = true;
+            Client.Disconnect(); // VoiceConnection 클래스에서 상속받은 Disconnect 메서드 호출
         }
+
 
         #endregion
 

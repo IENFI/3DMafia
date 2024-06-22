@@ -74,7 +74,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks // 안현석 똑바로�
         }
     }
 
-    public override void OnRoomListUpdate(List<RoomInfo> roomList)
+    /*public override void OnRoomListUpdate(List<RoomInfo> roomList)
     {
         int roomCount = roomList.Count;
         for (int i = 0; i < roomCount; i++)
@@ -87,7 +87,48 @@ public class NetworkManager : MonoBehaviourPunCallbacks // 안현석 똑바로�
             else if (myList.IndexOf(roomList[i]) != -1) myList.RemoveAt(myList.IndexOf(roomList[i]));
         }
         MyListRenewal();
+    }*/
+    public override void OnRoomListUpdate(List<RoomInfo> roomList)
+    {
+        // Create a new list to store rooms that should be displayed
+        List<RoomInfo> roomsToShow = new List<RoomInfo>();
+
+        // Iterate through the updated room list
+        foreach (RoomInfo room in roomList)
+        {
+            // Check if the room is removed from the list
+            if (room.RemovedFromList)
+            {
+                // Remove the room from myList if it's in the list
+                if (myList.Contains(room))
+                {
+                    myList.Remove(room);
+                }
+            }
+            else
+            {
+                // Check if the room has started the game
+                if (!room.CustomProperties.ContainsKey("isGameStarted") || !(bool)room.CustomProperties["isGameStarted"])
+                {
+                    // Add the room to roomsToShow if it's not already in the list
+                    if (!roomsToShow.Exists(r => r.Name == room.Name))
+                    {
+                        roomsToShow.Add(room);
+                    }
+                }
+            }
+        }
+
+        // Clear the current myList and add roomsToShow
+        myList.Clear();
+        myList.AddRange(roomsToShow);
+
+        // Update the UI to reflect the updated room list
+        MyListRenewal();
     }
+
+
+
     #endregion
 
     #region 서버연결
@@ -134,7 +175,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks // 안현석 똑바로�
             Debug.LogWarning("disconnectPanel has already been destroyed.");
         }
 
-        DisconnectPanel.SetActive(true);
+        //DisconnectPanel.SetActive(true); hs수정
         LobbyPanel.SetActive(false);
         CreateRoomUI.SetActive(false);
     }
@@ -150,12 +191,21 @@ public class NetworkManager : MonoBehaviourPunCallbacks // 안현석 똑바로�
     #endregion
 
     #region 방
-    public void CreateRoom()
+    /*public void CreateRoom()
     {
         string roomName = RoomInput.text == "" ? "Room" + Random.Range(0, 100) : RoomInput.text;
         RoomOptions roomOptions = new RoomOptions { MaxPlayers = createRoomUI.roomData.maxPlayerCount };
         PhotonNetwork.CreateRoom(roomName, roomOptions);
+    }*/
+    public void CreateRoom()
+    {
+        string roomName = RoomInput.text == "" ? "Room" + Random.Range(0, 100) : RoomInput.text;
+        RoomOptions roomOptions = new RoomOptions { MaxPlayers = createRoomUI.roomData.maxPlayerCount };
+        roomOptions.CustomRoomProperties = new ExitGames.Client.Photon.Hashtable() { { "isGameStarted", false } };
+        roomOptions.CustomRoomPropertiesForLobby = new string[] { "isGameStarted" };
+        PhotonNetwork.CreateRoom(roomName, roomOptions);
     }
+
 
     public void JoinRandomRoom()
     {

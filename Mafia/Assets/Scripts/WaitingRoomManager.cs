@@ -6,9 +6,13 @@ using UnityEngine.UI;
 using TMPro;
 using System.Collections;
 using System.Collections.Generic;
+using Photon.Voice.Unity;
+using Photon.Voice;
 
 public class WaitingRoomManager : MonoBehaviourPunCallbacks
 {
+    
+
     public Button ReadyBtn;
     public Button StartBtn;
 
@@ -20,10 +24,7 @@ public class WaitingRoomManager : MonoBehaviourPunCallbacks
 
     void Awake()
     {
-        // 방장이 혼자 씬을 로딩하면, 나머지 사람들은 자동으로 싱크가 됨
         PhotonNetwork.AutomaticallySyncScene = true;
-
-        // 게임 버전 지정
     }
 
     void Start()
@@ -32,6 +33,8 @@ public class WaitingRoomManager : MonoBehaviourPunCallbacks
         startBtnText = StartBtn.GetComponentInChildren<TMP_Text>();
 
         StartCoroutine(InitialState());
+
+        
     }
 
     public IEnumerator InitialState()
@@ -50,7 +53,7 @@ public class WaitingRoomManager : MonoBehaviourPunCallbacks
         }
     }
 
-        void Update()
+    void Update()
     {
         ReadAllReadyStates();
 
@@ -81,11 +84,18 @@ public class WaitingRoomManager : MonoBehaviourPunCallbacks
 
     void SetReadyState(bool isReady)
     {
-        ExitGames.Client.Photon.Hashtable props = new ExitGames.Client.Photon.Hashtable
+        if (PhotonNetwork.IsConnectedAndReady)
         {
-        { "isReady", isReady }
-        };
-        PhotonNetwork.LocalPlayer.SetCustomProperties(props);
+            ExitGames.Client.Photon.Hashtable props = new ExitGames.Client.Photon.Hashtable
+            {
+                { "isReady", isReady }
+            };
+            PhotonNetwork.LocalPlayer.SetCustomProperties(props);
+        }
+        else
+        {
+            Debug.LogWarning("Photon client is not connected and ready. Cannot set custom properties.");
+        }
     }
 
     public void ClickReadyBtn()
@@ -121,18 +131,57 @@ public class WaitingRoomManager : MonoBehaviourPunCallbacks
 
     public void GameStart()
     {
-        if(PhotonNetwork.IsMasterClient && gameReady)
+        if (PhotonNetwork.IsMasterClient && gameReady)
         {
+            if (PhotonNetwork.CurrentRoom != null)
+            {
+                ExitGames.Client.Photon.Hashtable props = new ExitGames.Client.Photon.Hashtable
+            {
+                { "isGameStarted", true }
+            };
+                PhotonNetwork.CurrentRoom.SetCustomProperties(props);
+            }
+            else
+            {
+                Debug.LogError("PhotonNetwork.CurrentRoom is null.");
+                return;
+            }
+
+            
+
             PhotonNetwork.LoadLevel("Level_1");
             Debug.Log("Level_1 입장 완료");
         }
     }
 
-    public void LeaveRoom() => PhotonNetwork.LeaveRoom();
+
+    public void LeaveRoom()
+    {
+
+
+        // 모든 플레이어의 준비 상태를 초기화
+        ResetAllPlayerReadyStates();
+
+        // 방 떠나기
+        PhotonNetwork.LeaveRoom();
+    }
+
+    void ResetAllPlayerReadyStates()
+    {
+        ExitGames.Client.Photon.Hashtable props = new ExitGames.Client.Photon.Hashtable
+        {
+            { "isReady", false }
+        };
+
+        foreach (Player player in PhotonNetwork.PlayerList)
+        {
+            player.SetCustomProperties(props);
+        }
+    }
 
     public override void OnLeftRoom()
     {
-        // 서버 씬으로 전환
+        // 방을 떠나면서 이전 씬으로 전환
         PhotonNetwork.LoadLevel("ServerScene");
     }
 }

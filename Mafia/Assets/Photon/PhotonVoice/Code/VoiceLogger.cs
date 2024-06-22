@@ -19,6 +19,7 @@ namespace Photon.Voice.Unity
     {
         public LogLevel LogLevel = LogLevel.Warning;
 
+
         // required for the MonoBehaviour to have the 'enabled' checkbox
         private void Start()
         {
