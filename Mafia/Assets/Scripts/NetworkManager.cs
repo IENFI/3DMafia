@@ -219,7 +219,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks // 안현석 똑바로�
 
     public void JoinRandomRoom()
     {
-        GameManager.instance.isConnected = true;
+        //GameManager.instance.isConnected = true;
         PhotonNetwork.JoinRandomRoom();
     }
 
@@ -240,7 +240,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks // 안현석 똑바로�
 
         if (PhotonNetwork.IsMasterClient)
         {
-            GameManager.instance.isConnected = true;
+            //GameManager.instance.isConnected = true;
             PhotonNetwork.LoadLevel("Level_0");
             Debug.Log("04. 방 입장 완료");
 

@@ -37,6 +37,8 @@ public class MafiaManager : MonoBehaviourPunCallbacks
     // Start is called before the first frame update
     void Start()
     {
+        //actually, this one manage the whole level
+        GameManager.instance.isConnected = true;
         StartCoroutine(WaitForSync());
     }
 

@@ -12,6 +12,8 @@ public class GameManager : MonoBehaviour
     public bool isConnected = false;
     public int mafiaNum = 1;
 
+    public bool temp;
+
     private void Awake()
     {
         if (instance == null)
@@ -26,14 +28,18 @@ public class GameManager : MonoBehaviour
     }
 
     // Start is called before the first frame update
-    void Start()
+    void Update()
     {
-        StartCoroutine(WaitForConnectionAndCreatePlayer());
+        if (isConnected)
+        {
+            isConnected = false;
+            StartCoroutine(WaitForConnectionAndCreatePlayer());
+        }
     }
 
     private IEnumerator WaitForConnectionAndCreatePlayer()
     {
-        yield return new WaitUntil(() => isConnected && PhotonNetwork.InRoom);
+        yield return new WaitUntil(() => PhotonNetwork.InRoom);
         StartCoroutine(CreatePlayer());
     }
 
@@ -42,6 +48,6 @@ public class GameManager : MonoBehaviour
         yield return new WaitForSeconds(1); // Adding a small delay to ensure the scene is loaded
         PhotonNetwork.Instantiate(this.playerPrefab.name, new Vector3(0f, 5f, 0f), Quaternion.identity, 0);
         Debug.Log("플레이어 생성");
-        isConnected = false;
+        //isConnected = false;
     }
 }

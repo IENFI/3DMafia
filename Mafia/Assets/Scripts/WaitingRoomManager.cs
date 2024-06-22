@@ -28,6 +28,8 @@ public class WaitingRoomManager : MonoBehaviourPunCallbacks
 
     void Start()
     {
+        GameManager.instance.isConnected = true;
+
         readyBtnText = ReadyBtn.GetComponentInChildren<TMP_Text>();
         startBtnText = StartBtn.GetComponentInChildren<TMP_Text>();
 
