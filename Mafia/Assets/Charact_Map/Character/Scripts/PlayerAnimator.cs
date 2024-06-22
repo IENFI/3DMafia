@@ -24,10 +24,7 @@ public class PlayerAnimator : MonoBehaviour
 
     public void Kill()
     {
-        if (PhotonNetwork.LocalPlayer.CustomProperties.ContainsKey("isMafia"))
-        {
-            animator.SetTrigger("kill");
-        }
+        animator.SetTrigger("kill");
     }
 
     public void Death()

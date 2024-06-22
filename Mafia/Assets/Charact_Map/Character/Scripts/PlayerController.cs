@@ -114,7 +114,7 @@ public class PlayerController : MonoBehaviourPun
             if (Input.GetMouseButtonDown(0))
             {
                 Debug.Log("Before Kill()");
-                if (Time.time - lastKillTime >= killCooldown)
+                if (Time.time - lastKillTime >= killCooldown && PhotonNetwork.LocalPlayer.CustomProperties.ContainsKey("isMafia"))
                 {
                     playerAnimator.Kill();
                     lastKillTime = Time.time;

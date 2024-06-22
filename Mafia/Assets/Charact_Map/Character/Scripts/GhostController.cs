@@ -6,8 +6,6 @@ using UnityEngine;
 public class GhostController : MonoBehaviourPun, IPunObservable
 {
     [SerializeField]
-    private KeyCode jumpKeyCode = KeyCode.Space;
-    [SerializeField]
     private Transform cameraTransform;
     [SerializeField]
     private GhostFPCamera cameraController;

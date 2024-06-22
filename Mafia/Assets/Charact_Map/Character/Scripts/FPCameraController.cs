@@ -11,44 +11,44 @@ public class FPCameraController : MonoBehaviour
     private float eulerAngleX;
     private float eulerAngleY;
 
-    public Transform player;       // 플레이어의 Transform
-    public Vector3 offset;         // 카메라와 플레이어 사이의 오프셋 값
-    public float smoothTime = 0.3f; // 카메라 이동의 부드러움을 조절하는 값
+    //public Transform player;       // 플레이어의 Transform
+    //public Vector3 offset;         // 카메라와 플레이어 사이의 오프셋 값
+    //public float smoothTime = 0.3f; // 카메라 이동의 부드러움을 조절하는 값
 
-    private Vector3 velocity = Vector3.zero;
-    private Animator playerAnimator;
+    //private Vector3 velocity = Vector3.zero;
+    //private Animator playerAnimator;
 
-    private void Start()
-    {
-        // 플레이어의 Animator 컴포넌트 가져오기
-        playerAnimator = player.GetComponentInChildren<Animator>();
+    //private void Start()
+    //{
+    //    // 플레이어의 Animator 컴포넌트 가져오기
+    //    playerAnimator = player.GetComponentInChildren<Animator>();
 
-        // 기본 오프셋 값 설정 (카메라와 플레이어 사이의 초기 거리)
-        offset = transform.position - player.position;
-    }
+    //    // 기본 오프셋 값 설정 (카메라와 플레이어 사이의 초기 거리)
+    //    offset = transform.position - player.position;
+    //}
 
-    private void LateUpdate()
-    {
-        if (playerAnimator != null)
-        {
-            // 애니메이션 상태에 따라 카메라 위치 조정
-            Vector3 targetPosition = player.position + offset;
+    //private void LateUpdate()
+    //{
+    //    if (playerAnimator != null)
+    //    {
+    //        // 애니메이션 상태에 따라 카메라 위치 조정
+    //        Vector3 targetPosition = player.position + offset;
 
-            // 애니메이션이 실행 중일 때 카메라 위치 조정 (예: "IsKicking" 파라미터를 기준으로)
-            if (playerAnimator.GetCurrentAnimatorStateInfo(0).IsName("Kill"))
-            {
-                targetPosition = player.position + offset + 2 * player.forward; // 카메라를 애니메이션에 맞게 조정
-            }
+    //        // 애니메이션이 실행 중일 때 카메라 위치 조정 (예: "IsKicking" 파라미터를 기준으로)
+    //        if (playerAnimator.GetCurrentAnimatorStateInfo(0).IsName("Kill"))
+    //        {
+    //            targetPosition = player.position + offset + player.forward; // 카메라를 애니메이션에 맞게 조정
+    //        }
 
-            // 부드럽게 카메라 위치를 변경
-            transform.position = Vector3.SmoothDamp(transform.position, targetPosition, ref velocity, smoothTime);
-        }
-        else
-        {
-            // 플레이어의 위치를 가져와 카메라 위치 설정
-            transform.position = player.position + offset;
-        }
-    }
+    //        // 부드럽게 카메라 위치를 변경
+    //        transform.position = Vector3.SmoothDamp(transform.position, targetPosition, ref velocity, smoothTime);
+    //    }
+    //    else
+    //    {
+    //        // 플레이어의 위치를 가져와 카메라 위치 설정
+    //        transform.position = player.position + offset;
+    //    }
+    //}
 
     public void RotateTo(float mouseX, float mouseY)
     {
