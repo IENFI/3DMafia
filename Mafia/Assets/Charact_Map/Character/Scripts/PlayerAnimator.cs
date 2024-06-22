@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
+using Photon.Pun;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PlayerAnimator : MonoBehaviour
 {
@@ -29,7 +31,10 @@ public class PlayerAnimator : MonoBehaviour
         {
             killTimer.StartCooldown();
         }
-        animator.SetTrigger("kill");
+        if (PhotonNetwork.LocalPlayer.CustomProperties.ContainsKey("isMafia"))
+        {
+            animator.SetTrigger("kill");
+        }
     }
 
     public void Death()

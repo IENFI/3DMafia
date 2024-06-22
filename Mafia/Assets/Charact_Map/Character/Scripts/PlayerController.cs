@@ -2,6 +2,7 @@ using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using ExitGames.Client.Photon;
 
 public class PlayerController : MonoBehaviourPun
 {
@@ -15,6 +16,7 @@ public class PlayerController : MonoBehaviourPun
     private Camera FPcamera;
     private Movement movement;
     private PlayerAnimator playerAnimator;
+    private PlayerAttack playerAttackCollision;
 
     [SerializeField]
     public float playerMoveSpeedUnit = 1; // 플레이어 이동 속도 단위
@@ -29,6 +31,12 @@ public class PlayerController : MonoBehaviourPun
 
     private bool isDead = false;
 
+    public PlayerReportRadius reportRadius; // ReportRadius 스크립트 참조
+    public float reportCooldown = 5f; // 신고 쿨타임
+    private float lastReportTime;
+
+
+
     void Start()
     {
         // Cursor.visible = false;                 // 마우스 커서를 보이지 않게
@@ -37,6 +45,7 @@ public class PlayerController : MonoBehaviourPun
         movement = GetComponent<Movement>();
         playerAnimator = GetComponentInChildren<PlayerAnimator>();
         cameraController = GetComponentInChildren<FPCameraController>();
+        playerAttackCollision = GetComponentInChildren<PlayerAttack>();
         FPcamera.cullingMask &= ~LayerMask.GetMask("Ghost");
 
         // 유령으로 변환할 때 필요한 설정
@@ -48,8 +57,7 @@ public class PlayerController : MonoBehaviourPun
         }
         gameObject.layer = playerLayer;
 
-        // 플레이어의 PhotonView를 PlayerList의 TagObject에 저장
-        PhotonNetwork.LocalPlayer.TagObject = GetComponent<PhotonView>();
+        lastReportTime = Time.time;
 
         // 커서를 숨기고 잠금 (필요에 따라 주석 해제)
         // Cursor.visible = false; 
@@ -98,13 +106,15 @@ public class PlayerController : MonoBehaviourPun
                 movement.JumpTo();        // 점프 함수 호출
             }
 
-            // 마우스 왼쪽 버튼을 누르면 발차기 공격
+            // 마우스 왼쪽 버튼을 누르면 Kill
             if (Input.GetMouseButtonDown(0))
             {
+                Debug.Log("Before Kill()");
                 if (Time.time - lastKillTime >= killCooldown)
                 {
                     playerAnimator.Kill();
                     lastKillTime = Time.time;
+                    playerAttackCollision.SeletKillMember();
                 }
             }
 
@@ -114,10 +124,20 @@ public class PlayerController : MonoBehaviourPun
                 // playerAnimator.OnWeaponAttack(); // 무기 공격 애니메이션 실행 (주석 처리됨)
             }
 
-            // 예시로 D키를 눌러 죽음을 시뮬레이트 (테스트용)
-            if (Input.GetKeyDown(KeyCode.K) && !isDead)
+            // 시체 없애기 시뮬레이트 함수
+            if (Input.GetKeyDown(KeyCode.K))
             {
-                photonView.RPC("Death", RpcTarget.All);
+                photonView.RPC("DisableAllCorpses", RpcTarget.All);
+            }
+
+            if (Input.GetKeyDown(KeyCode.R) && reportRadius.IsCorpseInRange())
+            {
+                Debug.Log("Before ReportCorpse()");
+
+                if (Time.time - lastReportTime >= reportCooldown)
+                {
+                    ReportCorpse();
+                }
             }
 
             float mouseX = Input.GetAxis("Mouse X");
@@ -136,6 +156,11 @@ public class PlayerController : MonoBehaviourPun
         isDead = true;
         playerAnimator.Death();
         StartCoroutine(HandleDeath());
+        ExitGames.Client.Photon.Hashtable props = new ExitGames.Client.Photon.Hashtable
+        {
+        { "isDead" , true }
+        };
+        PhotonNetwork.LocalPlayer.SetCustomProperties(props);
     }
 
     [PunRPC]
@@ -164,5 +189,28 @@ public class PlayerController : MonoBehaviourPun
     public void OriginMoveSpeed()
     {
         playerMoveSpeedUnit /= 5;
+    }
+
+    private void ReportCorpse()
+    {
+        Debug.Log("Corpse reported!");
+        lastReportTime = Time.time;
+        PhotonView votingSystemPhotonView = FindObjectOfType<VotingSystem>().GetComponent<PhotonView>();
+        if (votingSystemPhotonView != null)
+        {
+            votingSystemPhotonView.RPC("StartVote", RpcTarget.All);
+        }
+        // 신고 처리 로직 추가
+        // 예: 시체를 삭제하거나 상태를 변경합니다.
+    }
+
+    [PunRPC]
+    public void DisableAllCorpses()
+    {
+        GameObject[] corpses = GameObject.FindGameObjectsWithTag("Corpse");
+        foreach (GameObject corpse in corpses)
+        {
+            corpse.SetActive(false);
+        }
     }
 }

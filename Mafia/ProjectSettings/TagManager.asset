@@ -9,8 +9,7 @@ TagManager:
   - Canvas
   - CoinTest
   - ShopNPC
-  - KillTime
-  - Builder
+  - Corpse
   layers:
   - Default
   - TransparentFX
