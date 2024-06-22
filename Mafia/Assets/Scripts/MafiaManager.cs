@@ -23,6 +23,8 @@ public class MafiaManager : MonoBehaviourPunCallbacks
 
     private bool isSynced = false;
 
+    private bool gameOver = false;
+
     void Awake()
     {
         if (PhotonNetwork.IsMasterClient)
@@ -47,6 +49,11 @@ public class MafiaManager : MonoBehaviourPunCallbacks
         if (remainingMafiaNum == 0)
         {
             CitizenWin.SetActive(true);
+            if (!gameOver)
+            {
+                StartCoroutine(BackToHome());
+            }
+            gameOver = true;
             //gameover
         }
         else
@@ -57,6 +64,11 @@ public class MafiaManager : MonoBehaviourPunCallbacks
         if (remainingCitizenNum == 0)
         {
             MafiaWin.SetActive(true);
+            if (!gameOver)
+            {
+                StartCoroutine(BackToHome());
+            }
+            gameOver = true;
             //gameover
         }
         else
@@ -83,6 +95,17 @@ public class MafiaManager : MonoBehaviourPunCallbacks
                     }
                 }
             }
+        }
+    }
+
+    IEnumerator BackToHome()
+    {
+        yield return new WaitForSeconds(10f);
+
+        PhotonNetwork.AutomaticallySyncScene = true;
+        if (PhotonNetwork.IsMasterClient)
+        {
+            PhotonNetwork.LoadLevel("Level_0");
         }
     }
 
