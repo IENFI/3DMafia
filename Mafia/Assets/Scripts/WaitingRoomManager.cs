@@ -6,9 +6,11 @@ using UnityEngine.UI;
 using TMPro;
 using System.Collections;
 using System.Collections.Generic;
+using Photon.Voice.Unity;
 
 public class WaitingRoomManager : MonoBehaviourPunCallbacks
 {
+    public static GameManager instance = null;
     public Button ReadyBtn;
     public Button StartBtn;
 
@@ -17,6 +19,9 @@ public class WaitingRoomManager : MonoBehaviourPunCallbacks
 
     public TMP_Text readyBtnText;
     public TMP_Text startBtnText;
+
+    private static VoiceConnection voiceConnection;
+    private static bool voiceConnectionInitialized = false;
 
     void Awake()
     {
@@ -30,8 +35,43 @@ public class WaitingRoomManager : MonoBehaviourPunCallbacks
     {
         readyBtnText = ReadyBtn.GetComponentInChildren<TMP_Text>();
         startBtnText = StartBtn.GetComponentInChildren<TMP_Text>();
-
+        InitializeVoiceConnection();
         StartCoroutine(InitialState());
+    }
+    private void InitializeVoiceConnection()
+    {
+        // 모든 VoiceConnection 인스턴스 가져오기
+        var voiceConnections = FindObjectsOfType<VoiceConnection>();
+
+        // 여러 인스턴스가 있을 경우 하나만 유지하고 나머지는 제거
+        if (voiceConnections.Length > 1)
+        {
+            Debug.LogWarning("Multiple VoiceConnection instances found. Keeping only one and destroying others.");
+            for (int i = 1; i < voiceConnections.Length; i++)
+            {
+                Destroy(voiceConnections[i].gameObject);
+            }
+        }
+
+        // VoiceConnection 인스턴스가 있는 경우 재사용
+        if (voiceConnections.Length > 0)
+        {
+            voiceConnection = voiceConnections[0];
+            if (!voiceConnection.gameObject.scene.IsValid())
+            {
+                DontDestroyOnLoad(voiceConnection.gameObject);
+            }
+            Debug.Log("Using existing VoiceConnection instance.");
+        }
+        else if (!voiceConnectionInitialized)
+        {
+            // VoiceConnection 인스턴스가 없는 경우 새로 생성
+            GameObject voiceConnectionObject = new GameObject("VoiceConnection");
+            voiceConnection = voiceConnectionObject.AddComponent<VoiceConnection>();
+            DontDestroyOnLoad(voiceConnectionObject);
+            voiceConnectionInitialized = true;
+            Debug.Log("VoiceConnection component created and added to the scene.");
+        }
     }
 
     public IEnumerator InitialState()
@@ -144,13 +184,45 @@ public class WaitingRoomManager : MonoBehaviourPunCallbacks
         }
     }
 
+    
+    public void LeaveRoom()
+    {
+        GameManager.instance = null;
+        if (voiceConnection != null)
+        {
+            // 음성 채팅 연결 해제
+            if (voiceConnection.Client.InRoom)
+            {
+                voiceConnection.Client.OpLeaveRoom(false);
+            }
+        }
+        else
+        {
+            Debug.LogError("VoiceConnection is null. Cannot leave the voice room.");
+        }
 
-    public void LeaveRoom() => PhotonNetwork.LeaveRoom();
+        // Photon 룸 떠나기
+        PhotonNetwork.LeaveRoom();
+    }
 
     public override void OnLeftRoom()
     {
+        if (voiceConnection != null && voiceConnection.Client.LoadBalancingPeer != null)
+        {
+            voiceConnection.Client.LoadBalancingPeer.StopThread();
+        }
+        else
+        {
+            Debug.LogError("VoiceConnection or LoadBalancingPeer is null. Cannot clean up voice resources.");
+        }
+
         // 서버 씬으로 전환
         PhotonNetwork.LoadLevel("ServerScene");
+    }
+
+    public override void OnJoinedRoom()
+    {
+        Debug.Log("Joined room.");
     }
 }
 

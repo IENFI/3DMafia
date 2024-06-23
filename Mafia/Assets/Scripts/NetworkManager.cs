@@ -240,10 +240,16 @@ public class NetworkManager : MonoBehaviourPunCallbacks // 안현석 똑바로�
 
         if (PhotonNetwork.IsMasterClient)
         {
+            Debug.Log("마스터클라이언트임");
             GameManager.instance.isConnected = true;
             PhotonNetwork.LoadLevel("Level_0");
             Debug.Log("04. 방 입장 완료");
 
+
+        }
+        else
+        {
+            Debug.Log("마스터 클라이언트 아님");
         }
 
         //GameManager.instance.StartCoroutine(GameManager.instance.CreatePlayer());
