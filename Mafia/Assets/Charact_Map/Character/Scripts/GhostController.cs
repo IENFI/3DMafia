@@ -6,6 +6,8 @@ using UnityEngine;
 public class GhostController : MonoBehaviourPun, IPunObservable
 {
     [SerializeField]
+    private KeyCode jumpKeyCode = KeyCode.Space;
+    [SerializeField]
     private Transform cameraTransform;
     [SerializeField]
     private GhostFPCamera cameraController;
@@ -66,6 +68,14 @@ public class GhostController : MonoBehaviourPun, IPunObservable
 
             // 회전 설정 (항상 앞만 보도록 캐릭터의 회전은 카메라와 같은 회전 값으로 설정)
             transform.rotation = Quaternion.Euler(0, cameraTransform.eulerAngles.y, 0);
+
+            // Space키를 누르면 점프
+            if (Input.GetKeyDown(jumpKeyCode))
+            {
+                //playerAnimator.OnJump();    // 애니메이션 파라미터 설정 (onJump)
+                movement.JumpTo();        // 점프 함수 호출
+            }
+
 
             float mouseX = Input.GetAxis("Mouse X");
             float mouseY = Input.GetAxis("Mouse Y");

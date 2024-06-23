@@ -390,6 +390,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f41ee88a77ff74adaa05cfa95ba18aa8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  jumpKeyCode: 32
   cameraTransform: {fileID: 8533226331200603997}
   cameraController: {fileID: 0}
   ghostCamera: {fileID: 1702662082678770931}
@@ -428,13 +429,13 @@ CharacterController:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Height: 2
+  m_Height: 1
   m_Radius: 0.5
   m_SlopeLimit: 45
   m_StepOffset: 0.3
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Center: {x: 0, y: 0.3, z: 0}
 --- !u!114 &5438603245726841553
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -460,6 +461,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   moveSpeed: 4
+  gravity: -9
+  jumpForce: 3
 --- !u!1 &498253721421649741
 GameObject:
   m_ObjectHideFlags: 0
