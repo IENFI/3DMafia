@@ -25,6 +25,9 @@ public class MafiaManager : MonoBehaviourPunCallbacks
 
     private bool gameOver = false;
 
+    [SerializeField]
+    public GameObject choosingMafiaManager;
+
     void Awake()
     {
         if (PhotonNetwork.IsMasterClient)
@@ -79,15 +82,16 @@ public class MafiaManager : MonoBehaviourPunCallbacks
         }
     }
 
+    //managing dead states...
     public override void OnPlayerPropertiesUpdate(Player player, ExitGames.Client.Photon.Hashtable props)
     {
         foreach (object key in props.Keys)
         {
             if (key.ToString().Equals("isDead"))
             {
-                if (player.CustomProperties.ContainsKey("isDead"))
+                if ((bool)player.CustomProperties["isDead"])
                 {
-                    if (player.CustomProperties.ContainsKey("isMafia"))
+                    if ((bool)player.CustomProperties["isMafia"])
                     {
                         remainingMafiaNum--;
                     }

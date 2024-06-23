@@ -19,6 +19,7 @@ public class ChoosingMafiaManager : MonoBehaviourPunCallbacks
     {
         if (PhotonNetwork.IsMasterClient)
         {
+            Initializing();
             int playerNum;
             List<int> MafiaList;
             playerNum = PhotonNetwork.PlayerList.Length;
@@ -82,10 +83,16 @@ public class ChoosingMafiaManager : MonoBehaviourPunCallbacks
 
     public override void OnPlayerPropertiesUpdate(Player player, Hashtable props)
     {
-        if (player.CustomProperties.ContainsKey("isMafia") && player == PhotonNetwork.LocalPlayer)
+        foreach (object key in props.Keys)
         {
-            isMafia = true;
-            SendMafiaText();
+            if (key.ToString().Equals("isMafia"))
+            {
+                if ((bool)player.CustomProperties["isMafia"] && player == PhotonNetwork.LocalPlayer)
+                {
+                    isMafia = true;
+                    SendMafiaText();
+                }
+            }
         }
     }
 
@@ -104,19 +111,20 @@ public class ChoosingMafiaManager : MonoBehaviourPunCallbacks
         return result;
     }
 
-    /*
+    
     void Initializing()
     {
         foreach (Player player in PhotonNetwork.PlayerList)
         {
             ExitGames.Client.Photon.Hashtable props = new ExitGames.Client.Photon.Hashtable
             {
-            { "isMafia" , false }
+                { "isMafia" , false },
+                { "isDead" , false }
             };
             player.SetCustomProperties(props);
         }
     }
-    */
+    
 
     void MafiaSelecting(int mafiaNum, List<int> MafiaList)
     {

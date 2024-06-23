@@ -116,7 +116,7 @@ public class VoteManager : MonoBehaviourPunCallbacks
 
     void Update()
     {
-        if (PhotonNetwork.LocalPlayer.CustomProperties.ContainsKey("isDead"))
+        if ((bool)PhotonNetwork.LocalPlayer.CustomProperties["isDead"])
             return;
 
         if (isMeetingActivated)
@@ -161,7 +161,7 @@ public class VoteManager : MonoBehaviourPunCallbacks
         {
             if (i < PhotonNetwork.PlayerList.Length)
             {
-                if (PhotonNetwork.PlayerList[i].CustomProperties.ContainsKey("isDead"))
+                if ((bool)PhotonNetwork.PlayerList[i].CustomProperties["isDead"])
                     btns[i].GetComponent<Button>().interactable = false;
                 else
                     btns[i].GetComponent<Button>().interactable = true;
@@ -331,26 +331,12 @@ public class VoteManager : MonoBehaviourPunCallbacks
         {
             if (voteList[i] >= criterion)
             {
-                Debug.Log(i);
-                if (PhotonNetwork.PlayerList[i].CustomProperties.ContainsKey("isMafia"))
+                //Debug.Log(i);
+                if (PhotonNetwork.PlayerList[i] == PhotonNetwork.LocalPlayer)
                 {
-                    if (PhotonNetwork.PlayerList[i] == PhotonNetwork.LocalPlayer)
-                    {
-                        GameObject playerGameObject = PhotonNetwork.PlayerList[i].TagObject as GameObject;
-                        playerGameObject.GetComponent<PhotonView>().RPC("Death", RpcTarget.All);
-                        Debug.Log(PhotonNetwork.PlayerList[i].NickName);
-                    }
-                    //mafiaManager.GetComponent<MafiaManager>().remainingMafiaNum -= 1;
-                }
-                else
-                {
-                    if (PhotonNetwork.PlayerList[i] == PhotonNetwork.LocalPlayer)
-                    {
-                        GameObject playerGameObject = PhotonNetwork.PlayerList[i].TagObject as GameObject;
-                        playerGameObject.GetComponent<PhotonView>().RPC("Death", RpcTarget.All);
-                        Debug.Log(PhotonNetwork.PlayerList[i].NickName);
-                    }
-                    //mafiaManager.GetComponent<MafiaManager>().remainingCitizenNum -= 1;
+                    GameObject playerGameObject = PhotonNetwork.PlayerList[i].TagObject as GameObject;
+                    playerGameObject.GetComponent<PhotonView>().RPC("Death", RpcTarget.All);
+                    Debug.Log(PhotonNetwork.PlayerList[i].NickName);
                 }
                 break;
             }

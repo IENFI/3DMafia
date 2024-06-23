@@ -12,7 +12,7 @@ public class GameManager : MonoBehaviour
     public bool isConnected = false;
     public int mafiaNum = 1;
 
-    public bool temp;
+    //public bool temp;
 
     private void Awake()
     {
