@@ -390,7 +390,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f41ee88a77ff74adaa05cfa95ba18aa8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  jumpKeyCode: 32
   cameraTransform: {fileID: 8533226331200603997}
   cameraController: {fileID: 0}
   ghostCamera: {fileID: 1702662082678770931}

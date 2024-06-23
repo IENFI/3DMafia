@@ -1638,7 +1638,7 @@ Transform:
   m_GameObject: {fileID: 4612387014716543518}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 1, z: 0.15}
+  m_LocalPosition: {x: 0, y: 1, z: 0.3}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1715,9 +1715,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd41dea329852f54e839a2ca41f8980f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  player: {fileID: 5495958845503400536}
-  offset: {x: 0, y: 0, z: 0}
-  smoothTime: 0.3
 --- !u!114 &3145651988097978649
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2463,7 +2460,7 @@ Canvas:
   m_Enabled: 1
   serializedVersion: 3
   m_RenderMode: 2
-  m_Camera: {fileID: 0}
+  m_Camera: {fileID: 1455724720101697617}
   m_PlaneDistance: 100
   m_PixelPerfect: 0
   m_ReceivesEvents: 1
@@ -2579,6 +2576,7 @@ GameObject:
   - component: {fileID: 8908268038222240882}
   - component: {fileID: 9017317886055484764}
   - component: {fileID: 1078253415464051748}
+  - component: {fileID: 1300349669358532152}
   m_Layer: 6
   m_Name: Player
   m_TagString: Player
@@ -2596,8 +2594,8 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 2.6, y: 2.6, z: 2.6}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 2, y: 2, z: 2}
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 9127922034185361487}
   - {fileID: 9141776143977151392}
@@ -2781,6 +2779,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 32da2b8fd5c6d8f4cac76885abd385e0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1300349669358532152
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6946556922499648511}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1223eeddfd096468685f3df5ae361113, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  interactDiastance: 5
 --- !u!1 &7047722846946561426
 GameObject:
   m_ObjectHideFlags: 0

@@ -10,6 +10,7 @@ TagManager:
   - CoinTest
   - ShopNPC
   - Corpse
+  - Door
   layers:
   - Default
   - TransparentFX
