@@ -18,6 +18,8 @@ public class WaitingRoomManager : MonoBehaviourPunCallbacks
     public TMP_Text readyBtnText;
     public TMP_Text startBtnText;
 
+    public int mafiaNum = 1;
+
     void Awake()
     {
         // 방장이 혼자 씬을 로딩하면, 나머지 사람들은 자동으로 싱크가 됨
@@ -26,6 +28,17 @@ public class WaitingRoomManager : MonoBehaviourPunCallbacks
 
     void Start()
     {
+        if (PhotonNetwork.IsMasterClient)
+        {
+            mafiaNum = GameManager.instance.mafiaNum;
+
+            ExitGames.Client.Photon.Hashtable prop = new ExitGames.Client.Photon.Hashtable
+            {
+            { "MafiaNum", mafiaNum }
+            };
+            PhotonNetwork.CurrentRoom.SetCustomProperties(prop);
+        }
+
         GameManager.instance.isConnected = true;
 
         readyBtnText = ReadyBtn.GetComponentInChildren<TMP_Text>();
@@ -151,6 +164,17 @@ public class WaitingRoomManager : MonoBehaviourPunCallbacks
     {
         // 서버 씬으로 전환
         PhotonNetwork.LoadLevel("ServerScene");
+    }
+
+    public override void OnMasterClientSwitched(Player newMasterClient)
+    {
+        if (newMasterClient == PhotonNetwork.LocalPlayer)
+        {
+            isReady = true;
+            SetReadyState(isReady);
+            ReadyBtn.GetComponent<Button>().interactable = false;
+        }
+        Debug.Log("New MasterClient: " + newMasterClient.NickName);
     }
 }
 

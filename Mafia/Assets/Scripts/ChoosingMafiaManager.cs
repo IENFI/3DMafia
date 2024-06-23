@@ -23,7 +23,7 @@ public class ChoosingMafiaManager : MonoBehaviourPunCallbacks
             int playerNum;
             List<int> MafiaList;
             playerNum = PhotonNetwork.PlayerList.Length;
-            mafiaNum = GameManager.instance.mafiaNum;
+            mafiaNum = (int)PhotonNetwork.CurrentRoom.CustomProperties["MafiaNum"];
             if (mafiaNum > playerNum)
                 mafiaNum = playerNum;
             //mafiaNum = (int)(Math.Sqrt((double)playerNum) + 0.5);

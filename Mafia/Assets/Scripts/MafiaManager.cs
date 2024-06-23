@@ -32,7 +32,7 @@ public class MafiaManager : MonoBehaviourPunCallbacks
     {
         if (PhotonNetwork.IsMasterClient)
         {
-            remainingMafiaNum = GameManager.instance.mafiaNum;
+            remainingMafiaNum = (int)PhotonNetwork.CurrentRoom.CustomProperties["MafiaNum"];
             photonView.RPC("SyncMafiaNum", RpcTarget.All, remainingMafiaNum);
         }
     }
