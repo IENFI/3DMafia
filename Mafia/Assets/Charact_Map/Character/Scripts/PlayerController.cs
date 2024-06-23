@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using ExitGames.Client.Photon;
 using TMPro;
+using UnityEngine.Rendering;
 
 public class PlayerController : MonoBehaviourPun
 {
@@ -39,6 +40,8 @@ public class PlayerController : MonoBehaviourPun
     public TextMeshProUGUI nickName;
     public PhotonView PV;
 
+    public GameObject[] objectsToHide;
+
     void Start()
     {
         // Cursor.visible = false;                 // 마우스 커서를 보이지 않게
@@ -66,6 +69,11 @@ public class PlayerController : MonoBehaviourPun
         // Cursor.lockState = CursorLockMode.Locked;
 
         nickName.text = PV.Owner.NickName;
+
+        if (photonView.IsMine)
+        {
+            HideObjects();
+        }
     }
 
     // 매 프레임마다 호출되는 Update 함수
@@ -110,8 +118,8 @@ public class PlayerController : MonoBehaviourPun
                 movement.JumpTo();        // 점프 함수 호출
             }
 
-            // 마우스 왼쪽 버튼을 누르면 Kill
-            if (Input.GetMouseButtonDown(0))
+            // Z 버튼을 누르면 Kill
+            if (Input.GetKeyDown(KeyCode.Z))
             {
                 Debug.Log("Before Kill()");
                 if (Time.time - lastKillTime >= killCooldown && PhotonNetwork.LocalPlayer.CustomProperties.ContainsKey("isMafia"))
@@ -215,6 +223,22 @@ public class PlayerController : MonoBehaviourPun
         foreach (GameObject corpse in corpses)
         {
             corpse.SetActive(false);
+        }
+    }
+
+    private void HideObjects()
+    {
+        foreach (GameObject obj in objectsToHide)
+        {
+            if (obj != null)
+            {
+                Renderer[] renderers = obj.GetComponentsInChildren<Renderer>();
+                foreach (Renderer renderer in renderers)
+                {
+                    // 그림자는 보이게 하기
+                    renderer.shadowCastingMode = ShadowCastingMode.ShadowsOnly;
+                }
+            }
         }
     }
 }

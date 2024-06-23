@@ -2460,7 +2460,7 @@ Canvas:
   m_Enabled: 1
   serializedVersion: 3
   m_RenderMode: 2
-  m_Camera: {fileID: 1455724720101697617}
+  m_Camera: {fileID: 0}
   m_PlaneDistance: 100
   m_PixelPerfect: 0
   m_ReceivesEvents: 1
@@ -2681,6 +2681,8 @@ MonoBehaviour:
   reportCooldown: 5
   nickName: {fileID: 6280200141164834972}
   PV: {fileID: 2872909238564681740}
+  objectsToHide:
+  - {fileID: 2243264917339039516}
 --- !u!114 &6667265159653745265
 MonoBehaviour:
   m_ObjectHideFlags: 0
