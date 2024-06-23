@@ -44,9 +44,6 @@ public class PlayerController : MonoBehaviourPun
 
     void Start()
     {
-        // Cursor.visible = false;                 // 마우스 커서를 보이지 않게
-        // Cursor.lockState = CursorLockMode.Locked;   // 마우스 커서 위치 고정
-
         movement = GetComponent<Movement>();
         playerAnimator = GetComponentInChildren<PlayerAnimator>();
         cameraController = GetComponentInChildren<FPCameraController>();
@@ -63,10 +60,6 @@ public class PlayerController : MonoBehaviourPun
         gameObject.layer = playerLayer;
 
         lastReportTime = Time.time;
-
-        // 커서를 숨기고 잠금 (필요에 따라 주석 해제)
-        // Cursor.visible = false; 
-        // Cursor.lockState = CursorLockMode.Locked;
 
         nickName.text = PV.Owner.NickName;
 
