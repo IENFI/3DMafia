@@ -41,6 +41,11 @@ public class VoteManager : MonoBehaviourPunCallbacks
     [SerializeField]
     public GameObject voteManager;
 
+    [Header("VoteReuslt")]
+    public CanvasGroup VoteResultUI; // VoteResultUI의 CanvasGroup을 설정합니다.
+    public TMP_Text resultMessage;
+
+
     private Dictionary<int, TMP_Text> btnTexts;
     private Dictionary<int, Button> btns;
 
@@ -52,6 +57,9 @@ public class VoteManager : MonoBehaviourPunCallbacks
     private int[] voteList = new int[10]; //10    ִ   ÷  ̾    ,     list  ƴϰ  array  , 0      ʱ ȭ
     private int criterion; // ÷  ̾       ݼ 
     private int remainingPlayerNum;
+
+    private bool VoteResultBool;
+    private int VoteSelectPlayerNum = -1;
 
     // Start is called before the first frame update
     void MeetingStart()
@@ -104,6 +112,7 @@ public class VoteManager : MonoBehaviourPunCallbacks
 
         Initialize();
         VoteUI.SetActive(true);
+
     }
 
     /*
@@ -123,21 +132,31 @@ public class VoteManager : MonoBehaviourPunCallbacks
         {
             MeetingStart();
             isMeetingActivated = false;
+            VoteResultBool = true;
+            VoteSelectPlayerNum = -1;
         }
 
         //           ÿ ,
         // ð             ߰   ʿ 
-        if (IsElected() || AllVoted())
+        if ((IsElected() || AllVoted())&&VoteResultBool)
         {
+            VoteResultBool = false;
             VotingResult();
-            VoteUI.SetActive(false);
-            // ȸ       .      θ        .
-            isMeetingActivated = true;
-            voteManager.SetActive(false);
+            StartCoroutine(DelayActions());
         }
+
 
     }
 
+    private IEnumerator DelayActions()
+    {
+        // 3초 대기
+        yield return new WaitForSeconds(10f);
+
+       
+        isMeetingActivated = true;
+        voteManager.SetActive(false);
+    }
     //   ึ    ʱ ȭ
     private void Initialize()
     {
@@ -209,7 +228,7 @@ public class VoteManager : MonoBehaviourPunCallbacks
 
     private void SendText(int i, int voteCount)
     {
-        btnTexts[i].text = "Name: " + PhotonNetwork.PlayerList[i].NickName + ", vote count: " + voteCount.ToString();
+        btnTexts[i].text = PhotonNetwork.PlayerList[i].NickName + "\n" + voteCount.ToString();
     }
 
     #region Voting functions
@@ -327,35 +346,118 @@ public class VoteManager : MonoBehaviourPunCallbacks
 
     private void VotingResult()
     {
-        for (int i = 0; i < 10; i++)
+        GameObject timerObject = GameObject.FindWithTag("Timer");
+        if (timerObject != null)
         {
-            if (voteList[i] >= criterion)
+            Timer timer = timerObject.GetComponent<Timer>();
+
+            for (int i = 0; i < 10; i++)
             {
-                Debug.Log(i);
-                if (PhotonNetwork.PlayerList[i].CustomProperties.ContainsKey("isMafia"))
+                if (voteList[i] >= criterion)
                 {
-                    if (PhotonNetwork.PlayerList[i] == PhotonNetwork.LocalPlayer)
+                    Debug.Log(i);
+                    VoteSelectPlayerNum = i;
+                    StartCoroutine(FadeButton(btns[i], Color.red, 2.0f, 2.0f));
+
+                    if (PhotonNetwork.PlayerList[i].CustomProperties.ContainsKey("isMafia"))
                     {
-                        GameObject playerGameObject = PhotonNetwork.PlayerList[i].TagObject as GameObject;
-                        playerGameObject.GetComponent<PhotonView>().RPC("Death", RpcTarget.All);
-                        Debug.Log(PhotonNetwork.PlayerList[i].NickName);
+                        if (PhotonNetwork.PlayerList[i] == PhotonNetwork.LocalPlayer)
+                        {
+                            GameObject playerGameObject = PhotonNetwork.PlayerList[i].TagObject as GameObject;
+                            playerGameObject.GetComponent<PhotonView>().RPC("Death", RpcTarget.All);
+                            Debug.Log(PhotonNetwork.PlayerList[i].NickName);
+                        }
                     }
-                    //mafiaManager.GetComponent<MafiaManager>().remainingMafiaNum -= 1;
-                }
-                else
-                {
-                    if (PhotonNetwork.PlayerList[i] == PhotonNetwork.LocalPlayer)
+                    else
                     {
-                        GameObject playerGameObject = PhotonNetwork.PlayerList[i].TagObject as GameObject;
-                        playerGameObject.GetComponent<PhotonView>().RPC("Death", RpcTarget.All);
-                        Debug.Log(PhotonNetwork.PlayerList[i].NickName);
+                        if (PhotonNetwork.PlayerList[i] == PhotonNetwork.LocalPlayer)
+                        {
+                            GameObject playerGameObject = PhotonNetwork.PlayerList[i].TagObject as GameObject;
+                            playerGameObject.GetComponent<PhotonView>().RPC("Death", RpcTarget.All);
+                            Debug.Log(PhotonNetwork.PlayerList[i].NickName);
+
+                        }
                     }
-                    //mafiaManager.GetComponent<MafiaManager>().remainingCitizenNum -= 1;
+                    break;
                 }
-                break;
             }
+                    StartCoroutine(FadeInRoleUI());
+
+                            // 타이머를 0으로 설정하고 다시 시작
+                            if (timer != null)
+                            {
+                                timer.photonView.RPC("RPC_PauseTimer", RpcTarget.All);
+                                timer.photonView.RPC("RPC_StartTimer", RpcTarget.All);
+                            }
+        }
+        else
+        {
+            Debug.LogError("GameTimer 태그를 가진 타이머 오브젝트를 찾을 수 없습니다.");
         }
     }
+
+    private IEnumerator FadeInRoleUI()
+    {
+        CanvasGroup uiToActivate1 = null;
+        if (VoteSelectPlayerNum != -1) { 
+            if (PhotonNetwork.PlayerList[VoteSelectPlayerNum].CustomProperties.ContainsKey("isMafia"))
+            {
+                if ((bool)PhotonNetwork.PlayerList[VoteSelectPlayerNum].CustomProperties["isMafia"])
+                {
+                    // 닉네임과함께 마피아인지, 시민인지표시 (닉네임 인자를 받아야함.)
+                    // resultMessage = PhotonNetwork.PlayerList[i].NickName+"님은 마피아 였습니다!!";
+                    Debug.Log("이건됨");
+                    resultMessage.text = "마피아를 찾아냈습니다!!";
+                    VoteResultUI.gameObject.SetActive(true);
+                    uiToActivate1 = VoteResultUI;
+                }
+            }
+            else
+            {
+                resultMessage.text = "무고한 시민이 죽었습니다..";
+                VoteResultUI.gameObject.SetActive(true);
+                uiToActivate1 = VoteResultUI;
+            }
+
+            if (uiToActivate1 != null)
+            {
+                yield return StartCoroutine(FadeCanvasGroup(uiToActivate1, 0, 1, 3)); // 페이드 인을 3초 동안 수행
+                    Debug.Log("요것도됨");   
+
+                yield return new WaitForSeconds(2); // 2초 대기
+                VoteUI.SetActive(false);
+
+                yield return StartCoroutine(FadeCanvasGroup(uiToActivate1, 1, 0, 1)); // 페이드 아웃을 1초 동안 수행
+                uiToActivate1.gameObject.SetActive(false);
+
+            }
+        }
+        else
+        {
+            VoteUI.SetActive(false);
+        }
+    }
+
+    private IEnumerator FadeCanvasGroup(CanvasGroup canvasGroup, float start, float end, float duration)
+    {
+        float elapsedTime = 0f;
+
+        while (elapsedTime < duration)
+        {
+            canvasGroup.alpha = Mathf.Lerp(start, end, elapsedTime / duration);
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+
+        canvasGroup.alpha = end;
+    }
+
+    private IEnumerator WaitAndDisableVoteUI(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        VoteUI.SetActive(false);
+    }
+
 
     private bool IsElected()
     {
@@ -387,4 +489,36 @@ public class VoteManager : MonoBehaviourPunCallbacks
 
         return result;
     }
+
+    private IEnumerator FadeButton(Button button, Color targetColor, float fadeInDuration, float holdDuration)
+    {
+        Color originalColor = button.image.color;
+        float timer = 0f;
+
+        // Fade in
+        while (timer < fadeInDuration)
+        {
+            button.image.color = Color.Lerp(originalColor, targetColor, timer / fadeInDuration);
+            timer += Time.deltaTime;
+            yield return null;
+        }
+
+        // Hold
+        button.image.color = targetColor;
+        yield return new WaitForSeconds(holdDuration);
+
+        // Fade out
+        timer = 0f;
+        while (timer < fadeInDuration)
+        {
+            button.image.color = Color.Lerp(targetColor, originalColor, timer / fadeInDuration);
+            timer += Time.deltaTime;
+            yield return null;
+        }
+
+        // Reset color to original
+        button.image.color = originalColor;
+    }
+
+
 }

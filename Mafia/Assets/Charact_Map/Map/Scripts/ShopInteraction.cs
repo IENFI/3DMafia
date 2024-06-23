@@ -8,7 +8,6 @@ using Photon.Realtime;
 
 public class ShopInteraction : MonoBehaviourPun
 {
-
     // 스피드업 아이템 관련
     [SerializeField]
     private GameObject Player;
@@ -16,14 +15,14 @@ public class ShopInteraction : MonoBehaviourPun
     private float increasedSpeed = 4;
     private float originalSpeed;
 
-
     [SerializeField] private Renderer outlineRenderer;
     public GameObject ShopUI; // 상점 UI
     private PlayerCoinController player; // 플레이어의 재화 관리 스크립트
     public Image doubleCoinsImage; // 코인 2배 아이템 활성화 이미지
-    public Image speedUpImage; // 코인 2배 아이템 활성화 이미지
+    public Image speedUpImage; // 스피드업 아이템 활성화 이미지
 
     private bool isPlayerInRange = false; // 플레이어가 상점 주변에 있는지 여부
+    private PlayerController playerController;
 
     void Start()
     {
@@ -41,6 +40,7 @@ public class ShopInteraction : MonoBehaviourPun
         {
             isPlayerInRange = true;
             player = other.GetComponent<PlayerCoinController>();
+            playerController = player.GetComponent<PlayerController>();
             outlineRenderer.material.color = Color.blue; // 외곽을 파란색으로 변경
         }
     }
@@ -52,6 +52,8 @@ public class ShopInteraction : MonoBehaviourPun
             isPlayerInRange = false;
             outlineRenderer.material.color = Color.white; // 외곽을 기본 색상으로 변경
             player = null;
+            playerController = null;
+            ShopUI.SetActive(false); // 플레이어가 범위를 벗어나면 ShopUI를 비활성화
         }
     }
 
@@ -61,8 +63,6 @@ public class ShopInteraction : MonoBehaviourPun
         if (isPlayerInRange && Input.GetKeyDown(KeyCode.G))
         {
             ShopUI.SetActive(true);
-            // 다른 상호작용 방지를 위해 플레이어 조작 비활성화
-            // 예: 캐릭터 이동, 카메라 회전 등
         }
     }
 
@@ -81,8 +81,6 @@ public class ShopInteraction : MonoBehaviourPun
 
                 // 10초 후에 player의 DeactivateDoubleCoin 메서드 호출
                 StartCoroutine(DeactivateDoubleCoinAfterDelay(player, 10.0f));
-
-                // 상점 UI 비활성화
             }
             else
             {
@@ -110,7 +108,6 @@ public class ShopInteraction : MonoBehaviourPun
 
                 // 10초 후에 플레이어의 속도를 원래대로 되돌리는 코루틴 호출
                 StartCoroutine(ResetPlayerSpeedAfterDelay(playerController, 10.0f));
-
             }
             else
             {

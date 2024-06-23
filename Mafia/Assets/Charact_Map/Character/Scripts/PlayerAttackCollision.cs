@@ -59,6 +59,7 @@ public class PlayerAttack : MonoBehaviour
         // 가장 가까운 collider가 있는 경우 해당 collider의 Death 함수 호출
         if (nearestCollider != null && Time.time - lastKillTime >= killCooldown)
         {
+
             PhotonView otherPhotonView = nearestCollider.GetComponent<PhotonView>();
             if (otherPhotonView != null)
             {

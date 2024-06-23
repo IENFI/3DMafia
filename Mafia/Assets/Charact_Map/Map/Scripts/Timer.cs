@@ -1,25 +1,25 @@
+using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
-public class Timer : MonoBehaviour
+public class Timer : MonoBehaviourPun
 {
     [SerializeField] private TMP_Text text;
-    [SerializeField] private float time = 300f;  // 기본값 설정
-    private float curTime;  // 인스펙터에 노출되지 않음
+    [SerializeField] private float time = 300f;  // 타이머 기본 시간
+    private float curTime;  // 현재 남은 시간
 
     private Light directionalLight;
     private Coroutine blinkCoroutine;
+    private Coroutine timerCoroutine;  // 타이머 코루틴 참조 변수
     private bool isBlinking;
     private fillAmountController fillController;
-
-    int minute;
-    int second;
-
-    [SerializeField] private List<GameObject> Merchants; // 상인 GameObject 리스트
+    public GameObject ShopUI; // 상점 UI
 
     private bool isDaytime = true; // 낮/밤 상태를 추적하는 변수
+
+    [SerializeField] private List<GameObject> Merchants; // 상인 GameObject 리스트
 
     private void Awake()
     {
@@ -28,17 +28,91 @@ public class Timer : MonoBehaviour
         Debug.Log("Timer Awake: directionalLight and fillController initialized.");
     }
 
+    [PunRPC]
+    public void RPC_StartTimer()
+    {
+        StartTimer();
+    }
+
+    [PunRPC]
+    public void RPC_PauseTimer()
+    {
+        PauseTimer();
+    }
+
+    [PunRPC]
+    public void RPC_SetDay()
+    {
+        SetDay();
+    }
+    
+    public void SetDay()
+    {
+        isDaytime = true;
+        Debug.Log("낮으로변해라!!");
+    }
     public void StartTimer()
     {
         curTime = time;
-        StartCoroutine(TimerCoroutine());
+        // 낮/밤 상태 전환
+        isDaytime = !isDaytime;
+        // 자연광 전환
+        directionalLight.enabled = !directionalLight.enabled;
+        // 밤으로 전환될 때만 상인 활성화
+        if (isDaytime)
+        {
+            ActivateRandomMerchants();
+        }
+        else
+        {
+            DeactivateAllMerchants();
+
+
+        }
+        timerCoroutine = StartCoroutine(TimerCoroutine());  // 타이머 코루틴 시작
+    }
+    public void StartTimer2()
+    {
+        curTime = time;
+        timerCoroutine = StartCoroutine(TimerCoroutine());  // 타이머 코루틴 시작
+    }
+
+    
+public void PauseTimer()
+    {
+        if (timerCoroutine != null)
+        {
+            StopCoroutine(timerCoroutine);  // 타이머 코루틴 중지
+            timerCoroutine = null;
+        }
+
+        if (blinkCoroutine != null)
+        {
+            StopCoroutine(blinkCoroutine);  // 반짝임 코루틴 중지
+            text.color = Color.black;  // 텍스트 색상 초기화
+        }
+
+        Debug.Log("타이머가 멈췄습니다.");
+    }
+
+    public void RestartTimer()
+    {
+        PauseTimer();  // 타이머 중지
+        curTime = time;  // 타이머 초기화
+        /*photonView.RPC("RPC_StartTimer", RpcTarget.All);*/
     }
 
     private IEnumerator TimerCoroutine()
     {
+
         while (true)
         {
-            curTime = time;  // 타이머를 초기화합니다.
+            curTime = time;
+
+            GameObject playerObject = PhotonNetwork.LocalPlayer.TagObject as GameObject;
+            PhotonView playerPhotonView = playerObject.GetComponent<PhotonView>();
+            playerPhotonView.RPC("DisableAllCorpses", RpcTarget.All);
+
             isBlinking = false;
 
             if (fillController != null)
@@ -46,13 +120,13 @@ public class Timer : MonoBehaviour
                 fillController.ResetFillAmount(); // 각 사이클 시작 시 fill amount 초기화
             }
 
-            text.color = Color.black;  // 텍스트 색상을 초기화합니다.
+            text.color = Color.black;  // 텍스트 색상 초기화
 
             while (curTime > 0)
             {
                 curTime -= Time.deltaTime;
-                minute = (int)curTime / 60;
-                second = (int)curTime % 60;
+                int minute = (int)curTime / 60;
+                int second = (int)curTime % 60;
                 text.text = minute.ToString("00") + ":" + second.ToString("00");
 
                 if (curTime <= 10f && !isBlinking)  // 10초 이하로 남았을 때
@@ -68,9 +142,9 @@ public class Timer : MonoBehaviour
             // 타이머가 종료되었을 때
             Debug.Log("시간 종료");
             curTime = 0;
-
             // 자연광 전환
             directionalLight.enabled = !directionalLight.enabled;
+            
 
             // 밤으로 전환될 때만 상인 활성화
             if (isDaytime)
@@ -80,33 +154,16 @@ public class Timer : MonoBehaviour
             else
             {
                 DeactivateAllMerchants();
+  
             }
-
-            /*// 낮으로 전환될 때만 코인 2배 효과 및 속도 증가 효과 해제
-            if (isDaytime)
-            {
-                CoinScript[] allCoinPlayers = FindObjectsOfType<CoinScript>();
-                SpeedUpScript[] allSpeedUpPlayers = FindObjectsOfType<SpeedUpScript>();
-
-                // 코인 2배 효과 및 속도 증가 효과 해제
-                foreach (var coinPlayer in allCoinPlayers)
-                {
-                    coinPlayer.DeactivateDoubleCoins();
-                }
-                foreach (var speedUpPlayer in allSpeedUpPlayers)
-                {
-                    speedUpPlayer.DeactivateSpeedUp();
-                }
-            }*/
-
             // 낮/밤 상태 전환
             isDaytime = !isDaytime;
 
-            // 반짝임 멈추기
+            // 반짝임 코루틴 멈춤
             if (blinkCoroutine != null)
             {
                 StopCoroutine(blinkCoroutine);
-                text.color = Color.black;  // 색상 초기화
+                text.color = Color.black;  // 텍스트 색상 초기화
             }
 
             // fillAmount 초기화
@@ -139,6 +196,7 @@ public class Timer : MonoBehaviour
                 Merchants[randomIndex].SetActive(true);
             }
         }
+
     }
 
     private void DeactivateAllMerchants()
@@ -147,9 +205,10 @@ public class Timer : MonoBehaviour
         {
             merchant.SetActive(false);
         }
+        ShopUI.SetActive(false);
     }
 
-    IEnumerator BlinkText()
+    private IEnumerator BlinkText()
     {
         while (true)
         {
@@ -168,5 +227,5 @@ public class Timer : MonoBehaviour
     void Update()
     {
 
-    }
+    }   
 }

@@ -7,6 +7,9 @@ using TMPro;
 public class SceneInitializer : MonoBehaviourPunCallbacks
 {
     public TMP_Text coinTextPrefab; // CoinText 프리팹을 여기서 설정합니다.
+    public GameObject LoadingImage; // 로딩 이미지를 설정합니다.
+    public CanvasGroup CitizenUI; // CitizenUI의 CanvasGroup을 설정합니다.
+    public CanvasGroup MafiaUI; // MafiaUI의 CanvasGroup을 설정합니다.
 
     public override void OnEnable()
     {
@@ -28,6 +31,8 @@ public class SceneInitializer : MonoBehaviourPunCallbacks
     {
         yield return new WaitForSeconds(1); // 필요한 시간만큼 대기
         InitializeScene();
+        yield return new WaitForSeconds(1); // 역할 배정 후 잠시 대기
+        StartCoroutine(FadeInRoleUI());
     }
 
     private void InitializeScene()
@@ -108,17 +113,61 @@ public class SceneInitializer : MonoBehaviourPunCallbacks
             }
         }
 
-        // 타이머 초기화 및 실행
+        // 타이머 초기화
         Timer timer = FindObjectOfType<Timer>();
-        if (timer != null)
-        {
-            timer.StartTimer(); // 타이머 시작
-            Debug.Log("Timer started.");
-        }
-        else
+        if (timer == null)
         {
             Debug.LogWarning("Timer script not found!");
         }
+    }
+
+    private IEnumerator FadeInRoleUI()
+    {
+        CanvasGroup uiToActivate = null;
+
+        if (PhotonNetwork.LocalPlayer.CustomProperties.ContainsKey("isMafia"))
+        {
+            MafiaUI.gameObject.SetActive(true);
+            uiToActivate = MafiaUI;
+        }
+        else
+        {
+            CitizenUI.gameObject.SetActive(true);
+            uiToActivate = CitizenUI;
+        }
+
+        if (uiToActivate != null)
+        {
+            yield return StartCoroutine(FadeCanvasGroup(uiToActivate, 0, 1, 2)); // 페이드 인을 2초 동안 수행
+            LoadingImage.SetActive(false); // LoadingImage 비활성화
+
+            yield return new WaitForSeconds(2); // 2초 대기
+
+            yield return StartCoroutine(FadeCanvasGroup(uiToActivate, 1, 0, 1)); // 페이드 아웃을 1초 동안 수행
+            uiToActivate.gameObject.SetActive(false);
+
+            // 타이머 시작
+            Timer timer = FindObjectOfType<Timer>();
+            if (timer != null)
+            {
+                timer.StartTimer2();
+                Debug.Log("Timer started.");
+            }
+        }
+    }
+
+    private IEnumerator FadeCanvasGroup(CanvasGroup canvasGroup, float start, float end, float duration)
+    {
+        float elapsedTime = 0f;
+
+        while (elapsedTime < duration)
+        {
+            canvasGroup.alpha = Mathf.Lerp(start, end, elapsedTime / duration);
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+
+        canvasGroup.alpha = end;
     }
 
     public override void OnDisable()

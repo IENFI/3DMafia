@@ -10,6 +10,9 @@ TagManager:
   - CoinTest
   - ShopNPC
   - Corpse
+  - KillTime
+  - Builder
+  - Timer
   layers:
   - Default
   - TransparentFX

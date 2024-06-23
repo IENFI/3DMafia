@@ -49,6 +49,10 @@ MonoBehaviour:
   - StartVote
   - DisableAllCorpses
   - SyncMafiaNum
+  - RPC_PauseTimer
+  - RPC_StartTimer
+  - RPC_SetDay
+  - RPC_DeactivateAllMerchants
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

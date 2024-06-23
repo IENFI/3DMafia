@@ -17,6 +17,7 @@ public class MafiaManager : MonoBehaviourPunCallbacks
     [SerializeField]
     public GameObject MafiaWin;
     public GameObject CitizenWin;
+    public GameObject RemainingUI;
 
     public int remainingMafiaNum;
     public int remainingCitizenNum;
@@ -41,8 +42,8 @@ public class MafiaManager : MonoBehaviourPunCallbacks
     // Update is called once per frame
     void Update()
     {
-        remainingCitizenText.text = "Remaining Citizens: " + remainingCitizenNum.ToString();
-        remainingMafiaText.text = "Remaining Mafias: " + remainingMafiaNum.ToString();
+        remainingCitizenText.text = "남은 시민 수: " + remainingCitizenNum.ToString();
+        remainingMafiaText.text = "남은 마피아 수: " + remainingMafiaNum.ToString();
 
         if (remainingMafiaNum == 0)
         {
@@ -62,6 +63,11 @@ public class MafiaManager : MonoBehaviourPunCallbacks
         else
         {
             MafiaWin.SetActive(false);
+        }
+
+        if (Input.GetKeyDown(KeyCode.Tab))
+        {
+            RemainingUI.SetActive(!RemainingUI.activeSelf); // 탭 키로 UI를 켜고 끕니다.
         }
     }
 
@@ -106,8 +112,8 @@ public class MafiaManager : MonoBehaviourPunCallbacks
             remainingMafiaNum = playerNum;
         remainingCitizenNum = playerNum - remainingMafiaNum;
 
-        remainingCitizenText.text = "Remaining Citizens: " + remainingCitizenNum.ToString();
-        remainingMafiaText.text = "Remaining Mafias: " + remainingMafiaNum.ToString();
+        remainingCitizenText.text = "남은 시민 수: " + remainingCitizenNum.ToString();
+        remainingMafiaText.text = "남은 마피아 수: " + remainingMafiaNum.ToString();
 
     }
 }

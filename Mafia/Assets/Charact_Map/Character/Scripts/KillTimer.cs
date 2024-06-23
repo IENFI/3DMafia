@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using System;
+using Photon.Pun;
 
 public class KillTimer : MonoBehaviour
 {
@@ -15,8 +16,7 @@ public class KillTimer : MonoBehaviour
 
     void Start()
     {
-        cooldownImage.fillAmount = 1; // 초기에는 이미지가 비어있는 상태로 설정
-        cooldownText.text = "킬"; // 텍스트도 초기화
+        StartCoroutine(KillTime());
     }
 
     void Update()
@@ -27,14 +27,30 @@ public class KillTimer : MonoBehaviour
             if (cooldownTime <= 0)
             {
                 isCooldown = false; // 쿨타임 종료
-                cooldownImage.fillAmount = 0; // 이미지 초기화
-                cooldownText.text = ""; // 텍스트 초기화
+                cooldownImage.fillAmount = 1; // 이미지를 원래대로 표시
+                cooldownText.text = "킬"; // 텍스트를 원래대로 표시
             }
             else
             {
                 cooldownImage.fillAmount = 1 - (cooldownTime / cooldownDuration); // 쿨타임 동안 이미지 채워짐
                 cooldownText.text = Mathf.Ceil(cooldownTime).ToString(); // 남은 시간 텍스트로 표시
             }
+        }
+    }
+
+    public IEnumerator KillTime()
+    {
+        yield return new WaitForSeconds(1);
+
+        if (PhotonNetwork.LocalPlayer.CustomProperties.ContainsKey("isMafia"))
+        {
+            cooldownImage.fillAmount = 1;
+            cooldownText.text = "킬";
+        }
+        else
+        {
+            cooldownImage.fillAmount = 0; // 마피아가 아니면 이미지는 숨김
+            cooldownText.text = ""; // 마피아가 아니면 텍스트도 숨김
         }
     }
 
