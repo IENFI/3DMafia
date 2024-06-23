@@ -40,24 +40,17 @@ public class Timer : MonoBehaviourPun
         PauseTimer();
     }
 
-    [PunRPC]
-    public void RPC_SetDay()
-    {
-        SetDay();
-    }
-    
-    public void SetDay()
-    {
-        isDaytime = true;
-        Debug.Log("낮으로변해라!!");
-    }
+  
     public void StartTimer()
     {
         curTime = time;
+        Debug.Log("타이머시간" +curTime);
         // 낮/밤 상태 전환
         isDaytime = !isDaytime;
+        Debug.Log("낮밤" + isDaytime);
         // 자연광 전환
         directionalLight.enabled = !directionalLight.enabled;
+        Debug.Log("자연광"+directionalLight);
         // 밤으로 전환될 때만 상인 활성화
         if (isDaytime)
         {
@@ -104,9 +97,12 @@ public void PauseTimer()
 
     private IEnumerator TimerCoroutine()
     {
-
         while (true)
         {
+        Debug.Log("타이머시간2"+curTime);
+        Debug.Log("낮밤2" + isDaytime);
+        Debug.Log("자연광2" + directionalLight);
+
             curTime = time;
 
             GameObject playerObject = PhotonNetwork.LocalPlayer.TagObject as GameObject;
@@ -145,6 +141,8 @@ public void PauseTimer()
             // 자연광 전환
             directionalLight.enabled = !directionalLight.enabled;
             
+            // 낮/밤 상태 전환
+            isDaytime = !isDaytime;
 
             // 밤으로 전환될 때만 상인 활성화
             if (isDaytime)
@@ -156,8 +154,6 @@ public void PauseTimer()
                 DeactivateAllMerchants();
   
             }
-            // 낮/밤 상태 전환
-            isDaytime = !isDaytime;
 
             // 반짝임 코루틴 멈춤
             if (blinkCoroutine != null)

@@ -406,7 +406,6 @@ public class VoteManager : MonoBehaviourPunCallbacks
                 {
                     // 닉네임과함께 마피아인지, 시민인지표시 (닉네임 인자를 받아야함.)
                     // resultMessage = PhotonNetwork.PlayerList[i].NickName+"님은 마피아 였습니다!!";
-                    Debug.Log("이건됨");
                     resultMessage.text = "마피아를 찾아냈습니다!!";
                     VoteResultUI.gameObject.SetActive(true);
                     uiToActivate1 = VoteResultUI;
@@ -422,7 +421,6 @@ public class VoteManager : MonoBehaviourPunCallbacks
             if (uiToActivate1 != null)
             {
                 yield return StartCoroutine(FadeCanvasGroup(uiToActivate1, 0, 1, 3)); // 페이드 인을 3초 동안 수행
-                    Debug.Log("요것도됨");   
 
                 yield return new WaitForSeconds(2); // 2초 대기
                 VoteUI.SetActive(false);
