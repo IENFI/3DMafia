@@ -1272,8 +1272,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ReadyBtn: {fileID: 689482511}
   StartBtn: {fileID: 83721765}
-  readyBtnText: {fileID: 0}
-  startBtnText: {fileID: 0}
+  LoadingUI: {fileID: 1306666780}
+  readyBtnText: {fileID: 775431134}
+  startBtnText: {fileID: 480092178}
 --- !u!4 &834706968
 Transform:
   m_ObjectHideFlags: 0

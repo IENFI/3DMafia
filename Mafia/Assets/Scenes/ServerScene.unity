@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0, g: 0, b: 0, a: 1}
+  m_IndirectSpecularColor: {r: 0.12731722, g: 0.13414752, b: 0.1210787, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -4341,7 +4341,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b600059442871ce4db44d33f9cc23096, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerPrefab: {fileID: 3432362266963976815, guid: 8d9e43699e1242f4ead758f199d34695, type: 3}
+  playerPrefab: {fileID: 6946556922499648511, guid: 8d9e43699e1242f4ead758f199d34695, type: 3}
   isConnected: 0
   mafiaNum: 1
 --- !u!4 &676751587
