@@ -58,6 +58,9 @@ MonoBehaviour:
   - UpdateSaveCoinText
   - UpdateSaveCoinUI
   - Spawn
+  - UpdateSaveCoin
+  - DeleteMoney
+  - SaveMoney
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

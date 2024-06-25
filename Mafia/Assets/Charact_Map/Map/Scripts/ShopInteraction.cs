@@ -28,9 +28,11 @@ public class ShopInteraction : MonoBehaviourPunCallbacks
 
     [Header("승리모금")]
     public TMP_Text SaveCoinText; // 승리모금금액을 표시할 텍스트
+    public int SaveCoin = 0;
 
     private bool isPlayerInRange = false; // 플레이어가 상점 주변에 있는지 여부
     private PlayerController playerController;
+    
 
     // 버튼 변수 선언
     public Button buyDoubleCoinButton;
@@ -59,15 +61,15 @@ public class ShopInteraction : MonoBehaviourPunCallbacks
         saveMoneyButton.onClick.AddListener(SaveMoney);
         deleteMoneyButton.onClick.AddListener(DeleteMoney);
 
-        // 이벤트 등록
-        PhotonNetwork.NetworkingClient.EventReceived += OnEvent;
+        /*// 이벤트 등록
+        PhotonNetwork.NetworkingClient.EventReceived += OnEvent;*/
     }
 
-    private void OnDestroy()
+    /*private void OnDestroy()
     {
         // 이벤트 등록 해제
         PhotonNetwork.NetworkingClient.EventReceived -= OnEvent;
-    }
+    }*/
 
     private void OnTriggerEnter(Collider other)
     {
@@ -167,8 +169,7 @@ public class ShopInteraction : MonoBehaviourPunCallbacks
                 ShowError("모금완료!");
                 Debug.Log($"모금완료 (잔여 Coins: {player.coin})");
                 player.UpdateCoinUI();
-
-                CoinManager.Instance.AddSaveCoin(100);
+                photonView.RPC("UpdateSaveCoin", RpcTarget.All, 100);
             }
             else
             {
@@ -184,13 +185,12 @@ public class ShopInteraction : MonoBehaviourPunCallbacks
         {
             int itemCost = 100; // 모금단위
 
-            if (player.coin >= itemCost && CoinManager.Instance.SaveCoin > 0)
+            if (player.coin >= itemCost && SaveCoin > 0)
             {
                 player.coin -= itemCost;
                 Debug.Log($"모금방해완료 (잔여 Coins: {player.coin})");
                 player.UpdateCoinUI();
-
-                CoinManager.Instance.AddSaveCoin(-150);
+                photonView.RPC("UpdateSaveCoin", RpcTarget.All, -150);
             }
             else
             {
@@ -201,7 +201,7 @@ public class ShopInteraction : MonoBehaviourPunCallbacks
     }
 
     // 이벤트를 수신하여 SaveCoinText를 업데이트하는 메서드
-    private void OnEvent(EventData photonEvent)
+    /*private void OnEvent(EventData photonEvent)
     {
         if (photonEvent.Code == 0)
         {
@@ -209,12 +209,16 @@ public class ShopInteraction : MonoBehaviourPunCallbacks
             int newSaveCoin = (int)data[0];
             SaveCoinText.text = newSaveCoin.ToString() + "/1000";
         }
-    }
+    }*/
 
     [PunRPC]
-    private void UpdateSaveCoinUI()
+    private void UpdateSaveCoin(int coin)
     {
-        SaveCoinText.text = CoinManager.Instance.SaveCoin.ToString() + "/1000";
+        
+        SaveCoin += coin;
+        if (SaveCoin < 0) { SaveCoin = 0; }
+        SaveCoinText.text = SaveCoin.ToString() + "/1000";
+
     }
 
     // 코루틴을 사용하여 일정 시간 후에 메서드를 호출

@@ -22,7 +22,7 @@ public class MafiaManager : MonoBehaviourPunCallbacks
     [SerializeField]
     public GameObject Merchent;
 
-    
+    private ShopInteraction shopIn;
 
     public int remainingMafiaNum;
     public int remainingCitizenNum;
@@ -48,6 +48,7 @@ public class MafiaManager : MonoBehaviourPunCallbacks
     {
         //actually, this one manage the whole level
         GameManager.instance.isConnected = true;
+        shopIn = Merchent.GetComponent<ShopInteraction>();
         StartCoroutine(WaitForSync());
 
         StartCoroutine(WaitForPlayers());        
@@ -59,56 +60,55 @@ public class MafiaManager : MonoBehaviourPunCallbacks
         Debug.Log("마피아 매니저 WaitForPlayers");
         yield return new WaitUntil(() => GameObject.FindGameObjectsWithTag("Player").Length == PhotonNetwork.PlayerList.Length);
 
-        // Start 함수 밑에 넣으니까 안됨 (교훈)
-        if (PhotonNetwork.IsMasterClient)
-        {
-            GameObject playerObject = PhotonNetwork.LocalPlayer.TagObject as GameObject;
-            PhotonView playerPV = playerObject.GetComponent<PhotonView>();
-            playerPV.RPC("Spawn", RpcTarget.All);
-        }
+
+       GameObject playerObject = PhotonNetwork.LocalPlayer.TagObject as GameObject;
+       PhotonView playerPV = playerObject.GetComponent<PhotonView>();
+       playerPV.RPC("Spawn", RpcTarget.All);
+
     }
 
     // Update is called once per frame
-    //void Update()
-    //{
-    //    remainingCitizenText.text = "남은 시민 수: " + remainingCitizenNum.ToString();
-    //    remainingMafiaText.text = "남은 마피아 수: " + remainingMafiaNum.ToString();
+    void Update()
+    {
+        Debug.Log("금액" + shopIn.SaveCoin);
+        remainingCitizenText.text = "남은 시민 수: " + remainingCitizenNum.ToString();
+        remainingMafiaText.text = "남은 마피아 수: " + remainingMafiaNum.ToString();
 
-    //    if (remainingMafiaNum == 0 || CoinManager.Instance.SaveCoin >= 1000)
-    //    {
-    //        CitizenWin.SetActive(true) ;
-    //        if (!gameOver)
-    //        {
-    //            StartCoroutine(BackToHome());
-    //        }
-    //        gameOver = true;
-    //        //gameover
-    //    }
-    //    else
-    //    {
-    //        CitizenWin.SetActive(false);
-    //    }
+        if (remainingMafiaNum == 0 || shopIn.SaveCoin >= 1000)
+        {
+            CitizenWin.SetActive(true) ;
+            if (!gameOver)
+            {
+                StartCoroutine(BackToHome());
+            }
+            gameOver = true;
+            //gameover
+        }
+        else
+        {
+            CitizenWin.SetActive(false);
+        }
 
-    //    if (remainingCitizenNum == 0)
-    //    {
-    //        MafiaWin.SetActive(true);
-    //        if (!gameOver)
-    //        {
-    //            StartCoroutine(BackToHome());
-    //        }
-    //        gameOver = true;
-    //        //gameover
-    //    }
-    //    else
-    //    {
-    //        MafiaWin.SetActive(false);
-    //    }
-
-    //    if (Input.GetKeyDown(KeyCode.Tab))
-    //    {
-    //        RemainingUI.SetActive(!RemainingUI.activeSelf); // 탭 키로 UI를 켜고 끕니다.
-    //    }
-    //}
+       /* if (remainingCitizenNum == 0)
+        {
+            MafiaWin.SetActive(true);
+            if (!gameOver)
+            {
+                StartCoroutine(BackToHome());
+            }
+            gameOver = true;
+            //gameover
+        }
+        else
+        {
+            MafiaWin.SetActive(false);
+        }
+*/
+        if (Input.GetKeyDown(KeyCode.Tab))
+        {
+            RemainingUI.SetActive(!RemainingUI.activeSelf); // 탭 키로 UI를 켜고 끕니다.
+        }
+    }
 
     public override void OnPlayerPropertiesUpdate(Player player, ExitGames.Client.Photon.Hashtable props)
     {

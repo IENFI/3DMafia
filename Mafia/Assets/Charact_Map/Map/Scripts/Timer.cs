@@ -123,6 +123,10 @@ public class Timer : MonoBehaviourPun
             GameObject playerObject = PhotonNetwork.LocalPlayer.TagObject as GameObject;
             PhotonView playerPhotonView = playerObject.GetComponent<PhotonView>();
 
+            
+            playerPhotonView.RPC("Spawn", RpcTarget.All);
+        
+
             curTime = time + 5;
             while (playerPhotonView == null)
             {

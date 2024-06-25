@@ -129,17 +129,17 @@ public class PlayerController : MonoBehaviourPun
             //    photonView.RPC("Death", RpcTarget.All);
             //}
 
-            // 마우스 오른쪽 버튼을 누르면 무기 공격 (연계)
+            /*// 마우스 오른쪽 버튼을 누르면 무기 공격 (연계)
             if (Input.GetMouseButtonDown(1))
             {
                 // playerAnimator.OnWeaponAttack(); // 무기 공격 애니메이션 실행 (주석 처리됨)
-            }
+            }*/
 
-            // 시체 없애기 시뮬레이트 함수
+         /*   // 시체 없애기 시뮬레이트 함수
             if (Input.GetKeyDown(KeyCode.K))
             {
                 photonView.RPC("DisableAllCorpses", RpcTarget.All);
-            }
+            }*/
 
             if (Input.GetKeyDown(KeyCode.R) && reportRadius.IsCorpseInRange())
             {
