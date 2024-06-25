@@ -42,7 +42,7 @@ public class KillTimer : MonoBehaviour
     {
         yield return new WaitForSeconds(1);
 
-        if (PhotonNetwork.LocalPlayer.CustomProperties.ContainsKey("isMafia"))
+        if ((bool)PhotonNetwork.LocalPlayer.CustomProperties["isMafia"])
         {
             cooldownImage.fillAmount = 1;
             cooldownText.text = "킬";

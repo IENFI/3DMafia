@@ -8,7 +8,7 @@ using Photon.Realtime;
 using ExitGames.Client.Photon;
 using TMPro;
 
-public class MafiaManager : MonoBehaviourPunCallbacks
+public class Maasnager : MonoBehaviourPunCallbacks
 {
     [SerializeField]
     public TMP_Text remainingMafiaText;
@@ -17,7 +17,6 @@ public class MafiaManager : MonoBehaviourPunCallbacks
     [SerializeField]
     public GameObject MafiaWin;
     public GameObject CitizenWin;
-    public GameObject RemainingUI;
 
     public int remainingMafiaNum;
     public int remainingCitizenNum;
@@ -45,11 +44,12 @@ public class MafiaManager : MonoBehaviourPunCallbacks
         GameManager.instance.isConnected = true;
         StartCoroutine(WaitForSync());
     }
+
     // Update is called once per frame
     void Update()
     {
-        remainingCitizenText.text = "남은 시민 수: " + remainingCitizenNum.ToString();
-        remainingMafiaText.text = "남은 마피아 수: " + remainingMafiaNum.ToString();
+        remainingCitizenText.text = "Remaining Citizens: " + remainingCitizenNum.ToString();
+        remainingMafiaText.text = "Remaining Mafias: " + remainingMafiaNum.ToString();
 
         if (remainingMafiaNum == 0)
         {
@@ -80,13 +80,9 @@ public class MafiaManager : MonoBehaviourPunCallbacks
         {
             MafiaWin.SetActive(false);
         }
-
-        if (Input.GetKeyDown(KeyCode.Tab))
-        {
-            RemainingUI.SetActive(!RemainingUI.activeSelf); // 탭 키로 UI를 켜고 끕니다.
-        }
     }
 
+    //managing dead states...
     public override void OnPlayerPropertiesUpdate(Player player, ExitGames.Client.Photon.Hashtable props)
     {
         foreach (object key in props.Keys)
@@ -105,6 +101,17 @@ public class MafiaManager : MonoBehaviourPunCallbacks
                     }
                 }
             }
+        }
+    }
+
+    IEnumerator BackToHome()
+    {
+        yield return new WaitForSeconds(10f);
+
+        PhotonNetwork.AutomaticallySyncScene = true;
+        if (PhotonNetwork.IsMasterClient)
+        {
+            PhotonNetwork.LoadLevel("Level_0");
         }
     }
 
@@ -128,19 +135,8 @@ public class MafiaManager : MonoBehaviourPunCallbacks
             remainingMafiaNum = playerNum;
         remainingCitizenNum = playerNum - remainingMafiaNum;
 
-        remainingCitizenText.text = "남은 시민 수: " + remainingCitizenNum.ToString();
-        remainingMafiaText.text = "남은 마피아 수: " + remainingMafiaNum.ToString();
+        remainingCitizenText.text = "Remaining Citizens: " + remainingCitizenNum.ToString();
+        remainingMafiaText.text = "Remaining Mafias: " + remainingMafiaNum.ToString();
 
-    }
-
-    IEnumerator BackToHome()
-    {
-        yield return new WaitForSeconds(10f);
-
-        PhotonNetwork.AutomaticallySyncScene = true;
-        if (PhotonNetwork.IsMasterClient)
-        {
-            PhotonNetwork.LoadLevel("Level_0");
-        }
     }
 }

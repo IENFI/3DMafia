@@ -8699,6 +8699,7 @@ MonoBehaviour:
   RemainingUI: {fileID: 399543819}
   remainingMafiaNum: 0
   remainingCitizenNum: 0
+  choosingMafiaManager: {fileID: 1565013276955543527}
 --- !u!4 &1904127778
 Transform:
   m_ObjectHideFlags: 0

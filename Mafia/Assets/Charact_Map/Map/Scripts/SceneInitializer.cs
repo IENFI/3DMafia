@@ -134,7 +134,7 @@ public class SceneInitializer : MonoBehaviourPunCallbacks
     {
         CanvasGroup uiToActivate = null;
 
-        if (PhotonNetwork.LocalPlayer.CustomProperties.ContainsKey("isMafia"))
+        if ((bool)PhotonNetwork.LocalPlayer.CustomProperties["isMafia"])
         {
             MafiaUI.gameObject.SetActive(true);
             uiToActivate = MafiaUI;
