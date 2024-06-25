@@ -74,20 +74,71 @@ public class NetworkManager : MonoBehaviourPunCallbacks // 안현석 똑바로�
         }
     }
 
-    public override void OnRoomListUpdate(List<RoomInfo> roomList)
+    /*public override void OnRoomListUpdate(List<RoomInfo> roomList)
     {
         int roomCount = roomList.Count;
         for (int i = 0; i < roomCount; i++)
         {
             if (!roomList[i].RemovedFromList)
             {
-                if (!myList.Contains(roomList[i])) myList.Add(roomList[i]);
+                if (!myList.Contains(roomList[i])){ 
+                    myList.Add(roomList[i]);}
                 else myList[myList.IndexOf(roomList[i])] = roomList[i];
             }
             else if (myList.IndexOf(roomList[i]) != -1) myList.RemoveAt(myList.IndexOf(roomList[i]));
         }
         MyListRenewal();
+    }*/
+    public override void OnRoomListUpdate(List<RoomInfo> roomList)
+    {
+        // Create a new list to store rooms that should be displayed
+        List<RoomInfo> roomsToShow = new List<RoomInfo>();
+
+        // Iterate through the updated room list
+        foreach (RoomInfo room in roomList)
+        {
+            // Check if the room is removed from the list
+            if (room.RemovedFromList)
+            {
+                // Remove the room from myList if it's in the list
+                if (myList.Contains(room))
+                {
+                    myList.Remove(room);
+                }
+            }
+            else
+            {
+                // Check if the room has started the game
+                if (room.CustomProperties.ContainsKey("isGameStarted") && (bool)room.CustomProperties["isGameStarted"])
+                {
+                    // If the game has started, we should not add it to myList
+                    if (myList.Contains(room))
+                    {
+                        myList.Remove(room);
+                    }
+                }
+                else
+                {
+                    // Add the room to myList if it's not already in the list
+                    if (!myList.Contains(room))
+                    {
+                        myList.Add(room);
+                    }
+                }
+            }
+        }
+
+        // Update the UI to display the updated room list
+        MyListRenewal();
     }
+
+
+
+
+
+
+
+
     #endregion
 
     #region 서버연결
@@ -134,7 +185,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks // 안현석 똑바로�
             Debug.LogWarning("disconnectPanel has already been destroyed.");
         }
 
-        DisconnectPanel.SetActive(true);
+        //DisconnectPanel.SetActive(true); hs수정
         LobbyPanel.SetActive(false);
         CreateRoomUI.SetActive(false);
     }
@@ -150,12 +201,21 @@ public class NetworkManager : MonoBehaviourPunCallbacks // 안현석 똑바로�
     #endregion
 
     #region 방
-    public void CreateRoom()
+    /*public void CreateRoom()
     {
         string roomName = RoomInput.text == "" ? "Room" + Random.Range(0, 100) : RoomInput.text;
         RoomOptions roomOptions = new RoomOptions { MaxPlayers = createRoomUI.roomData.maxPlayerCount };
         PhotonNetwork.CreateRoom(roomName, roomOptions);
+    }*/
+    public void CreateRoom()
+    {
+        string roomName = RoomInput.text == "" ? "Room" + Random.Range(0, 100) : RoomInput.text;
+        RoomOptions roomOptions = new RoomOptions { MaxPlayers = createRoomUI.roomData.maxPlayerCount };
+        roomOptions.CustomRoomProperties = new ExitGames.Client.Photon.Hashtable() { { "isGameStarted", false } };
+        roomOptions.CustomRoomPropertiesForLobby = new string[] { "isGameStarted" };
+        PhotonNetwork.CreateRoom(roomName, roomOptions);
     }
+
 
     public void JoinRandomRoom()
     {
@@ -180,10 +240,16 @@ public class NetworkManager : MonoBehaviourPunCallbacks // 안현석 똑바로�
 
         if (PhotonNetwork.IsMasterClient)
         {
+            Debug.Log("마스터클라이언트임");
             GameManager.instance.isConnected = true;
             PhotonNetwork.LoadLevel("Level_0");
             Debug.Log("04. 방 입장 완료");
 
+
+        }
+        else
+        {
+            Debug.Log("마스터 클라이언트 아님");
         }
 
         //GameManager.instance.StartCoroutine(GameManager.instance.CreatePlayer());

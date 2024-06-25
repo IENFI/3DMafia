@@ -13,6 +13,7 @@ TagManager:
   - KillTime
   - Builder
   - Timer
+  - Door
   layers:
   - Default
   - TransparentFX
