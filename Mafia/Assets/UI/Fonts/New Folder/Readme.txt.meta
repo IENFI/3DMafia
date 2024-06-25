@@ -1,6 +1,11 @@
 fileFormatVersion: 2
+<<<<<<<< HEAD:Mafia/Assets/UI/Fonts/New Folder/Readme.txt.meta
 guid: 63b304efce322e34cb7627fd454d73fd
 TextScriptImporter:
+========
+guid: 9fc0d4010bbf28b4594072e72b8655ab
+DefaultImporter:
+>>>>>>>> Improve:Mafia/Assets/Charact_Map/Map/LOWPOLY-Victorian_Mansion_Pack/Scenes/SampleScene.unity.meta
   externalObjects: {}
   userData: 
   assetBundleName: 

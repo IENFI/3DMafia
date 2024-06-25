@@ -1,6 +1,11 @@
 fileFormatVersion: 2
+<<<<<<<< HEAD:Mafia/Assets/UI/Fonts/NewsCycle-Regular SDF.asset.meta
 guid: f1b0f21869759304e821e373405b38e4
 NativeFormatImporter:
+========
+guid: c6e7d3f7bd4656444824091efda66dcd
+DefaultImporter:
+>>>>>>>> Improve:Mafia/Assets/Charact_Map/Map/LOWPOLY-Victorian_Mansion_Pack/Scenes/SampleScene_Prefabs.unity.meta
   externalObjects: {}
   mainObjectFileID: 11400000
   userData: 

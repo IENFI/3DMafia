@@ -3,6 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using ExitGames.Client.Photon;
+using TMPro;
+using UnityEngine.Rendering;
 
 public class PlayerController : MonoBehaviourPun
 {
@@ -35,13 +37,13 @@ public class PlayerController : MonoBehaviourPun
     public float reportCooldown = 5f; // 신고 쿨타임
     private float lastReportTime;
 
+    public TextMeshProUGUI nickName;
+    public PhotonView PV;
 
+    public GameObject[] objectsToHide;
 
     void Start()
     {
-        // Cursor.visible = false;                 // 마우스 커서를 보이지 않게
-        // Cursor.lockState = CursorLockMode.Locked;   // 마우스 커서 위치 고정
-
         movement = GetComponent<Movement>();
         playerAnimator = GetComponentInChildren<PlayerAnimator>();
         cameraController = GetComponentInChildren<FPCameraController>();
@@ -59,9 +61,12 @@ public class PlayerController : MonoBehaviourPun
 
         lastReportTime = Time.time;
 
-        // 커서를 숨기고 잠금 (필요에 따라 주석 해제)
-        // Cursor.visible = false; 
-        // Cursor.lockState = CursorLockMode.Locked; 
+        nickName.text = PV.Owner.NickName;
+
+        if (photonView.IsMine)
+        {
+            HideObjects();
+        }
     }
 
     // 매 프레임마다 호출되는 Update 함수
@@ -106,16 +111,23 @@ public class PlayerController : MonoBehaviourPun
                 movement.JumpTo();        // 점프 함수 호출
             }
 
-            // 마우스 왼쪽 버튼을 누르면 Kill
-            if (Input.GetMouseButtonDown(0)&&(PhotonNetwork.LocalPlayer.CustomProperties.ContainsKey("isMafia")))
+            // Z 버튼을 누르면 Kill
+            if (Input.GetKeyDown(KeyCode.Z))
             {
-                if (Time.time - lastKillTime >= killCooldown)
+                Debug.Log("Before Kill()");
+                if (Time.time - lastKillTime >= killCooldown && PhotonNetwork.LocalPlayer.CustomProperties.ContainsKey("isMafia"))
                 {
                     playerAnimator.Kill();
                     lastKillTime = Time.time;
                     playerAttackCollision.SeletKillMember();
                 }
             }
+
+            // Kill 시뮬레이트
+            //if (Input.GetKeyDown(KeyCode.P))
+            //{
+            //    photonView.RPC("Death", RpcTarget.All);
+            //}
 
             // 마우스 오른쪽 버튼을 누르면 무기 공격 (연계)
             if (Input.GetMouseButtonDown(1))
@@ -210,6 +222,22 @@ public class PlayerController : MonoBehaviourPun
         foreach (GameObject corpse in corpses)
         {
             corpse.SetActive(false);
+        }
+    }
+
+    private void HideObjects()
+    {
+        foreach (GameObject obj in objectsToHide)
+        {
+            if (obj != null)
+            {
+                Renderer[] renderers = obj.GetComponentsInChildren<Renderer>();
+                foreach (Renderer renderer in renderers)
+                {
+                    // 그림자는 보이게 하기
+                    renderer.shadowCastingMode = ShadowCastingMode.ShadowsOnly;
+                }
+            }
         }
     }
 }
