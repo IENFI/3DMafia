@@ -12,10 +12,12 @@ public class MinigameInteraction : MonoBehaviourPun
 
     private bool isPlayerInRange = false; // 플레이어가 주변에 있는지 여부
     private PlayerController playerController;
-
+    private PlayerCoinController player; // 플레이어의 재화 관리 스크립트
 
     public Material originMaterial;
     public Material lightConeMaterial;
+
+    public bool ExitCode=false;
 
     bool check = false;
 
@@ -44,6 +46,7 @@ public class MinigameInteraction : MonoBehaviourPun
         Debug.Log(other.name + " entered the Collider.");
         if (other.CompareTag("Player"))
         {
+            player = other.GetComponent<PlayerCoinController>();
             isPlayerInRange = true;
             playerController = other.GetComponent<PlayerController>();
             ChangeAllChildMaterials(transform, lightConeMaterial);
@@ -58,19 +61,28 @@ public class MinigameInteraction : MonoBehaviourPun
         if (other.CompareTag("Player"))
         {
             isPlayerInRange = false;
+            player = null;
             ChangeAllChildMaterials(transform, originMaterial);
             playerController = null;
             TaskUI.SetActive(false); // 플레이어가 범위를 벗어나면 ShopUI를 비활성화
+            check = false;
+            
         }
     }
 
 
     private void Update()
     {
+        if (ExitCode == true)
+        {
+            player.GetCoin(60);
+            ExitCode = false;
+        }
         // 플레이어가 미니게임 주변에 있고 E 키를 누르면 상점 UI 활성화
         if (isPlayerInRange && Input.GetKeyDown(KeyCode.E) && check == false)
         {
             TaskUI.SetActive(true);
+
             check = true;
         }
         else if (isPlayerInRange && Input.GetKeyDown(KeyCode.E) && check == true)

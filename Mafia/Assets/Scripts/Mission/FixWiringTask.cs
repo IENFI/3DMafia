@@ -17,13 +17,20 @@ public class FixWiringTask : MonoBehaviour
     [SerializeField]
     private List<LeftWire> mLeftWires;
 
+    private PlayerCoinController player; // 플레이어의 재화 관리 스크립트
+
+    [SerializeField]
+    private MinigameInteraction minigame;
+
     [SerializeField]
     private List<RightWire> mRightWires;
 
     private LeftWire mSelectedWire;
 
+
     private void OnEnable()
     {
+   
         for (int i = 0; i < mLeftWires.Count; i++)
         {
             mLeftWires[i].ResetTarget();
@@ -136,8 +143,9 @@ public class FixWiringTask : MonoBehaviour
 
     public void Close()
     {
+        minigame.ExitCode = true;
         // 플레이어 움직임 제한하는 코드 추가?
         gameObject.transform.parent.gameObject.SetActive(false);
-        gameObject.SetActive(false);
+        //gameObject.SetActive(false);
     }
 }
