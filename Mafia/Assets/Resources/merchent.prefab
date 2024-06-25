@@ -839,8 +839,8 @@ CapsuleCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 1
-  m_Height: 0.83
+  m_Radius: 1.8
+  m_Height: 0
   m_Direction: 0
   m_Center: {x: -0.0075883865, y: 0.33836842, z: 0.00768137}
 --- !u!114 &229656937877972215
@@ -859,8 +859,11 @@ MonoBehaviour:
   increasedSpeed: 4
   outlineRenderer: {fileID: 3185023304053855671}
   ShopUI: {fileID: 0}
+  ShowErrorText: {fileID: 0}
   doubleCoinsImage: {fileID: 0}
   speedUpImage: {fileID: 0}
+  SaveCoinText: {fileID: 0}
+  SaveCoin: 0
 --- !u!114 &170967081599129894
 MonoBehaviour:
   m_ObjectHideFlags: 0

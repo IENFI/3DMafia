@@ -19,6 +19,11 @@ public class MafiaManager : MonoBehaviourPunCallbacks
     public GameObject CitizenWin;
     public GameObject RemainingUI;
 
+    [SerializeField]
+    public GameObject Merchent;
+
+    
+
     public int remainingMafiaNum;
     public int remainingCitizenNum;
 
@@ -52,7 +57,7 @@ public class MafiaManager : MonoBehaviourPunCallbacks
         remainingCitizenText.text = "남은 시민 수: " + remainingCitizenNum.ToString();
         remainingMafiaText.text = "남은 마피아 수: " + remainingMafiaNum.ToString();
 
-        if (remainingMafiaNum == 0)
+        if (remainingMafiaNum == 0 || CoinManager.Instance.SaveCoin >= 1000)
         {
             CitizenWin.SetActive(true);
             if (!gameOver)

@@ -8,6 +8,7 @@ using Photon.Pun;
 public class KillTimer : MonoBehaviour
 {
     public Image cooldownImage; // 쿨타임 이미지를 할당받기 위한 변수
+    public GameObject tooltip; //툴팁UI
     public TMP_Text cooldownText; // 쿨타임 남은 시간을 표시할 텍스트
     public float cooldownDuration = 5f; // 쿨타임 지속 시간
 
@@ -16,7 +17,9 @@ public class KillTimer : MonoBehaviour
 
     void Start()
     {
+        tooltip = GameObject.FindWithTag("tooltip");
         StartCoroutine(KillTime());
+
     }
 
     void Update()
@@ -51,6 +54,7 @@ public class KillTimer : MonoBehaviour
         {
             cooldownImage.fillAmount = 0; // 마피아가 아니면 이미지는 숨김
             cooldownText.text = ""; // 마피아가 아니면 텍스트도 숨김
+            tooltip.SetActive(false);
         }
     }
 

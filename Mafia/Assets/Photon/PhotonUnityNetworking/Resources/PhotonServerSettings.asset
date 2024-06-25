@@ -53,6 +53,10 @@ MonoBehaviour:
   - RPC_StartTimer
   - RPC_SetDay
   - RPC_DeactivateAllMerchants
+  - RPC_DeleteMoney
+  - RPC_SaveMoney
+  - UpdateSaveCoinText
+  - UpdateSaveCoinUI
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

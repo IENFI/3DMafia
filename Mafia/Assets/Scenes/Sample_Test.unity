@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0, g: 0, b: 0, a: 1}
+  m_IndirectSpecularColor: {r: 0.18028378, g: 0.22571412, b: 0.30692285, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -634,6 +634,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2872909238564681740, guid: 8d9e43699e1242f4ead758f199d34695, type: 3}
+      propertyPath: sceneViewId
+      value: 6
+      objectReference: {fileID: 0}
     - target: {fileID: 3432362266963976815, guid: 8d9e43699e1242f4ead758f199d34695, type: 3}
       propertyPath: m_Name
       value: Player
@@ -645,6 +649,10 @@ PrefabInstance:
     - target: {fileID: 6363748984593560106, guid: 8d9e43699e1242f4ead758f199d34695, type: 3}
       propertyPath: sceneViewId
       value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 8038152669200758089, guid: 8d9e43699e1242f4ead758f199d34695, type: 3}
+      propertyPath: sceneViewId
+      value: 5
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -4291,6 +4299,7 @@ MonoBehaviour:
   ShopUI: {fileID: 2302648689900925072}
   doubleCoinsImage: {fileID: 0}
   speedUpImage: {fileID: 0}
+  SaveCoinText: {fileID: 0}
 --- !u!1 &1483984465
 GameObject:
   m_ObjectHideFlags: 0
@@ -5124,6 +5133,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 332df5b0fa5782744a90491f0917beb6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  mafiaManager: {fileID: 0}
   VoteUI: {fileID: 2091403708}
   btn0: {fileID: 184861266}
   btn1: {fileID: 1721368168}
@@ -5136,6 +5146,8 @@ MonoBehaviour:
   btn8: {fileID: 1470739471}
   btn9: {fileID: 1756646637}
   voteManager: {fileID: 1678739323}
+  VoteResultUI: {fileID: 0}
+  resultMessage: {fileID: 0}
   isMeetingActivated: 1
 --- !u!1 &1680064429
 GameObject:
@@ -43707,6 +43719,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   text: {fileID: 3543608214790463837}
   time: 15
+  ShopUI: {fileID: 0}
   Merchants:
   - {fileID: 2749293067768206333}
   - {fileID: 791084842}
@@ -64916,6 +64929,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   coinTextPrefab: {fileID: 3969320730440081697, guid: eb42df97b2f982c48b0291d883bc7c5d, type: 3}
+  LoadingImage: {fileID: 0}
+  CitizenUI: {fileID: 0}
+  MafiaUI: {fileID: 0}
 --- !u!114 &5822439895667558436
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -5,8 +5,10 @@ using UnityEngine.UI;
 using Photon.Pun;
 using TMPro;
 using Photon.Realtime;
+using System;
+using ExitGames.Client.Photon;
 
-public class ShopInteraction : MonoBehaviourPun
+public class ShopInteraction : MonoBehaviourPunCallbacks
 {
     // 스피드업 아이템 관련
     [SerializeField]
@@ -18,13 +20,30 @@ public class ShopInteraction : MonoBehaviourPun
     [SerializeField] private Renderer outlineRenderer;
     public GameObject ShopUI; // 상점 UI
     private PlayerCoinController player; // 플레이어의 재화 관리 스크립트
+    public TMP_Text ShowErrorText;
+
+    [Header("아이템목록 이미지")]
     public Image doubleCoinsImage; // 코인 2배 아이템 활성화 이미지
     public Image speedUpImage; // 스피드업 아이템 활성화 이미지
+
+    [Header("승리모금")]
+    public TMP_Text SaveCoinText; // 승리모금금액을 표시할 텍스트
 
     private bool isPlayerInRange = false; // 플레이어가 상점 주변에 있는지 여부
     private PlayerController playerController;
 
-    void Start()
+    // 버튼 변수 선언
+    public Button buyDoubleCoinButton;
+    public Button buySpeedUpButton;
+    public Button saveMoneyButton;
+    public Button deleteMoneyButton;
+
+    private void Awake()
+    {
+        SaveCoinText.text = "0/1000";
+    }
+
+    private void Start()
     {
         doubleCoinsImage = GameObject.Find("Canvas/ItemApplyImage/DoubleCoinImage").GetComponent<Image>();
         doubleCoinsImage.enabled = false;
@@ -32,6 +51,22 @@ public class ShopInteraction : MonoBehaviourPun
         speedUpImage.enabled = false;
 
         ShopUI.SetActive(false);
+        ShowErrorText.text = ""; // 에러 텍스트 초기화
+
+        // 버튼 클릭 이벤트 설정
+        buyDoubleCoinButton.onClick.AddListener(BuyDoubleCoin);
+        buySpeedUpButton.onClick.AddListener(BuySpeedUp);
+        saveMoneyButton.onClick.AddListener(SaveMoney);
+        deleteMoneyButton.onClick.AddListener(DeleteMoney);
+
+        // 이벤트 등록
+        PhotonNetwork.NetworkingClient.EventReceived += OnEvent;
+    }
+
+    private void OnDestroy()
+    {
+        // 이벤트 등록 해제
+        PhotonNetwork.NetworkingClient.EventReceived -= OnEvent;
     }
 
     private void OnTriggerEnter(Collider other)
@@ -59,8 +94,8 @@ public class ShopInteraction : MonoBehaviourPun
 
     private void Update()
     {
-        // 플레이어가 상점 주변에 있고 G 키를 누르면 상점 UI 활성화
-        if (isPlayerInRange && Input.GetKeyDown(KeyCode.G))
+        // 플레이어가 상점 주변에 있고 E 키를 누르면 상점 UI 활성화
+        if (isPlayerInRange && Input.GetKeyDown(KeyCode.E))
         {
             ShopUI.SetActive(true);
         }
@@ -78,12 +113,14 @@ public class ShopInteraction : MonoBehaviourPun
                 player.coin -= itemCost;
                 player.ActivateDoubleCoin();
                 doubleCoinsImage.enabled = true;
+                ShowError("코인두배 적용완료!");
 
-                // 10초 후에 player의 DeactivateDoubleCoin 메서드 호출
-                StartCoroutine(DeactivateDoubleCoinAfterDelay(player, 10.0f));
+                // 60초 후에 player의 DeactivateDoubleCoin 메서드 호출
+                StartCoroutine(DeactivateDoubleCoinAfterDelay(player, 60.0f));
             }
             else
             {
+                ShowError("코인이 부족합니다!");
                 Debug.Log("Not enough coins to buy this item.");
             }
         }
@@ -105,15 +142,79 @@ public class ShopInteraction : MonoBehaviourPun
                 playerController.ChangeMoveSpeed();
 
                 speedUpImage.enabled = true; // 스피드업 이미지 활성화
+                ShowError("스피드업 적용완료!");
 
-                // 10초 후에 플레이어의 속도를 원래대로 되돌리는 코루틴 호출
-                StartCoroutine(ResetPlayerSpeedAfterDelay(playerController, 10.0f));
+                // 60초 후에 플레이어의 속도를 원래대로 되돌리는 코루틴 호출
+                StartCoroutine(ResetPlayerSpeedAfterDelay(playerController, 60.0f));
             }
             else
             {
+                ShowError("코인이 부족합니다!");
                 Debug.Log("Not enough coins to buy this item.");
             }
         }
+    }
+
+    public void SaveMoney()
+    {
+        if (player != null)
+        {
+            int itemCost = 100; // 모금단위
+
+            if (player.coin >= itemCost)
+            {
+                player.coin -= itemCost;
+                ShowError("모금완료!");
+                Debug.Log($"모금완료 (잔여 Coins: {player.coin})");
+                player.UpdateCoinUI();
+
+                CoinManager.Instance.AddSaveCoin(100);
+            }
+            else
+            {
+                ShowError("코인이 부족합니다!");
+                Debug.Log("Not enough coins to buy this item.");
+            }
+        }
+    }
+
+    public void DeleteMoney()
+    {
+        if (player != null)
+        {
+            int itemCost = 100; // 모금단위
+
+            if (player.coin >= itemCost && CoinManager.Instance.SaveCoin > 0)
+            {
+                player.coin -= itemCost;
+                Debug.Log($"모금방해완료 (잔여 Coins: {player.coin})");
+                player.UpdateCoinUI();
+
+                CoinManager.Instance.AddSaveCoin(-150);
+            }
+            else
+            {
+                ShowError("코인이 부족합니다!");
+                Debug.Log("Not enough coins to buy this item.");
+            }
+        }
+    }
+
+    // 이벤트를 수신하여 SaveCoinText를 업데이트하는 메서드
+    private void OnEvent(EventData photonEvent)
+    {
+        if (photonEvent.Code == 0)
+        {
+            object[] data = (object[])photonEvent.CustomData;
+            int newSaveCoin = (int)data[0];
+            SaveCoinText.text = newSaveCoin.ToString() + "/1000";
+        }
+    }
+
+    [PunRPC]
+    private void UpdateSaveCoinUI()
+    {
+        SaveCoinText.text = CoinManager.Instance.SaveCoin.ToString() + "/1000";
     }
 
     // 코루틴을 사용하여 일정 시간 후에 메서드를 호출
@@ -130,5 +231,18 @@ public class ShopInteraction : MonoBehaviourPun
         yield return new WaitForSeconds(delay);
         playerController.OriginMoveSpeed(); // 플레이어의 속도를 원래대로 되돌림
         speedUpImage.enabled = false; // 스피드업 이미지 비활성화
+    }
+
+    // 에러 메시지를 표시하고 일정 시간 후에 사라지게 하는 코루틴
+    private void ShowError(string message)
+    {
+        StartCoroutine(DisplayErrorMessage(message, 2.0f));
+    }
+
+    private IEnumerator DisplayErrorMessage(string message, float delay)
+    {
+        ShowErrorText.text = message;
+        yield return new WaitForSeconds(delay);
+        ShowErrorText.text = "";
     }
 }
