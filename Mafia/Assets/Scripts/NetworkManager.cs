@@ -45,7 +45,6 @@ public class NetworkManager : MonoBehaviourPunCallbacks // 안현석 똑바로�
         else if (num == -1) ++currentPage;
         else
         {
-            GameManager.instance.isConnected = true;
             PhotonNetwork.JoinRoom(myList[multiple + num].Name);
         }
         MyListRenewal();
@@ -219,7 +218,6 @@ public class NetworkManager : MonoBehaviourPunCallbacks // 안현석 똑바로�
 
     public void JoinRandomRoom()
     {
-        GameManager.instance.isConnected = true;
         PhotonNetwork.JoinRandomRoom();
     }
 
@@ -232,7 +230,6 @@ public class NetworkManager : MonoBehaviourPunCallbacks // 안현석 똑바로�
         CreateRoomUI.SetActive(false);
 
         /*
-        GameManager.instance.isConnected = true;
         PhotonNetwork.LoadLevel("Level_1");
         Debug.Log("04. 방 입장 완료");
         */
@@ -241,7 +238,6 @@ public class NetworkManager : MonoBehaviourPunCallbacks // 안현석 똑바로�
         if (PhotonNetwork.IsMasterClient)
         {
             Debug.Log("마스터클라이언트임");
-            GameManager.instance.isConnected = true;
             PhotonNetwork.LoadLevel("Level_0");
             Debug.Log("04. 방 입장 완료");
 
@@ -252,7 +248,6 @@ public class NetworkManager : MonoBehaviourPunCallbacks // 안현석 똑바로�
             Debug.Log("마스터 클라이언트 아님");
         }
 
-        //GameManager.instance.StartCoroutine(GameManager.instance.CreatePlayer());
 
     }
 
