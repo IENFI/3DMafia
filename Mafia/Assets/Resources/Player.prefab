@@ -666,9 +666,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd41dea329852f54e839a2ca41f8980f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  player: {fileID: 25038164210257940}
-  offset: {x: 0, y: 0, z: 0}
-  smoothTime: 0.3
 --- !u!114 &8243302012281363818
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1323,6 +1320,9 @@ MonoBehaviour:
   corpsePrefab: {fileID: 3432362266963976815, guid: 7cbddf71319934f53a8a06b4edbf7e96, type: 3}
   reportRadius: {fileID: 2120282765258154067}
   reportCooldown: 5
+  nickName: {fileID: 0}
+  PV: {fileID: 0}
+  objectsToHide: []
 --- !u!114 &6674841127249995783
 MonoBehaviour:
   m_ObjectHideFlags: 0

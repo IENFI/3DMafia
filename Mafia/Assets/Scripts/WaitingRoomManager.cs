@@ -253,7 +253,7 @@ public class WaitingRoomManager : MonoBehaviourPunCallbacks
 
         loadingCanvasGroup.alpha = 0f;
         LoadingUI.SetActive(false);
-
+    }
     public override void OnJoinedRoom()
     {
         Debug.Log("Joined room.");
