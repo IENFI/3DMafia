@@ -72,7 +72,7 @@ public class Timer : MonoBehaviourPun
         directionalLight.enabled = !directionalLight.enabled;
         Debug.Log("자연광" + directionalLight);
         // 밤으로 전환될 때만 상인 활성화
-        if (isDaytime)
+        if (!isDaytime)
         {
             ActivateRandomMerchants();
         }
@@ -120,14 +120,17 @@ public class Timer : MonoBehaviourPun
     {
         while (true)
         {
-            Debug.Log("타이머시간2" + curTime);
-            Debug.Log("낮밤2" + isDaytime);
-            Debug.Log("자연광2" + directionalLight);
-
-            curTime = time+5;
-
             GameObject playerObject = PhotonNetwork.LocalPlayer.TagObject as GameObject;
             PhotonView playerPhotonView = playerObject.GetComponent<PhotonView>();
+
+            curTime = time + 5;
+            while (playerPhotonView == null)
+            {
+                // 1초 기다림
+                yield return new WaitForSeconds(1);
+            }
+
+
             playerPhotonView.RPC("DisableAllCorpses", RpcTarget.All);
 
             isBlinking = false;
@@ -166,7 +169,7 @@ public class Timer : MonoBehaviourPun
             isDaytime = !isDaytime;
 
             // 밤으로 전환될 때만 상인 활성화
-            if (isDaytime)
+            if (!isDaytime)
             {
                 ActivateRandomMerchants();
             }

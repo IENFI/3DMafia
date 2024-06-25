@@ -19,10 +19,11 @@ public class ChoosingMafiaManager : MonoBehaviourPunCallbacks
     {
         if (PhotonNetwork.IsMasterClient)
         {
+            Initializing();
             int playerNum;
             List<int> MafiaList;
             playerNum = PhotonNetwork.PlayerList.Length;
-            mafiaNum = GameManager.instance.mafiaNum;
+            mafiaNum = (int)PhotonNetwork.CurrentRoom.CustomProperties["MafiaNum"];
             if (mafiaNum > playerNum)
                 mafiaNum = playerNum;
             //mafiaNum = (int)(Math.Sqrt((double)playerNum) + 0.5);
@@ -39,25 +40,6 @@ public class ChoosingMafiaManager : MonoBehaviourPunCallbacks
 
         mafiaText.text = " ";
 
-        /*
-        if (PhotonNetwork.IsMasterClient)
-        {
-            int playerNum;
-            int mafiaNum;
-            List<int> MafiaList;
-            playerNum = PhotonNetwork.PlayerList.Length;
-            mafiaNum = (int)(Math.Sqrt((double)playerNum)+0.5);
-            MafiaList = SelectRandomNumbers(playerNum, mafiaNum);
-            //Initializing();
-            MafiaSelecting(playerNum, MafiaList);
-        }
-        */
-        //Player localPlayer = PhotonNetwork.LocalPlayer;
-
-        /*
-        isMafia = PhotonNetwork.LocalPlayer.CustomProperties.ContainsKey("isMafia") && (bool)PhotonNetwork.LocalPlayer.CustomProperties["isMafia"];
-        */
-
         SendMafiaText();
     }
 
@@ -72,20 +54,19 @@ public class ChoosingMafiaManager : MonoBehaviourPunCallbacks
                 mafiaText.text = "Citizen";
             }
         }
-    /*
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
-    */
 
     public override void OnPlayerPropertiesUpdate(Player player, Hashtable props)
     {
-        if (player.CustomProperties.ContainsKey("isMafia") && player == PhotonNetwork.LocalPlayer)
+        foreach (object key in props.Keys)
         {
-            isMafia = true;
-            SendMafiaText();
+            if (key.ToString().Equals("isMafia"))
+            {
+                if ((bool)player.CustomProperties["isMafia"] && player == PhotonNetwork.LocalPlayer)
+                {
+                    isMafia = true;
+                    SendMafiaText();
+                }
+            }
         }
     }
 
@@ -103,20 +84,6 @@ public class ChoosingMafiaManager : MonoBehaviourPunCallbacks
         }
         return result;
     }
-
-    /*
-    void Initializing()
-    {
-        foreach (Player player in PhotonNetwork.PlayerList)
-        {
-            ExitGames.Client.Photon.Hashtable props = new ExitGames.Client.Photon.Hashtable
-            {
-            { "isMafia" , false }
-            };
-            player.SetCustomProperties(props);
-        }
-    }
-    */
 
     void MafiaSelecting(int mafiaNum, List<int> MafiaList)
     {
@@ -138,4 +105,17 @@ public class ChoosingMafiaManager : MonoBehaviourPunCallbacks
             Debug.Log("Player ID: " + player.ActorNumber + ", Player Name: " + player.NickName + ", isMafia = " + (player.CustomProperties.ContainsKey("isMafia") && (bool)player.CustomProperties["isMafia"]).ToString());
         }
     }
+    void Initializing()
+    {
+        foreach (Player player in PhotonNetwork.PlayerList)
+        {
+            ExitGames.Client.Photon.Hashtable props = new ExitGames.Client.Photon.Hashtable
+            {
+                { "isMafia" , false },
+                { "isDead" , false }
+            };
+            player.SetCustomProperties(props);
+        }
+    }
+
 }

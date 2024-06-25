@@ -125,7 +125,7 @@ public class VoteManager : MonoBehaviourPunCallbacks
 
     void Update()
     {
-        if (PhotonNetwork.LocalPlayer.CustomProperties.ContainsKey("isDead"))
+        if ((bool)PhotonNetwork.LocalPlayer.CustomProperties["isDead"])
             return;
 
         if (isMeetingActivated)
@@ -180,7 +180,7 @@ public class VoteManager : MonoBehaviourPunCallbacks
         {
             if (i < PhotonNetwork.PlayerList.Length)
             {
-                if (PhotonNetwork.PlayerList[i].CustomProperties.ContainsKey("isDead"))
+                if ((bool)PhotonNetwork.PlayerList[i].CustomProperties["isDead"])
                     btns[i].GetComponent<Button>().interactable = false;
                 else
                     btns[i].GetComponent<Button>().interactable = true;
@@ -359,24 +359,11 @@ public class VoteManager : MonoBehaviourPunCallbacks
                     VoteSelectPlayerNum = i;
                     StartCoroutine(FadeButton(btns[i], Color.red, 2.0f, 2.0f));
 
-                    if (PhotonNetwork.PlayerList[i].CustomProperties.ContainsKey("isMafia"))
+                    if (PhotonNetwork.PlayerList[i] == PhotonNetwork.LocalPlayer)
                     {
-                        if (PhotonNetwork.PlayerList[i] == PhotonNetwork.LocalPlayer)
-                        {
-                            GameObject playerGameObject = PhotonNetwork.PlayerList[i].TagObject as GameObject;
-                            playerGameObject.GetComponent<PhotonView>().RPC("Death", RpcTarget.All);
-                            Debug.Log(PhotonNetwork.PlayerList[i].NickName);
-                        }
-                    }
-                    else
-                    {
-                        if (PhotonNetwork.PlayerList[i] == PhotonNetwork.LocalPlayer)
-                        {
-                            GameObject playerGameObject = PhotonNetwork.PlayerList[i].TagObject as GameObject;
-                            playerGameObject.GetComponent<PhotonView>().RPC("Death", RpcTarget.All);
-                            Debug.Log(PhotonNetwork.PlayerList[i].NickName);
-
-                        }
+                        GameObject playerGameObject = PhotonNetwork.PlayerList[i].TagObject as GameObject;
+                        playerGameObject.GetComponent<PhotonView>().RPC("Death", RpcTarget.All);
+                        Debug.Log(PhotonNetwork.PlayerList[i].NickName);
                     }
                     break;
                 }
@@ -386,7 +373,7 @@ public class VoteManager : MonoBehaviourPunCallbacks
             int LivingMan = -1;
             for (int i = 0; i < PhotonNetwork.PlayerList.Length; i++)
             {
-                if (!PhotonNetwork.PlayerList[i].CustomProperties.ContainsKey("isDead"))
+                if (!(bool)PhotonNetwork.PlayerList[i].CustomProperties["isDead"])
                 {
                     LivingMan = i;
                     break;
@@ -407,9 +394,9 @@ public class VoteManager : MonoBehaviourPunCallbacks
                 }
             }
 
-            
+
         }
-       
+
     }
 
     private IEnumerator FadeInRoleUI()
@@ -417,17 +404,16 @@ public class VoteManager : MonoBehaviourPunCallbacks
         CanvasGroup uiToActivate1 = null;
         if (VoteSelectPlayerNum != -1)
         {
-            if (PhotonNetwork.PlayerList[VoteSelectPlayerNum].CustomProperties.ContainsKey("isMafia"))
+
+            if ((bool)PhotonNetwork.PlayerList[VoteSelectPlayerNum].CustomProperties["isMafia"])
             {
-                if ((bool)PhotonNetwork.PlayerList[VoteSelectPlayerNum].CustomProperties["isMafia"])
-                {
-                    // 닉네임과함께 마피아인지, 시민인지표시 (닉네임 인자를 받아야함.)
-                    // resultMessage = PhotonNetwork.PlayerList[i].NickName+"님은 마피아 였습니다!!";
-                    resultMessage.text = "마피아를 찾아냈습니다!!";
-                    VoteResultUI.gameObject.SetActive(true);
-                    uiToActivate1 = VoteResultUI;
-                }
+                // 닉네임과함께 마피아인지, 시민인지표시 (닉네임 인자를 받아야함.)
+                // resultMessage = PhotonNetwork.PlayerList[i].NickName+"님은 마피아 였습니다!!";
+                resultMessage.text = "마피아를 찾아냈습니다!!";
+                VoteResultUI.gameObject.SetActive(true);
+                uiToActivate1 = VoteResultUI;
             }
+
             else
             {
                 resultMessage.text = "무고한 시민이 죽었습니다..";

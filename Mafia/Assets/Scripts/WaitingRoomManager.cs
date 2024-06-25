@@ -26,6 +26,8 @@ public class WaitingRoomManager : MonoBehaviourPunCallbacks
     private static VoiceConnection voiceConnection;
     private static bool voiceConnectionInitialized = false;
 
+    public int mafiaNum = 1;
+
     void Awake()
     {
         // 방장이 혼자 씬을 로딩하면, 나머지 사람들은 자동으로 싱크가 됨
@@ -36,6 +38,20 @@ public class WaitingRoomManager : MonoBehaviourPunCallbacks
 
     void Start()
     {
+        if (PhotonNetwork.IsMasterClient)
+        {
+            mafiaNum = GameManager.instance.mafiaNum;
+
+            ExitGames.Client.Photon.Hashtable prop = new ExitGames.Client.Photon.Hashtable
+            {
+            { "MafiaNum", mafiaNum }
+            };
+            PhotonNetwork.CurrentRoom.SetCustomProperties(prop);
+        }
+
+        GameManager.instance.isConnected = true;
+        //GameManager.instance.is
+
         readyBtnText = ReadyBtn.GetComponentInChildren<TMP_Text>();
         startBtnText = StartBtn.GetComponentInChildren<TMP_Text>();
         loadingCanvasGroup = LoadingUI.GetComponent<CanvasGroup>();
@@ -84,7 +100,7 @@ public class WaitingRoomManager : MonoBehaviourPunCallbacks
         // 로딩 UI를 활성화
         LoadingUI.SetActive(true);
 
-        yield return new WaitForSeconds(4); // 4초 대기
+        yield return new WaitForSeconds(2); // 4초 대기
 
         if (PhotonNetwork.IsMasterClient)
         {
@@ -240,6 +256,20 @@ public class WaitingRoomManager : MonoBehaviourPunCallbacks
 
         // 서버 씬으로 전환
         PhotonNetwork.LoadLevel("ServerScene");
+    }
+
+    public override void OnMasterClientSwitched(Player newMasterClient)
+    {
+        if (newMasterClient == PhotonNetwork.LocalPlayer)
+        {
+            isReady = true;
+            SetReadyState(isReady);
+            StartBtn.gameObject.SetActive(true);
+            ReadyBtn.GetComponent<Button>().interactable = false;
+            // 레디 버튼 숨기기
+            ReadyBtn.gameObject.SetActive(false);
+        }
+        Debug.Log("New MasterClient: " + newMasterClient.NickName);
     }
 
     private IEnumerator FadeOutLoadingUI()
