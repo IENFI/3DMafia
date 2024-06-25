@@ -24,7 +24,9 @@ public class PlayerController : MonoBehaviourPun
     public float playerMoveSpeedUnit = 1; // 플레이어 이동 속도 단위
 
     private float lastKillTime; // 킬한 시간 저장
-    public float killCooldown = 5.0f; // 쿨타임 설정 (5초)
+
+    // 유니티 에디터에서 따로 설정하면 코드 내에서 쿨타임 설정을 바꾸더라도 적용이 잘 안 됨.
+    public float killCooldown = 15.0f; // 쿨타임 설정 (15초) 
 
     [SerializeField]
     public GameObject ghostPrefab; // 유령 프리팹
@@ -114,7 +116,9 @@ public class PlayerController : MonoBehaviourPun
             // Z 버튼을 누르면 Kill
             if (Input.GetKeyDown(KeyCode.Z))
             {
-                Debug.Log("Before Kill()");
+                Debug.Log("Before Kill() : " + (Time.time - lastKillTime >= killCooldown));
+                Debug.Log("Time.time - lastKillTime : " + (Time.time - lastKillTime));
+                Debug.Log("killCooldown : " + killCooldown);
                 if (Time.time - lastKillTime >= killCooldown && (bool)PhotonNetwork.LocalPlayer.CustomProperties["isMafia"])
                 {
                     playerAnimator.Kill();

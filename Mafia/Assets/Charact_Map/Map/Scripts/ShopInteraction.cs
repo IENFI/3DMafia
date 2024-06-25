@@ -40,9 +40,14 @@ public class ShopInteraction : MonoBehaviourPunCallbacks
     public Button saveMoneyButton;
     public Button deleteMoneyButton;
 
+    private List<ShopInteraction> shopInteractions;
+
     private void Awake()
     {
         SaveCoinText.text = "0/1000";
+
+        // 모든 ShopInteraction 컴포넌트를 수집
+        shopInteractions = new List<ShopInteraction>(FindObjectsOfType<ShopInteraction>(true));
     }
 
     private void Start()
@@ -169,7 +174,20 @@ public class ShopInteraction : MonoBehaviourPunCallbacks
                 ShowError("모금완료!");
                 Debug.Log($"모금완료 (잔여 Coins: {player.coin})");
                 player.UpdateCoinUI();
-                photonView.RPC("UpdateSaveCoin", RpcTarget.All, 100);
+
+                foreach (ShopInteraction shopInteraction in shopInteractions)
+                {
+                    PhotonView photonView = shopInteraction.GetComponent<PhotonView>();
+                    if (photonView != null)
+                    {
+                        // 모든 클라이언트에서 UpdateSaveCoin RPC 호출
+                        photonView.RPC("UpdateSaveCoin", RpcTarget.All, 100);
+                    }
+                    else
+                    {
+                        Debug.LogWarning("PhotonView가 ShopInteraction 오브젝트에 없습니다: " + shopInteraction.gameObject.name);
+                    }
+                }
             }
             else
             {
@@ -190,7 +208,21 @@ public class ShopInteraction : MonoBehaviourPunCallbacks
                 player.coin -= itemCost;
                 Debug.Log($"모금방해완료 (잔여 Coins: {player.coin})");
                 player.UpdateCoinUI();
-                photonView.RPC("UpdateSaveCoin", RpcTarget.All, -150);
+
+                // 각 ShopInteraction의 PhotonView를 사용하여 RPC를 호출
+                foreach (ShopInteraction shopInteraction in shopInteractions)
+                {
+                    PhotonView photonView = shopInteraction.GetComponent<PhotonView>();
+                    if (photonView != null)
+                    {
+                        // 모든 클라이언트에서 UpdateSaveCoin RPC 호출
+                        photonView.RPC("UpdateSaveCoin", RpcTarget.All, -150);
+                    }
+                    else
+                    {
+                        Debug.LogWarning("PhotonView가 ShopInteraction 오브젝트에 없습니다: " + shopInteraction.gameObject.name);
+                    }
+                }
             }
             else
             {
@@ -214,9 +246,10 @@ public class ShopInteraction : MonoBehaviourPunCallbacks
     [PunRPC]
     private void UpdateSaveCoin(int coin)
     {
-        
+        Debug.Log("UpdateSaveCoin()");
         SaveCoin += coin;
         if (SaveCoin < 0) { SaveCoin = 0; }
+        Debug.Log("SaveCoin : "+SaveCoin +"SaveCoin.ToString() :"+SaveCoin.ToString());
         SaveCoinText.text = SaveCoin.ToString() + "/1000";
 
     }

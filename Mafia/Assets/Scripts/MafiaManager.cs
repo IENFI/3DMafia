@@ -70,7 +70,6 @@ public class MafiaManager : MonoBehaviourPunCallbacks
     // Update is called once per frame
     void Update()
     {
-        Debug.Log("금액" + shopIn.SaveCoin);
         remainingCitizenText.text = "남은 시민 수: " + remainingCitizenNum.ToString();
         remainingMafiaText.text = "남은 마피아 수: " + remainingMafiaNum.ToString();
 
