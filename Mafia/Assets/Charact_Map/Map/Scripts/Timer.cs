@@ -17,6 +17,9 @@ public class Timer : MonoBehaviourPun
     private fillAmountController fillController;
     public GameObject ShopUI; // 상점 UI
 
+    private int Start_count = -1;
+    private int Pause_count = -1;
+
     private bool isDaytime = true; // 낮/밤 상태를 추적하는 변수
 
     [SerializeField] private List<GameObject> Merchants; // 상인 GameObject 리스트
@@ -31,26 +34,43 @@ public class Timer : MonoBehaviourPun
     [PunRPC]
     public void RPC_StartTimer()
     {
-        StartTimer();
+        if (Start_count == -1)
+        {
+            Start_count--;
+            StartTimer();
+        }
+        else
+        {
+            return;
+        }
     }
 
     [PunRPC]
     public void RPC_PauseTimer()
     {
-        PauseTimer();
+        if (Pause_count == -1)
+        {
+            Pause_count--;
+            PauseTimer();
+        }
+        else
+        {
+            return;
+        }
     }
 
-  
+
     public void StartTimer()
     {
-        curTime = time;
-        Debug.Log("타이머시간" +curTime);
+        Start_count = -1;
+        curTime = time+5;
+        Debug.Log("타이머시간" + curTime);
         // 낮/밤 상태 전환
         isDaytime = !isDaytime;
         Debug.Log("낮밤" + isDaytime);
         // 자연광 전환
         directionalLight.enabled = !directionalLight.enabled;
-        Debug.Log("자연광"+directionalLight);
+        Debug.Log("자연광" + directionalLight);
         // 밤으로 전환될 때만 상인 활성화
         if (isDaytime)
         {
@@ -70,9 +90,10 @@ public class Timer : MonoBehaviourPun
         timerCoroutine = StartCoroutine(TimerCoroutine());  // 타이머 코루틴 시작
     }
 
-    
-public void PauseTimer()
+
+    public void PauseTimer()
     {
+        Pause_count = -1;
         if (timerCoroutine != null)
         {
             StopCoroutine(timerCoroutine);  // 타이머 코루틴 중지
@@ -99,11 +120,11 @@ public void PauseTimer()
     {
         while (true)
         {
-        Debug.Log("타이머시간2"+curTime);
-        Debug.Log("낮밤2" + isDaytime);
-        Debug.Log("자연광2" + directionalLight);
+            Debug.Log("타이머시간2" + curTime);
+            Debug.Log("낮밤2" + isDaytime);
+            Debug.Log("자연광2" + directionalLight);
 
-            curTime = time;
+            curTime = time+5;
 
             GameObject playerObject = PhotonNetwork.LocalPlayer.TagObject as GameObject;
             PhotonView playerPhotonView = playerObject.GetComponent<PhotonView>();
@@ -140,7 +161,7 @@ public void PauseTimer()
             curTime = 0;
             // 자연광 전환
             directionalLight.enabled = !directionalLight.enabled;
-            
+
             // 낮/밤 상태 전환
             isDaytime = !isDaytime;
 
@@ -152,7 +173,7 @@ public void PauseTimer()
             else
             {
                 DeactivateAllMerchants();
-  
+
             }
 
             // 반짝임 코루틴 멈춤
@@ -223,5 +244,5 @@ public void PauseTimer()
     void Update()
     {
 
-    }   
+    }
 }

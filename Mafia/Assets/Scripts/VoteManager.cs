@@ -138,7 +138,7 @@ public class VoteManager : MonoBehaviourPunCallbacks
 
         //           ÿ ,
         // ð             ߰   ʿ 
-        if ((IsElected() || AllVoted())&&VoteResultBool)
+        if ((AllVoted()) && VoteResultBool)
         {
             VoteResultBool = false;
             VotingResult();
@@ -153,7 +153,7 @@ public class VoteManager : MonoBehaviourPunCallbacks
         // 3초 대기
         yield return new WaitForSeconds(10f);
 
-       
+
         isMeetingActivated = true;
         voteManager.SetActive(false);
     }
@@ -381,25 +381,42 @@ public class VoteManager : MonoBehaviourPunCallbacks
                     break;
                 }
             }
-                    StartCoroutine(FadeInRoleUI());
+            StartCoroutine(FadeInRoleUI());
 
-                            // 타이머를 0으로 설정하고 다시 시작
-                            if (timer != null)
-                            {
-                                timer.photonView.RPC("RPC_PauseTimer", RpcTarget.All);
-                                timer.photonView.RPC("RPC_StartTimer", RpcTarget.All);
-                            }
+            int LivingMan = -1;
+            for (int i = 0; i < PhotonNetwork.PlayerList.Length; i++)
+            {
+                if (!PhotonNetwork.PlayerList[i].CustomProperties.ContainsKey("isDead"))
+                {
+                    LivingMan = i;
+                    break;
+                }
+            }
+
+            if (PhotonNetwork.LocalPlayer == PhotonNetwork.PlayerList[LivingMan])
+            {
+                // 타이머를 0으로 설정하고 다시 시작
+                if (timer != null)
+                {
+                    timer.photonView.RPC("RPC_PauseTimer", RpcTarget.All);
+                    timer.photonView.RPC("RPC_StartTimer", RpcTarget.All);
+                }
+                else
+                {
+                    Debug.LogError("GameTimer 태그를 가진 타이머 오브젝트를 찾을 수 없습니다.");
+                }
+            }
+
+            
         }
-        else
-        {
-            Debug.LogError("GameTimer 태그를 가진 타이머 오브젝트를 찾을 수 없습니다.");
-        }
+       
     }
 
     private IEnumerator FadeInRoleUI()
     {
         CanvasGroup uiToActivate1 = null;
-        if (VoteSelectPlayerNum != -1) { 
+        if (VoteSelectPlayerNum != -1)
+        {
             if (PhotonNetwork.PlayerList[VoteSelectPlayerNum].CustomProperties.ContainsKey("isMafia"))
             {
                 if ((bool)PhotonNetwork.PlayerList[VoteSelectPlayerNum].CustomProperties["isMafia"])
@@ -424,6 +441,9 @@ public class VoteManager : MonoBehaviourPunCallbacks
 
                 yield return new WaitForSeconds(2); // 2초 대기
                 VoteUI.SetActive(false);
+                GameObject playerObject = PhotonNetwork.LocalPlayer.TagObject as GameObject;
+                PhotonView playerPhotonView = playerObject.GetComponent<PhotonView>();
+                playerPhotonView.RPC("DisableAllCorpses", RpcTarget.All);
 
                 yield return StartCoroutine(FadeCanvasGroup(uiToActivate1, 1, 0, 1)); // 페이드 아웃을 1초 동안 수행
                 uiToActivate1.gameObject.SetActive(false);
