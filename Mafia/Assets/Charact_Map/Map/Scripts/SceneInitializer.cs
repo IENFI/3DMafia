@@ -14,7 +14,6 @@ public class SceneInitializer : MonoBehaviourPunCallbacks
     public override void OnEnable()
     {
         base.OnEnable();
-        Debug.Log("void onEnable");
         // 씬이 로드될 때 이벤트를 등록합니다.
         PhotonNetwork.AutomaticallySyncScene = true;
         PhotonNetwork.NetworkingClient.EventReceived += OnEvent;
@@ -22,20 +21,23 @@ public class SceneInitializer : MonoBehaviourPunCallbacks
 
     private void OnEvent(EventData photonEvent)
     {
-        Debug.Log("Custom어쩌구" + CustomEventCodes.GameSceneLoaded);
+        Debug.Log(CustomEventCodes.GameSceneLoaded);
+
         Debug.Log(photonEvent.Code);
-        Debug.Log("OnEvent호출됨");
+
         if (photonEvent.Code == CustomEventCodes.GameSceneLoaded) // 커스텀 이벤트 코드 사용
         {
+            Debug.Log("내부 커스텀 이벤트코드 " + CustomEventCodes.GameSceneLoaded);
 
-            Debug.Log("Inituirasdasd어쩌구 실행됨");
+            Debug.Log(" 내부 포톤 이벤트코드 " +photonEvent.Code);
+
             StartCoroutine(InitializeSceneWithDelay());
         }
     }
 
     private IEnumerator InitializeSceneWithDelay()
     {
-        Debug.Log("실행중임");
+        
         yield return new WaitForSeconds(1); // 필요한 시간만큼 대기
         InitializeScene();
         yield return new WaitForSeconds(1); // 역할 배정 후 잠시 대기
@@ -131,10 +133,9 @@ public class SceneInitializer : MonoBehaviourPunCallbacks
     private IEnumerator FadeInRoleUI()
     {
         CanvasGroup uiToActivate = null;
-        Debug.Log("FadeInRoleUI실행되었음.");
+
         if (PhotonNetwork.LocalPlayer.CustomProperties.ContainsKey("isMafia"))
         {
-            Debug.Log("마피아화면실행되었음.");
             MafiaUI.gameObject.SetActive(true);
             uiToActivate = MafiaUI;
         }
@@ -146,12 +147,10 @@ public class SceneInitializer : MonoBehaviourPunCallbacks
 
         if (uiToActivate != null)
         {
-            Debug.Log("페이드인 실행직전.");
             yield return StartCoroutine(FadeCanvasGroup(uiToActivate, 0, 1, 2)); // 페이드 인을 2초 동안 수행
             LoadingImage.SetActive(false); // LoadingImage 비활성화
 
             yield return new WaitForSeconds(2); // 2초 대기
-
 
             yield return StartCoroutine(FadeCanvasGroup(uiToActivate, 1, 0, 1)); // 페이드 아웃을 1초 동안 수행
             uiToActivate.gameObject.SetActive(false);

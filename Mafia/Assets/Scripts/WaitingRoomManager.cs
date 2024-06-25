@@ -197,10 +197,13 @@ public class WaitingRoomManager : MonoBehaviourPunCallbacks
                 return;
             }
 
-
-
             PhotonNetwork.LoadLevel("Level_1");
             Debug.Log("Level_1 입장 완료");
+
+            // 커스텀 이벤트 전송
+            RaiseEventOptions options = new RaiseEventOptions { Receivers = ReceiverGroup.All };
+            PhotonNetwork.RaiseEvent(CustomEventCodes.GameSceneLoaded, null, options, SendOptions.SendReliable);
+
         }
     }
 
