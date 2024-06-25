@@ -17,6 +17,8 @@ public class MinigameInteraction : MonoBehaviourPun
     public Material originMaterial;
     public Material lightConeMaterial;
 
+    bool check = false;
+
     void Start()
     {
         TaskUI.SetActive(false);
@@ -66,9 +68,15 @@ public class MinigameInteraction : MonoBehaviourPun
     private void Update()
     {
         // 플레이어가 미니게임 주변에 있고 E 키를 누르면 상점 UI 활성화
-        if (isPlayerInRange && Input.GetKeyDown(KeyCode.E))
+        if (isPlayerInRange && Input.GetKeyDown(KeyCode.E) && check == false)
         {
             TaskUI.SetActive(true);
+            check = true;
+        }
+        else if (isPlayerInRange && Input.GetKeyDown(KeyCode.E) && check == true)
+        {
+            TaskUI.SetActive(false);
+            check = false;
         }
     }
 

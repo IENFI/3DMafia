@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using Photon.Pun;
+using TMPro;
 using UnityEngine;
 
 public class GhostController : MonoBehaviourPun, IPunObservable
@@ -14,6 +15,9 @@ public class GhostController : MonoBehaviourPun, IPunObservable
     private GhostMovement movement;
     [SerializeField]
     private Camera ghostCamera;
+
+    public TextMeshProUGUI nickName;
+    public PhotonView PV;
 
     public void InitializeAsGhost()
     {
@@ -48,6 +52,8 @@ public class GhostController : MonoBehaviourPun, IPunObservable
         cameraController = GetComponentInChildren<GhostFPCamera>();
         // 유령은 모든 레이어를 볼 수 있도록 설정
         ghostCamera.cullingMask = ~0;
+
+        nickName.text = PV.Owner.NickName;
     }
 
 
