@@ -1275,6 +1275,7 @@ MonoBehaviour:
   LoadingUI: {fileID: 1306666780}
   readyBtnText: {fileID: 775431134}
   startBtnText: {fileID: 480092178}
+  mafiaNum: 1
 --- !u!4 &834706968
 Transform:
   m_ObjectHideFlags: 0

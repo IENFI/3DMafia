@@ -15,6 +15,7 @@ TagManager:
   - Timer
   - Door
   - tooltip
+  - Spawn
   layers:
   - Default
   - TransparentFX
