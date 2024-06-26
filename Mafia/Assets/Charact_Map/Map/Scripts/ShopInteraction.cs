@@ -102,7 +102,7 @@ public class ShopInteraction : MonoBehaviourPunCallbacks
     private void Update()
     {
         // 플레이어가 상점 주변에 있고 E 키를 누르면 상점 UI 활성화
-        if (isPlayerInRange && Input.GetKeyDown(KeyCode.E))
+        if (isPlayerInRange && Input.GetKeyDown(KeyCode.G))
         {
             ShopUI.SetActive(true);
         }

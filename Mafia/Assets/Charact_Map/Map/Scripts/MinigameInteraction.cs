@@ -79,13 +79,13 @@ public class MinigameInteraction : MonoBehaviourPun
             ExitCode = false;
         }
         // 플레이어가 미니게임 주변에 있고 E 키를 누르면 상점 UI 활성화
-        if (isPlayerInRange && Input.GetKeyDown(KeyCode.E) && check == false)
+        if (isPlayerInRange && Input.GetKeyDown(KeyCode.F) && check == false)
         {
             TaskUI.SetActive(true);
 
             check = true;
         }
-        else if (isPlayerInRange && Input.GetKeyDown(KeyCode.E) && check == true)
+        else if (isPlayerInRange && Input.GetKeyDown(KeyCode.F) && check == true)
         {
             TaskUI.SetActive(false);
             check = false;
