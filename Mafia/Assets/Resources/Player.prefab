@@ -2578,8 +2578,8 @@ GameObject:
   - component: {fileID: 1078253415464051748}
   - component: {fileID: 1300349669358532152}
   - component: {fileID: 3972690625334328108}
-  - component: {fileID: 5399466249736158570}
   - component: {fileID: 2712328014177237415}
+  - component: {fileID: -800937137196839101}
   m_Layer: 6
   m_Name: Player
   m_TagString: Player
@@ -2631,7 +2631,7 @@ MonoBehaviour:
   ObservedComponents:
   - {fileID: 6216532999763038976}
   - {fileID: 9017317886055484764}
-  - {fileID: 5399466249736158570}
+  - {fileID: -800937137196839101}
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
@@ -2799,39 +2799,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 78a62fa6918554f0f8b45b1a8f18804a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &5399466249736158570
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6946556922499648511}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8efc6b1d64977384eb3405357896c656, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_PositionModel:
-    SynchronizeEnabled: 1
-    TeleportEnabled: 1
-    TeleportIfDistanceGreaterThan: 3
-    InterpolateOption: 3
-    InterpolateMoveTowardsSpeed: 1
-    InterpolateLerpSpeed: 1
-    ExtrapolateOption: 1
-    ExtrapolateSpeed: 1
-    ExtrapolateIncludingRoundTripTime: 1
-    ExtrapolateNumberOfStoredPositions: 1
-  m_RotationModel:
-    SynchronizeEnabled: 1
-    InterpolateOption: 1
-    InterpolateRotateTowardsSpeed: 180
-    InterpolateLerpSpeed: 5
-  m_ScaleModel:
-    SynchronizeEnabled: 0
-    InterpolateOption: 0
-    InterpolateMoveTowardsSpeed: 1
-    InterpolateLerpSpeed: 0
 --- !u!114 &2712328014177237415
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2845,6 +2812,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   trees: []
+--- !u!114 &-800937137196839101
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6946556922499648511}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 627855c7f81362d41938ffe0b1475957, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_SynchronizePosition: 1
+  m_SynchronizeRotation: 1
+  m_SynchronizeScale: 0
+  m_UseLocal: 1
 --- !u!1 &7047722846946561426
 GameObject:
   m_ObjectHideFlags: 0

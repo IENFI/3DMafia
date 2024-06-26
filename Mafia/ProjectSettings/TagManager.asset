@@ -16,6 +16,7 @@ TagManager:
   - Door
   - tooltip
   - Spawn
+  - DeadImage
   layers:
   - Default
   - TransparentFX

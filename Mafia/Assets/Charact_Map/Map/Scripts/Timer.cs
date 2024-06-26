@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Timer : MonoBehaviourPun
 {
@@ -16,6 +17,10 @@ public class Timer : MonoBehaviourPun
     private bool isBlinking;
     private fillAmountController fillController;
     public GameObject ShopUI; // 상점 UI
+
+    [Header("Phase Image}")]
+    public Image Night; // 밤 이미지
+    public Image Day; // 낮 이미지
 
     private int Start_count = -1;
     private int Pause_count = -1;
@@ -75,12 +80,14 @@ public class Timer : MonoBehaviourPun
         if (!isDaytime)
         {
             ActivateRandomMerchants();
+            Night.enabled=true;
+            Day.enabled=false;
         }
         else
         {
             DeactivateAllMerchants();
-
-
+            Night.enabled = false;
+            Day.enabled = true;
         }
         timerCoroutine = StartCoroutine(TimerCoroutine());  // 타이머 코루틴 시작
     }

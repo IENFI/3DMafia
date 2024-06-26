@@ -25,11 +25,11 @@ public class VotingSystem : MonoBehaviourPunCallbacks
 
         // press V to activate vote and meeting
         // it must be revised to an appropriate condition
-        /* if (Input.GetKeyDown(KeyCode.V))
-         {
-             photonView.RPC("StartVote", RpcTarget.All);
-         }
- */
+        if (Input.GetKeyDown(KeyCode.V))
+        {
+            photonView.RPC("StartVote", RpcTarget.All);
+        }
+
     }
 
     [PunRPC]

@@ -7,6 +7,7 @@ using Photon.Pun;
 using Photon.Realtime;
 using ExitGames.Client.Photon;
 using TMPro;
+using UnityEngine.UI;
 
 public class MafiaManager : MonoBehaviourPunCallbacks
 {
@@ -30,6 +31,9 @@ public class MafiaManager : MonoBehaviourPunCallbacks
     private bool isSynced = false;
 
     private bool gameOver = false;
+
+    [SerializeField]
+    public GameObject DeadImage;
 
     [SerializeField]
     public GameObject choosingMafiaManager;
@@ -75,7 +79,7 @@ public class MafiaManager : MonoBehaviourPunCallbacks
 
         if (remainingMafiaNum == 0 || shopIn.SaveCoin >= 1000)
         {
-            CitizenWin.SetActive(true) ;
+            CitizenWin.SetActive(true);
             if (!gameOver)
             {
                 StartCoroutine(BackToHome());
@@ -88,7 +92,7 @@ public class MafiaManager : MonoBehaviourPunCallbacks
             CitizenWin.SetActive(false);
         }
 
-       /* if (remainingCitizenNum == 0)
+        if (remainingCitizenNum == 0)
         {
             MafiaWin.SetActive(true);
             if (!gameOver)
@@ -102,7 +106,7 @@ public class MafiaManager : MonoBehaviourPunCallbacks
         {
             MafiaWin.SetActive(false);
         }
-*/
+
         if (Input.GetKeyDown(KeyCode.Tab))
         {
             RemainingUI.SetActive(!RemainingUI.activeSelf); // 탭 키로 UI를 켜고 끕니다.
@@ -117,6 +121,11 @@ public class MafiaManager : MonoBehaviourPunCallbacks
             {
                 if ((bool)player.CustomProperties["isDead"])
                 {
+                    if(player == PhotonNetwork.LocalPlayer)
+                    {
+                        DeadImage.SetActive(true);
+                        Debug.Log("DeadImage활성화 여부 " );
+                    }
                     if ((bool)player.CustomProperties["isMafia"])
                     {
                         remainingMafiaNum--;

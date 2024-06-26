@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Photon.Pun;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class GhostController : MonoBehaviourPun, IPunObservable
 {
@@ -42,6 +43,7 @@ public class GhostController : MonoBehaviourPun, IPunObservable
 
     private void Start()
     {
+
         if (!photonView.IsMine)
         {
             // 자신의 유령이 아닌 경우에는 이동을 제어하지 않습니다.

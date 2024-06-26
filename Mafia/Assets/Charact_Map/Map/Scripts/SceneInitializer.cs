@@ -3,10 +3,12 @@ using ExitGames.Client.Photon;
 using UnityEngine;
 using System.Collections;
 using TMPro;
+using UnityEngine.UI;
 
 public class SceneInitializer : MonoBehaviourPunCallbacks
 {
     public TMP_Text coinTextPrefab; // CoinText 프리팹을 여기서 설정합니다.
+    /*public Image DeadImagePrefab;*/
     public GameObject LoadingImage; // 로딩 이미지를 설정합니다.
     public CanvasGroup CitizenUI; // CitizenUI의 CanvasGroup을 설정합니다.
     public CanvasGroup MafiaUI; // MafiaUI의 CanvasGroup을 설정합니다.
@@ -47,6 +49,26 @@ public class SceneInitializer : MonoBehaviourPunCallbacks
         foreach (GameObject player in players)
         {
             Debug.Log("Player Found: " + player.name); // 플레이어 객체 확인
+
+            /*PlayerController playerController = player.GetComponent<PlayerController>();
+            if (playerController != null)
+            {
+                if (playerController.DeadImage == null)
+                {
+                    Transform DeadImageLocation = GameObject.FindWithTag("DeadImage")?.transform;
+                    if (DeadImageLocation != null)
+                    {
+                        playerController.DeadImagePrefab = DeadImagePrefab;
+                        playerController.DeadImage = Instantiate(DeadImagePrefab, DeadImageLocation);
+                        playerController.DeadImage.transform.SetParent(DeadImageLocation, false);
+                        Debug.Log("PlayerController properties assigned for player: " + player.name);
+                    }
+                    else
+                    {
+                        Debug.LogWarning("DeadImage location not found!");
+                    }
+                }
+            }*/
 
             PlayerCoinController playerCoinController = player.GetComponent<PlayerCoinController>();
             if (playerCoinController != null)

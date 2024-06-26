@@ -5,6 +5,7 @@ using UnityEngine;
 using ExitGames.Client.Photon;
 using TMPro;
 using UnityEngine.Rendering;
+using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviourPun
 {
@@ -19,6 +20,7 @@ public class PlayerController : MonoBehaviourPun
     private Movement movement;
     private PlayerAnimator playerAnimator;
     private PlayerAttack playerAttackCollision;
+
 
     [SerializeField]
     public float playerMoveSpeedUnit = 1; // 플레이어 이동 속도 단위
@@ -176,6 +178,7 @@ public class PlayerController : MonoBehaviourPun
         { "isDead" , true }
         };
         PhotonNetwork.LocalPlayer.SetCustomProperties(props);
+        
     }
 
     [PunRPC]
