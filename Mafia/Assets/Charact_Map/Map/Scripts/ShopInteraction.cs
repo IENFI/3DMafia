@@ -14,7 +14,7 @@ public class ShopInteraction : MonoBehaviourPunCallbacks
     [SerializeField]
     private GameObject Player;
     [SerializeField]
-    private float increasedSpeed = 4;
+    private float increasedSpeed = 2;
     private float originalSpeed;
 
     [SerializeField] private Renderer outlineRenderer;

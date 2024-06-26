@@ -95,6 +95,19 @@ public class Timer : MonoBehaviourPun
     {
         curTime = time;
         timerCoroutine = StartCoroutine(TimerCoroutine());  // 타이머 코루틴 시작
+        // 밤으로 전환될 때만 상인 활성화
+        if (!isDaytime)
+        {
+            ActivateRandomMerchants();
+            Night.enabled = true;
+            Day.enabled = false;
+        }
+        else
+        {
+            DeactivateAllMerchants();
+            Night.enabled = false;
+            Day.enabled = true;
+        }
     }
 
 
@@ -183,10 +196,14 @@ public class Timer : MonoBehaviourPun
             if (!isDaytime)
             {
                 ActivateRandomMerchants();
+                Night.enabled = true;
+                Day.enabled = false;
             }
             else
             {
                 DeactivateAllMerchants();
+                Night.enabled = false;
+                Day.enabled = true;
 
             }
 
