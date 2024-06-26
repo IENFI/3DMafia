@@ -46,10 +46,17 @@ public class MinigameInteraction : MonoBehaviourPun
         Debug.Log(other.name + " entered the Collider.");
         if (other.CompareTag("Player"))
         {
-            player = other.GetComponent<PlayerCoinController>();
-            isPlayerInRange = true;
-            playerController = other.GetComponent<PlayerController>();
-            ChangeAllChildMaterials(transform, lightConeMaterial);
+            PhotonView otherPhotonView = other.GetComponent<PhotonView>();
+            if (otherPhotonView != null)
+            {
+                if (otherPhotonView.IsMine)
+                {
+                    player = other.GetComponent<PlayerCoinController>();
+                    isPlayerInRange = true;
+                    playerController = other.GetComponent<PlayerController>();
+                    ChangeAllChildMaterials(transform, lightConeMaterial);
+                }
+            }
         }
     }
         
@@ -60,12 +67,19 @@ public class MinigameInteraction : MonoBehaviourPun
         // 이곳에 필요한 로직을 추가합니다
         if (other.CompareTag("Player"))
         {
-            isPlayerInRange = false;
-            player = null;
-            ChangeAllChildMaterials(transform, originMaterial);
-            playerController = null;
-            TaskUI.SetActive(false); // 플레이어가 범위를 벗어나면 ShopUI를 비활성화
-            check = false;
+            PhotonView otherPhotonView = other.GetComponent<PhotonView>();
+            if (otherPhotonView != null)
+            {
+                if (otherPhotonView.IsMine)
+                {
+                    isPlayerInRange = false;
+                    player = null;
+                    ChangeAllChildMaterials(transform, originMaterial);
+                    playerController = null;
+                    TaskUI.SetActive(false); // 플레이어가 범위를 벗어나면 ShopUI를 비활성화
+                    check = false;
+                }
+            }
             
         }
     }
@@ -79,13 +93,13 @@ public class MinigameInteraction : MonoBehaviourPun
             ExitCode = false;
         }
         // 플레이어가 미니게임 주변에 있고 E 키를 누르면 상점 UI 활성화
-        if (isPlayerInRange && Input.GetKeyDown(KeyCode.E) && check == false)
+        if (isPlayerInRange && Input.GetKeyDown(KeyCode.F) && check == false)
         {
             TaskUI.SetActive(true);
 
             check = true;
         }
-        else if (isPlayerInRange && Input.GetKeyDown(KeyCode.E) && check == true)
+        else if (isPlayerInRange && Input.GetKeyDown(KeyCode.F) && check == true)
         {
             TaskUI.SetActive(false);
             check = false;

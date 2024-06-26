@@ -41,6 +41,7 @@ public class ShopInteraction : MonoBehaviourPunCallbacks
     public Button deleteMoneyButton;
 
     private List<ShopInteraction> shopInteractions;
+    private PhotonView playerPhotonView;
 
     private void Awake()
     {
@@ -80,10 +81,16 @@ public class ShopInteraction : MonoBehaviourPunCallbacks
     {
         if (other.CompareTag("Player"))
         {
-            isPlayerInRange = true;
-            player = other.GetComponent<PlayerCoinController>();
-            playerController = player.GetComponent<PlayerController>();
-            outlineRenderer.material.color = Color.blue; // 외곽을 파란색으로 변경
+            PhotonView otherPhotonView = other.GetComponent<PhotonView>();
+            if (otherPhotonView != null)
+            {
+                if (otherPhotonView.IsMine)
+                {
+                    player = other.GetComponent<PlayerCoinController>();
+                    isPlayerInRange = true;
+                    outlineRenderer.material.color = Color.blue; // 외곽을 파란색으로 변경
+                }
+            }
         }
     }
 
@@ -91,21 +98,29 @@ public class ShopInteraction : MonoBehaviourPunCallbacks
     {
         if (other.CompareTag("Player"))
         {
-            isPlayerInRange = false;
-            outlineRenderer.material.color = Color.white; // 외곽을 기본 색상으로 변경
-            player = null;
-            playerController = null;
-            ShopUI.SetActive(false); // 플레이어가 범위를 벗어나면 ShopUI를 비활성화
+            PhotonView otherPhotonView = other.GetComponent<PhotonView>();
+            if (otherPhotonView != null)
+            {
+                if (otherPhotonView.IsMine)
+                {
+                    isPlayerInRange = false;
+                    outlineRenderer.material.color = Color.white; // 외곽을 기본 색상으로 변경
+                    player = null;
+                    //otherPhotonView = null;
+                    ShopUI.SetActive(false); // 플레이어가 범위를 벗어나면 ShopUI를 비활성화
+                }
+            }
         }
     }
 
     private void Update()
     {
         // 플레이어가 상점 주변에 있고 E 키를 누르면 상점 UI 활성화
-        if (isPlayerInRange && Input.GetKeyDown(KeyCode.E))
+        if (isPlayerInRange && Input.GetKeyDown(KeyCode.G))
         {
             ShopUI.SetActive(true);
         }
+
     }
 
     // 더블 코인 구매 버튼 클릭 시 호출될 메서드
