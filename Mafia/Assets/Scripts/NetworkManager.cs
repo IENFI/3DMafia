@@ -166,8 +166,13 @@ public class NetworkManager : MonoBehaviourPunCallbacks // 안현석 똑바로�
         DisconnectPanel.SetActive(false);
         LobbyPanel.SetActive(true);
         CreateRoomUI.SetActive(false);
-        PhotonNetwork.LocalPlayer.NickName = NickNameInput.text;
-        WelcomeText.text = "닉네임: " + PhotonNetwork.LocalPlayer.NickName + "";
+        if (PhotonNetwork.NickName == "")
+        {
+            PhotonNetwork.NickName = NickNameInput.text;
+            WelcomeText.text = "닉네임: " + PhotonNetwork.NickName + "";
+            myList.Clear();
+        }
+        WelcomeText.text = "닉네임: " + PhotonNetwork.NickName + "";
         myList.Clear();
     }
 
