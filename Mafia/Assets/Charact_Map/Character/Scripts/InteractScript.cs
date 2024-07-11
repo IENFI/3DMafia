@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Photon.Pun;
 using UnityEngine;
 
 public class InteractScript : MonoBehaviour
@@ -18,7 +19,15 @@ public class InteractScript : MonoBehaviour
             {
                 if (hit.collider.CompareTag("Door"))
                 {
-                    hit.collider.transform.GetComponent<DoorScript>().ChangeDoorState();
+                    PhotonView doorPhotonView = hit.collider.transform.GetComponent<PhotonView>();
+                    if (doorPhotonView != null)
+                    {
+                        doorPhotonView.RPC("ChangeDoorState", RpcTarget.All);
+                    }
+                    else
+                    {
+                        Debug.LogError("The Door object does not have a PhotonView component.");
+                    }
                 }
             }
         }

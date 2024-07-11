@@ -61,6 +61,7 @@ MonoBehaviour:
   - UpdateSaveCoin
   - DeleteMoney
   - SaveMoney
+  - ChangeDoorState
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

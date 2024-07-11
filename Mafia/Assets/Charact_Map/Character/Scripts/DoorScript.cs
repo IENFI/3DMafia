@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Photon.Pun;
 using UnityEngine;
 
 public class DoorScript : MonoBehaviour {
@@ -9,16 +10,18 @@ public class DoorScript : MonoBehaviour {
     public float doorCloseAngle = 0f;
     public float smoot = 2f;
 
+    private PhotonView photonView;
+
     void Start()
     {
-
+        photonView = GetComponent<PhotonView>();
     }
 
+    [PunRPC]
     public void ChangeDoorState()
     {
         open = !open;
     }
-
 
     void Update()
     {
