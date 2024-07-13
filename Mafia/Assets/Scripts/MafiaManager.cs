@@ -77,35 +77,39 @@ public class MafiaManager : MonoBehaviourPunCallbacks
         remainingCitizenText.text = "남은 시민 수: " + remainingCitizenNum.ToString();
         remainingMafiaText.text = "남은 마피아 수: " + remainingMafiaNum.ToString();
 
-        if (remainingMafiaNum == 0 || shopIn.SaveCoin >= 1000)
-        {
-            CitizenWin.SetActive(true);
-            if (!gameOver)
-            {
-                StartCoroutine(BackToHome());
-            }
-            gameOver = true;
-            //gameover
-        }
-        else
-        {
-            CitizenWin.SetActive(false);
-        }
 
-        if (remainingCitizenNum == 0)
-        {
-            MafiaWin.SetActive(true);
-            if (!gameOver)
+        // 테스트시 키고 끌 목록
+        /*{
+            if (remainingMafiaNum == 0 || shopIn.SaveCoin >= 1000)
             {
-                StartCoroutine(BackToHome());
+                CitizenWin.SetActive(true);
+                if (!gameOver)
+                {
+                    StartCoroutine(BackToHome());
+                }
+                gameOver = true;
+                //gameover
             }
-            gameOver = true;
-            //gameover
-        }
-        else
-        {
-            MafiaWin.SetActive(false);
-        }
+            else
+            {
+                CitizenWin.SetActive(false);
+            }
+
+            if (remainingCitizenNum == 0)
+            {
+                MafiaWin.SetActive(true);
+                if (!gameOver)
+                {
+                    StartCoroutine(BackToHome());
+                }
+                gameOver = true;
+                //gameover
+            }
+            else
+            {
+                MafiaWin.SetActive(false);
+            }
+        }*/
 
         if (Input.GetKeyDown(KeyCode.Tab))
         {

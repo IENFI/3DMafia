@@ -23,7 +23,6 @@ public class Timer : MonoBehaviourPun
     public Image Day; // 낮 이미지
 
     private int Start_count = -1;
-    private int Pause_count = -1;
 
     private bool isDaytime = true; // 낮/밤 상태를 추적하는 변수
 
@@ -33,67 +32,12 @@ public class Timer : MonoBehaviourPun
     {
         directionalLight = GameObject.Find("Directional Light").GetComponent<Light>();
         fillController = FindObjectOfType<fillAmountController>(); // fillAmountController 찾기
+        fillController.totalTime = time;
         Debug.Log("Timer Awake: directionalLight and fillController initialized.");
     }
 
-    [PunRPC]
-    public void RPC_StartTimer()
-    {
-        if (Start_count == -1)
-        {
-            Start_count--;
-            StartTimer();
-        }
-        else
-        {
-            return;
-        }
-    }
-
-    [PunRPC]
-    public void RPC_PauseTimer()
-    {
-        if (Pause_count == -1)
-        {
-            Pause_count--;
-            PauseTimer();
-        }
-        else
-        {
-            return;
-        }
-    }
-
-
     public void StartTimer()
     {
-        Start_count = -1;
-        curTime = time+5;
-        Debug.Log("타이머시간" + curTime);
-        // 낮/밤 상태 전환
-        isDaytime = !isDaytime;
-        Debug.Log("낮밤" + isDaytime);
-        // 자연광 전환
-        directionalLight.enabled = !directionalLight.enabled;
-        Debug.Log("자연광" + directionalLight);
-        // 밤으로 전환될 때만 상인 활성화
-        if (!isDaytime)
-        {
-            ActivateRandomMerchants();
-            Night.enabled=true;
-            Day.enabled=false;
-        }
-        else
-        {
-            DeactivateAllMerchants();
-            Night.enabled = false;
-            Day.enabled = true;
-        }
-        timerCoroutine = StartCoroutine(TimerCoroutine());  // 타이머 코루틴 시작
-    }
-    public void StartTimer2()
-    {
-        curTime = time;
         timerCoroutine = StartCoroutine(TimerCoroutine());  // 타이머 코루틴 시작
         // 밤으로 전환될 때만 상인 활성화
         if (!isDaytime)
@@ -111,50 +55,26 @@ public class Timer : MonoBehaviourPun
     }
 
 
-    public void PauseTimer()
-    {
-        Pause_count = -1;
-        if (timerCoroutine != null)
-        {
-            StopCoroutine(timerCoroutine);  // 타이머 코루틴 중지
-            timerCoroutine = null;
-        }
-
-        if (blinkCoroutine != null)
-        {
-            StopCoroutine(blinkCoroutine);  // 반짝임 코루틴 중지
-            text.color = Color.black;  // 텍스트 색상 초기화
-        }
-
-        Debug.Log("타이머가 멈췄습니다.");
-    }
-
-    public void RestartTimer()
-    {
-        PauseTimer();  // 타이머 중지
-        curTime = time;  // 타이머 초기화
-        /*photonView.RPC("RPC_StartTimer", RpcTarget.All);*/
-    }
-
     private IEnumerator TimerCoroutine()
     {
         while (true)
         {
+            if (Start_count == -1)
+            {
+                curTime = time + 5;
+                fillController.totalTime = curTime;
+                Start_count++;
+            }
+            else 
+            {
+                curTime = time;
+                fillController.totalTime = curTime;
+            }
             GameObject playerObject = PhotonNetwork.LocalPlayer.TagObject as GameObject;
             PhotonView playerPhotonView = playerObject.GetComponent<PhotonView>();
 
-            
             playerPhotonView.RPC("Spawn", RpcTarget.All);
         
-
-            curTime = time + 5;
-            while (playerPhotonView == null)
-            {
-                // 1초 기다림
-                yield return new WaitForSeconds(1);
-            }
-
-
             playerPhotonView.RPC("DisableAllCorpses", RpcTarget.All);
 
             isBlinking = false;

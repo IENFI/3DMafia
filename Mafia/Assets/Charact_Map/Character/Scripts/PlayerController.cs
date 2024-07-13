@@ -27,7 +27,6 @@ public class PlayerController : MonoBehaviourPun
 
     private float lastKillTime; // 킬한 시간 저장
 
-    // 유니티 에디터에서 따로 설정하면 코드 내에서 쿨타임 설정을 바꾸더라도 적용이 잘 안 됨.
     public float killCooldown = 15.0f; // 쿨타임 설정 (15초) 
 
     [SerializeField]
@@ -76,10 +75,22 @@ public class PlayerController : MonoBehaviourPun
     // 매 프레임마다 호출되는 Update 함수
     void Update()
     {
+       
         // 이 객체가 로컬 플레이어의 객체인지 확인
         if (photonView.IsMine)
         {
             if (isDead) return;
+
+            if (GameManager.instance.IsAnyUIOpen())
+            {
+                movement.PauseMovement();
+                return;
+            }
+            else
+            {
+                movement.ResumeMovement();
+            }
+
             // 방향키를 눌러 이동
             float x = Input.GetAxis("Horizontal");
             float z = Input.GetAxis("Vertical");

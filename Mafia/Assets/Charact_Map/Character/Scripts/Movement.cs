@@ -15,6 +15,7 @@ public class Movement : MonoBehaviour
     private Vector3 moveDirection;      // 이동 방향
 
     private CharacterController characterController;
+    private bool isMovementPaused = false;
 
     public float MoveSpeed
     {
@@ -37,9 +38,16 @@ public class Movement : MonoBehaviour
     {
         // 중력 설정. 플레이어가 땅을 밟고 있지 않다면
         // y축 이동방향에 gravity * Time.deltaTime을 더해준다
-        if (characterController.isGrounded == false)
+        if (isMovementPaused)
         {
-            moveDirection.y += gravity * Time.deltaTime;
+            moveDirection = Vector3.zero;
+        }
+        else
+        {
+            if (characterController.isGrounded == false)
+            {
+                moveDirection.y += gravity * Time.deltaTime;
+            }
         }
 
         // 이동 설정. CharacterController의 Move() 함수를 이용한 이동
@@ -48,15 +56,27 @@ public class Movement : MonoBehaviour
 
     public void MoveTo(Vector3 direction)
     {
-        moveDirection = new Vector3(direction.x, moveDirection.y, direction.z);
+        if (!isMovementPaused)
+        {
+            moveDirection = new Vector3(direction.x, moveDirection.y, direction.z);
+        }
     }
 
     public void JumpTo()
     {
         // 캐릭터가 바닥을 밟고 있으면 점프
-        if (characterController.isGrounded == true)
+        if (characterController.isGrounded && !isMovementPaused)
         {
             moveDirection.y = jumpForce;
         }
+    }
+    public void PauseMovement()
+    {
+        isMovementPaused = true;
+    }
+
+    public void ResumeMovement()
+    {
+        isMovementPaused = false;
     }
 }

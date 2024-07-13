@@ -13,6 +13,7 @@ public class MinigameInteraction : MonoBehaviourPun
     private bool isPlayerInRange = false; // 플레이어가 주변에 있는지 여부
     private PlayerController playerController;
     private PlayerCoinController player; // 플레이어의 재화 관리 스크립트
+    private CharacterController characterController;
 
     public Material originMaterial;
     public Material lightConeMaterial;
@@ -21,6 +22,7 @@ public class MinigameInteraction : MonoBehaviourPun
 
     bool check = false;
 
+ 
     void Start()
     {
         TaskUI.SetActive(false);
@@ -52,6 +54,7 @@ public class MinigameInteraction : MonoBehaviourPun
                 if (otherPhotonView.IsMine)
                 {
                     player = other.GetComponent<PlayerCoinController>();
+                    characterController = other.GetComponent<CharacterController>();
                     isPlayerInRange = true;
                     playerController = other.GetComponent<PlayerController>();
                     ChangeAllChildMaterials(transform, lightConeMaterial);
@@ -73,6 +76,7 @@ public class MinigameInteraction : MonoBehaviourPun
                 if (otherPhotonView.IsMine)
                 {
                     isPlayerInRange = false;
+                    characterController = null;
                     player = null;
                     ChangeAllChildMaterials(transform, originMaterial);
                     playerController = null;
@@ -92,17 +96,27 @@ public class MinigameInteraction : MonoBehaviourPun
             player.GetCoin(60);
             ExitCode = false;
         }
-        // 플레이어가 미니게임 주변에 있고 E 키를 누르면 상점 UI 활성화
-        if (isPlayerInRange && Input.GetKeyDown(KeyCode.F) && check == false)
-        {
-            TaskUI.SetActive(true);
 
-            check = true;
+        if (characterController != null)
+        {
+            // 플레이어가 점프중이아니고, 미니게임 주변에 있고 E 키를 누르면 미션 UI 활성화
+            if (characterController.isGrounded&&isPlayerInRange && Input.GetKeyDown(KeyCode.F) && check == false)
+            {
+                TaskUI.SetActive(true);
+
+                check = true;
+            }
+            else if (isPlayerInRange && Input.GetKeyDown(KeyCode.F) && check == true)
+            {
+                TaskUI.SetActive(false);
+                check = false;
+            }
         }
-        else if (isPlayerInRange && Input.GetKeyDown(KeyCode.F) && check == true)
+
+        // TaskUI가 활성화되어 있고, ESC 버튼을 누르면 창을 닫음
+        if (TaskUI.activeSelf && Input.GetKeyDown(KeyCode.Escape))
         {
             TaskUI.SetActive(false);
-            check = false;
         }
     }
 

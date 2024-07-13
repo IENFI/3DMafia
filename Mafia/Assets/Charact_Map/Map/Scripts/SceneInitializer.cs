@@ -160,6 +160,13 @@ public class SceneInitializer : MonoBehaviourPunCallbacks
 
         if (uiToActivate != null)
         {
+            // 타이머 시작
+            Timer timer = FindObjectOfType<Timer>();
+            if (timer != null)
+            {
+                timer.StartTimer();
+                Debug.Log("Timer started.");
+            }
             yield return StartCoroutine(FadeCanvasGroup(uiToActivate, 0, 1, 2)); // 페이드 인을 2초 동안 수행
             LoadingImage.SetActive(false); // LoadingImage 비활성화
 
@@ -168,13 +175,6 @@ public class SceneInitializer : MonoBehaviourPunCallbacks
             yield return StartCoroutine(FadeCanvasGroup(uiToActivate, 1, 0, 1)); // 페이드 아웃을 1초 동안 수행
             uiToActivate.gameObject.SetActive(false);
 
-            // 타이머 시작
-            Timer timer = FindObjectOfType<Timer>();
-            if (timer != null)
-            {
-                timer.StartTimer2();
-                Debug.Log("Timer started.");
-            }
         }
     }
 

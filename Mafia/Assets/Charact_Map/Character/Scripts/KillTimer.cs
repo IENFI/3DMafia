@@ -10,16 +10,16 @@ public class KillTimer : MonoBehaviour
     public Image cooldownImage; // 쿨타임 이미지를 할당받기 위한 변수
     public GameObject tooltip; //툴팁UI
     public TMP_Text cooldownText; // 쿨타임 남은 시간을 표시할 텍스트
-    public float cooldownDuration = 5f; // 쿨타임 지속 시간
+    private float cooldownDuration; // 쿨타임 지속 시간
 
     private bool isCooldown = false; // 쿨타임 진행 여부
     private float cooldownTime; // 쿨타임 남은 시간
+    private PlayerController playerController; // PlayerController 참조 변수
 
     void Start()
     {
         tooltip = GameObject.FindWithTag("tooltip");
-        StartCoroutine(KillTime());
-
+        StartCoroutine(InitializePlayerController());
     }
 
     void Update()
@@ -37,6 +37,26 @@ public class KillTimer : MonoBehaviour
             {
                 cooldownImage.fillAmount = 1 - (cooldownTime / cooldownDuration); // 쿨타임 동안 이미지 채워짐
                 cooldownText.text = Mathf.Ceil(cooldownTime).ToString(); // 남은 시간 텍스트로 표시
+            }
+        }
+    }
+
+    public IEnumerator InitializePlayerController()
+    {
+        yield return new WaitForSeconds(1); // 1초 대기 (로딩 시간을 고려하여)
+
+        while (playerController == null)
+        {
+            playerController = FindObjectOfType<PlayerController>();
+            if (playerController != null)
+            {
+                cooldownDuration = playerController.killCooldown; // PlayerController에서 쿨타임 값 가져오기
+                StartCoroutine(KillTime());
+            }
+            else
+            {
+                Debug.LogWarning("PlayerController를 찾고 있습니다...");
+                yield return new WaitForSeconds(1); // 1초 대기 후 다시 시도
             }
         }
     }

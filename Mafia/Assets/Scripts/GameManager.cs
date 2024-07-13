@@ -12,6 +12,12 @@ public class GameManager : MonoBehaviour
     public bool isConnected = false;
     public int mafiaNum = 1;
 
+    private bool isAnyUIOpen = false;
+    private List<GameObject> uiWindows = new List<GameObject>();
+
+    public GameObject LocalPlayer { get; private set; }  // 로컬 플레이어를 저장하기 위한 변수
+
+
     private void Awake()
     {
         Debug.Log("게임매니저 awake");
@@ -46,8 +52,47 @@ public class GameManager : MonoBehaviour
 
     public void CreatePlayer()
     {
-        Debug.Log("플레이어 생성 시작해볼까?");
-        PhotonNetwork.Instantiate(this.playerPrefab.name, new Vector3(0f, 5f, 0f), Quaternion.identity, 0);
-        Debug.Log("플레이어 생성");
+        Debug.Log("플레이어 생성 시작");
+        GameObject player = PhotonNetwork.Instantiate(this.playerPrefab.name, new Vector3(0f, 5f, 0f), Quaternion.identity, 0);
+        LocalPlayer = player; // 로컬 플레이어 저장
+        Debug.Log("플레이어 생성 완료");
+    }
+    public void RegisterUIWindow(GameObject uiWindow)
+    {
+        if (!uiWindows.Contains(uiWindow))
+        {
+            uiWindows.Add(uiWindow);
+        }
+    }
+
+    public void UnregisterUIWindow(GameObject uiWindow)
+    {
+        if (uiWindows.Contains(uiWindow))
+        {
+            uiWindows.Remove(uiWindow);
+        }
+    }
+
+    public void SetUIOpenState(bool isOpen)
+    {
+        isAnyUIOpen = isOpen;
+    }
+
+    public bool IsAnyUIOpen()
+    {
+        return isAnyUIOpen;
+    }
+
+    public void CheckUIState()
+    {
+        foreach (var uiWindow in uiWindows)
+        {
+            if (uiWindow.activeSelf)
+            {
+                SetUIOpenState(true);
+                return;
+            }
+        }
+        SetUIOpenState(false);
     }
 }

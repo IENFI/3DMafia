@@ -32,7 +32,8 @@ public class ShopInteraction : MonoBehaviourPunCallbacks
 
     private bool isPlayerInRange = false; // 플레이어가 상점 주변에 있는지 여부
     private PlayerController playerController;
-    
+    private CharacterController characterController;
+
 
     // 버튼 변수 선언
     public Button buyDoubleCoinButton;
@@ -46,7 +47,6 @@ public class ShopInteraction : MonoBehaviourPunCallbacks
     private void Awake()
     {
         SaveCoinText.text = "0/1000";
-
         // 모든 ShopInteraction 컴포넌트를 수집
         shopInteractions = new List<ShopInteraction>(FindObjectsOfType<ShopInteraction>(true));
     }
@@ -87,6 +87,7 @@ public class ShopInteraction : MonoBehaviourPunCallbacks
                 if (otherPhotonView.IsMine)
                 {
                     player = other.GetComponent<PlayerCoinController>();
+                    characterController = other.GetComponent<CharacterController>();
                     isPlayerInRange = true;
                     outlineRenderer.material.color = Color.blue; // 외곽을 파란색으로 변경
                 }
@@ -105,6 +106,7 @@ public class ShopInteraction : MonoBehaviourPunCallbacks
                 {
                     isPlayerInRange = false;
                     outlineRenderer.material.color = Color.white; // 외곽을 기본 색상으로 변경
+                    characterController = null;
                     player = null;
                     //otherPhotonView = null;
                     ShopUI.SetActive(false); // 플레이어가 범위를 벗어나면 ShopUI를 비활성화
@@ -115,12 +117,19 @@ public class ShopInteraction : MonoBehaviourPunCallbacks
 
     private void Update()
     {
-        // 플레이어가 상점 주변에 있고 E 키를 누르면 상점 UI 활성화
-        if (isPlayerInRange && Input.GetKeyDown(KeyCode.G))
+       if(characterController != null)
         {
-            ShopUI.SetActive(true);
+            // 플레이어가 점프중이아니고, 상점 주변에 있으며, E 키를 누르면 상점 UI 활성화
+            if (characterController.isGrounded&&isPlayerInRange && Input.GetKeyDown(KeyCode.G))
+            {
+                ShopUI.SetActive(true);
+            }
         }
-
+        // ShopUI가 활성화되어 있고, ESC 버튼을 누르면 창을 닫음
+        if (ShopUI.activeSelf && Input.GetKeyDown(KeyCode.Escape))
+        {
+            ShopUI.SetActive(false);
+        }
     }
 
     // 더블 코인 구매 버튼 클릭 시 호출될 메서드

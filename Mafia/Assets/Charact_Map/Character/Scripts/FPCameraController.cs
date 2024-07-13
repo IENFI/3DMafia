@@ -11,6 +11,9 @@ public class FPCameraController : MonoBehaviour
     private float eulerAngleX;
     private float eulerAngleY;
 
+    private bool canRotate = true; // 회전 기능을 활성화/비활성화할 수 있는 플래그 변수
+
+
     //public Transform player;       // 플레이어의 Transform
     //public Vector3 offset;         // 카메라와 플레이어 사이의 오프셋 값
     //public float smoothTime = 0.3f; // 카메라 이동의 부드러움을 조절하는 값
@@ -52,6 +55,7 @@ public class FPCameraController : MonoBehaviour
 
     public void RotateTo(float mouseX, float mouseY)
     {
+        if (!canRotate) return;
         // 마우스를 좌/우로 움직이는 mouseX 값을 y축에 대입하는 이유는
         // 마우스를 좌/우로 움직일 때 카메라도 좌/우를 보려면 카메라 오브젝트의
         // y축이 회전되어야 하기 때문
@@ -74,5 +78,17 @@ public class FPCameraController : MonoBehaviour
 
         // Mathf.Clamp()를 이용해 angle이 min <= angle <= max을 유지하도록 함
         return Mathf.Clamp(angle, min, max);
+    }
+
+    // 회전 기능을 비활성화하는 메서드
+    public void DisableRotation()
+    {
+        canRotate = false;
+    }
+
+    // 회전 기능을 활성화하는 메서드
+    public void EnableRotation()
+    {
+        canRotate = true;
     }
 }
