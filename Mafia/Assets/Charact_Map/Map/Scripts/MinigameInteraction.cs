@@ -54,6 +54,7 @@ public class MinigameInteraction : MonoBehaviourPun
                 if (otherPhotonView.IsMine)
                 {
                     player = other.GetComponent<PlayerCoinController>();
+                    Debug.Log("Player is not null");
                     characterController = other.GetComponent<CharacterController>();
                     isPlayerInRange = true;
                     playerController = other.GetComponent<PlayerController>();
@@ -78,6 +79,7 @@ public class MinigameInteraction : MonoBehaviourPun
                     isPlayerInRange = false;
                     characterController = null;
                     player = null;
+                    Debug.Log("Player is null");
                     ChangeAllChildMaterials(transform, originMaterial);
                     playerController = null;
                     TaskUI.SetActive(false); // 플레이어가 범위를 벗어나면 ShopUI를 비활성화
@@ -114,10 +116,10 @@ public class MinigameInteraction : MonoBehaviourPun
         }
 
         // TaskUI가 활성화되어 있고, ESC 버튼을 누르면 창을 닫음
-        if (TaskUI.activeSelf && Input.GetKeyDown(KeyCode.Escape))
-        {
-            TaskUI.SetActive(false);
-        }
+        //if (TaskUI.activeSelf && Input.GetKeyDown(KeyCode.Escape))
+        //{
+        //    TaskUI.SetActive(false);
+        //}
     }
 
 }
