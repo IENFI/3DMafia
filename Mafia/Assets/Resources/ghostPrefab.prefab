@@ -307,6 +307,7 @@ GameObject:
   - component: {fileID: 6282813651046342656}
   - component: {fileID: 9106892534665642196}
   - component: {fileID: 3663028659487831172}
+  - component: {fileID: 1539139759927501419}
   m_Layer: 3
   m_Name: ghostPrefab
   m_TagString: Untagged
@@ -501,6 +502,19 @@ MonoBehaviour:
     InterpolateOption: 0
     InterpolateMoveTowardsSpeed: 1
     InterpolateLerpSpeed: 0
+--- !u!114 &1539139759927501419
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 498253721416304272}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6807d6e771c6f4209ad588042464df7f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  interactDiastance: 5
 --- !u!1 &498253721421649741
 GameObject:
   m_ObjectHideFlags: 0
