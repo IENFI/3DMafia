@@ -11,7 +11,12 @@ public class CorpseManager : MonoBehaviourPun
         GameObject[] corpses = GameObject.FindGameObjectsWithTag("Corpse");
         foreach (GameObject corpse in corpses)
         {
-            corpse.SetActive(false);
+            // 비활성화
+            //corpse.SetActive(false);
+
+            // 씬에서 아예 없애기
+            Destroy(corpse);
         }
     }
+
 }

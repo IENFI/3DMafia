@@ -10,8 +10,7 @@ public class PlayerReportRadius : MonoBehaviour
     {
         if (other.gameObject.CompareTag("Corpse"))
         {
-            corpsesInRange++;
-            Debug.Log("Corpse entered report radius.");
+            corpsesInRange = 1;
         }
     }
 
@@ -19,9 +18,13 @@ public class PlayerReportRadius : MonoBehaviour
     {
         if (other.gameObject.CompareTag("Corpse"))
         {
-            corpsesInRange--;
-            Debug.Log("Corpse exited report radius.");
+            corpsesInRange = 0;
         }
+    }
+
+    public void DestoryCorpse()
+    {
+        corpsesInRange = 0;
     }
 
     public bool IsCorpseInRange()

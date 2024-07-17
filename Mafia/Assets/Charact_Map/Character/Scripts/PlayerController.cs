@@ -130,9 +130,6 @@ public class PlayerController : MonoBehaviourPun
             // Z 버튼을 누르면 Kill
             if (Input.GetKeyDown(KeyCode.Z))
             {
-                Debug.Log("Before Kill() : " + (Time.time - lastKillTime >= killCooldown));
-                Debug.Log("Time.time - lastKillTime : " + (Time.time - lastKillTime));
-                Debug.Log("killCooldown : " + killCooldown);
                 if (Time.time - lastKillTime >= killCooldown && (bool)PhotonNetwork.LocalPlayer.CustomProperties["isMafia"])
                 {
                     playerAnimator.Kill();
@@ -153,15 +150,14 @@ public class PlayerController : MonoBehaviourPun
                 // playerAnimator.OnWeaponAttack(); // 무기 공격 애니메이션 실행 (주석 처리됨)
             }*/
 
-         /*   // 시체 없애기 시뮬레이트 함수
-            if (Input.GetKeyDown(KeyCode.K))
-            {
-                photonView.RPC("DisableAllCorpses", RpcTarget.All);
-            }*/
+            /*   // 시체 없애기 시뮬레이트 함수
+               if (Input.GetKeyDown(KeyCode.K))
+               {
+                   photonView.RPC("DisableAllCorpses", RpcTarget.All);
+               }*/
 
             if (Input.GetKeyDown(KeyCode.R) && reportRadius.IsCorpseInRange())
             {
-                Debug.Log("Before ReportCorpse()");
 
                 if (Time.time - lastReportTime >= reportCooldown)
                 {
@@ -240,7 +236,12 @@ public class PlayerController : MonoBehaviourPun
         GameObject[] corpses = GameObject.FindGameObjectsWithTag("Corpse");
         foreach (GameObject corpse in corpses)
         {
-            corpse.SetActive(false);
+            // 비활성화
+            //corpse.SetActive(false);
+
+            // 씬에서 아예 없애기
+            GetComponentInChildren<PlayerReportRadius>().DestoryCorpse();
+            Destroy(corpse);
         }
     }
 
