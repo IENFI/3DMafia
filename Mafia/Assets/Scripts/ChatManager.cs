@@ -32,6 +32,11 @@ public class ChatManager : MonoBehaviour
             RoomPanel.SetActive(false);
             chat_check = false;
         }
+        // ShopUI가 활성화되어 있고, ESC 버튼을 누르면 창을 닫음
+        if (RoomPanel.activeSelf && Input.GetKeyDown(KeyCode.Escape))
+        {
+            RoomPanel.SetActive(false);
+        }
     }
 
     public void Send()
