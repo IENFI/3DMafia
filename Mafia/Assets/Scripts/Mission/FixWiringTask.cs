@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Photon.Pun;
+
 
 
 public enum EWireColor
@@ -12,7 +14,7 @@ public enum EWireColor
     Magenta
 }
 
-public class FixWiringTask : MonoBehaviour
+public class FixWiringTask : MonoBehaviourPun
 {
     [SerializeField]
     private List<LeftWire> mLeftWires;

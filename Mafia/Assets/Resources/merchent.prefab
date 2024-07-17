@@ -839,10 +839,10 @@ CapsuleCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 1.8
-  m_Height: 0
-  m_Direction: 0
-  m_Center: {x: -0.0075883865, y: 0.33836842, z: 0.00768137}
+  m_Radius: 0.5012074
+  m_Height: 1.3
+  m_Direction: 1
+  m_Center: {x: 0.078581914, y: 0.5, z: 0.02262558}
 --- !u!114 &229656937877972215
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -864,6 +864,11 @@ MonoBehaviour:
   speedUpImage: {fileID: 0}
   SaveCoinText: {fileID: 0}
   SaveCoin: 0
+  buyDoubleCoinButton: {fileID: 0}
+  buySpeedUpButton: {fileID: 0}
+  saveMoneyButton: {fileID: 0}
+  deleteMoneyButton: {fileID: 0}
+  someTargetObjectTransform: {fileID: 855141490403181420}
 --- !u!114 &170967081599129894
 MonoBehaviour:
   m_ObjectHideFlags: 0

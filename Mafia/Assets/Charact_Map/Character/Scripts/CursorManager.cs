@@ -13,7 +13,7 @@ public class CursorManager : MonoBehaviour
     void Update()
     {
         // Esc 키를 눌렀을 때 커서 고정을 해제하고 커서를 표시합니다.
-        if (Input.GetKeyDown(KeyCode.Escape))
+        if (Input.GetKeyDown(KeyCode.LeftControl) || Input.GetKeyDown(KeyCode.RightControl))
         {
             UnlockCursor();
         }

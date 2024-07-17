@@ -44,6 +44,8 @@ public class ShopInteraction : MonoBehaviourPunCallbacks
     private List<ShopInteraction> shopInteractions;
     private PhotonView playerPhotonView;
 
+    public Transform someTargetObjectTransform;
+
     private void Awake()
     {
         SaveCoinText.text = "0/1000";
@@ -69,6 +71,33 @@ public class ShopInteraction : MonoBehaviourPunCallbacks
 
         /*// 이벤트 등록
         PhotonNetwork.NetworkingClient.EventReceived += OnEvent;*/
+
+        StartCoroutine(FindLocalPlayerCoinController());
+    }
+
+    private IEnumerator FindLocalPlayerCoinController()
+    {
+        while (player == null)
+        {
+            foreach (var pcc in FindObjectsOfType<PlayerCoinController>())
+            {
+                if (pcc.photonView.IsMine)
+                {
+                    player = pcc;
+                    break;
+                }
+            }
+
+            if (player == null)
+            {
+                Debug.Log("(ShopInteraction) PlayerCoinController를 찾는 중...");
+            }
+
+            // 다음 프레임까지 대기
+            yield return null;
+        }
+
+        Debug.Log("(ShopInteraction) PlayerCoinController를 찾았습니다.");
     }
 
     /*private void OnDestroy()
@@ -77,7 +106,7 @@ public class ShopInteraction : MonoBehaviourPunCallbacks
         PhotonNetwork.NetworkingClient.EventReceived -= OnEvent;
     }*/
 
-    private void OnTriggerEnter(Collider other)
+    /*private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Player"))
         {
@@ -93,44 +122,14 @@ public class ShopInteraction : MonoBehaviourPunCallbacks
                 }
             }
         }
+    }*/
+
+
+    public void ChangeOutlineRenderer(Color color)
+    {
+        outlineRenderer.material.color = color;
     }
 
-    private void OnTriggerExit(Collider other)
-    {
-        if (other.CompareTag("Player"))
-        {
-            PhotonView otherPhotonView = other.GetComponent<PhotonView>();
-            if (otherPhotonView != null)
-            {
-                if (otherPhotonView.IsMine)
-                {
-                    isPlayerInRange = false;
-                    outlineRenderer.material.color = Color.white; // 외곽을 기본 색상으로 변경
-                    characterController = null;
-                    player = null;
-                    //otherPhotonView = null;
-                    ShopUI.SetActive(false); // 플레이어가 범위를 벗어나면 ShopUI를 비활성화
-                }
-            }
-        }
-    }
-
-    private void Update()
-    {
-       if(characterController != null)
-        {
-            // 플레이어가 점프중이아니고, 상점 주변에 있으며, E 키를 누르면 상점 UI 활성화
-            if (characterController.isGrounded&&isPlayerInRange && Input.GetKeyDown(KeyCode.G))
-            {
-                ShopUI.SetActive(true);
-            }
-        }
-        // ShopUI가 활성화되어 있고, ESC 버튼을 누르면 창을 닫음
-        if (ShopUI.activeSelf && Input.GetKeyDown(KeyCode.Escape))
-        {
-            ShopUI.SetActive(false);
-        }
-    }
 
     // 더블 코인 구매 버튼 클릭 시 호출될 메서드
     public void BuyDoubleCoin()
@@ -273,7 +272,7 @@ public class ShopInteraction : MonoBehaviourPunCallbacks
         Debug.Log("UpdateSaveCoin()");
         SaveCoin += coin;
         if (SaveCoin < 0) { SaveCoin = 0; }
-        Debug.Log("SaveCoin : "+SaveCoin +"SaveCoin.ToString() :"+SaveCoin.ToString());
+        Debug.Log("SaveCoin : " + SaveCoin + "SaveCoin.ToString() :" + SaveCoin.ToString());
         SaveCoinText.text = SaveCoin.ToString() + "/1000";
 
     }
