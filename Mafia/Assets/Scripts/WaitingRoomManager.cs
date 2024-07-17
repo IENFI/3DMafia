@@ -138,6 +138,15 @@ public class WaitingRoomManager : MonoBehaviourPunCallbacks
         if (PhotonNetwork.IsMasterClient)
         {
             StartBtn.GetComponent<Button>().interactable = gameReady;
+            if(Input.GetKeyDown(KeyCode.F5))
+            {
+                GameStart();
+            }
+        }
+
+        if (!PhotonNetwork.IsMasterClient && Input.GetKeyDown(KeyCode.F5))
+        {
+            ClickReadyBtn();
         }
 
         // 버튼 텍스트 변경
@@ -160,6 +169,8 @@ public class WaitingRoomManager : MonoBehaviourPunCallbacks
         {
             startBtnText.text = "모두 준비해야 합니다";
         }
+
+        
     }
 
     void SetReadyState(bool isReady)
