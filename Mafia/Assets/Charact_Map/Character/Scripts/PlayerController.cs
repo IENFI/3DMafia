@@ -6,6 +6,7 @@ using ExitGames.Client.Photon;
 using TMPro;
 using UnityEngine.Rendering;
 using UnityEngine.UI;
+using Photon.Pun.Demo.PunBasics;
 
 public class PlayerController : MonoBehaviourPun
 {
@@ -81,7 +82,7 @@ public class PlayerController : MonoBehaviourPun
         {
             if (isDead) return;
 
-            if (GameManager.instance.IsAnyUIOpen())
+            if (GameManager.instance!=null && GameManager.instance.IsAnyUIOpen())
             {
                 movement.PauseMovement();
                 return;

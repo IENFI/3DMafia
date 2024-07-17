@@ -38,11 +38,14 @@ public class WaitingRoomManager : MonoBehaviourPunCallbacks
 
     void Start()
     {
-        ExitGames.Client.Photon.Hashtable props = new ExitGames.Client.Photon.Hashtable
+        if (PhotonNetwork.IsMasterClient && PhotonNetwork.CurrentRoom.CustomProperties.ContainsKey("isGameStarted"))
         {
-        { "isGameStarted", false }
+            ExitGames.Client.Photon.Hashtable props = new ExitGames.Client.Photon.Hashtable
+        {
+            { "isGameStarted", false }
         };
-        PhotonNetwork.CurrentRoom.SetCustomProperties(props);
+            PhotonNetwork.CurrentRoom.SetCustomProperties(props);
+        }
         if (PhotonNetwork.IsMasterClient)
         {
             mafiaNum = GameManager.instance.mafiaNum;
