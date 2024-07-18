@@ -46,6 +46,10 @@ public class PlayerController : MonoBehaviourPun
 
     public GameObject[] objectsToHide;
 
+    [SerializeField]
+    private GameObject miniMapPointPrefab; // MiniMapPoint 프리팹
+    private GameObject miniMapPoint; // MiniMapPoint 인스턴스
+
     void Start()
     {
         movement = GetComponent<Movement>();
@@ -70,19 +74,20 @@ public class PlayerController : MonoBehaviourPun
         if (photonView.IsMine)
         {
             HideObjects();
+            CreateMiniMapPoint(); // MiniMapPoint 생성
         }
     }
 
     // 매 프레임마다 호출되는 Update 함수
     void Update()
     {
-       
+
         // 이 객체가 로컬 플레이어의 객체인지 확인
         if (photonView.IsMine)
         {
             if (isDead) return;
 
-            if (GameManager.instance!=null && GameManager.instance.IsAnyUIOpen())
+            if (GameManager.instance != null && GameManager.instance.IsAnyUIOpen())
             {
                 movement.PauseMovement();
                 return;
@@ -169,9 +174,26 @@ public class PlayerController : MonoBehaviourPun
             float mouseY = Input.GetAxis("Mouse Y");
 
             cameraController.RotateTo(mouseX, mouseY); // 카메라 회전 함수 호출
+            UpdateMiniMapPointPosition(); // MiniMapPoint 위치 업데이트
+        }
+    }
+    private void CreateMiniMapPoint()
+    {
+        if (miniMapPointPrefab != null)
+        {
+            miniMapPoint = Instantiate(miniMapPointPrefab, transform.position + new Vector3(150f, 0, 0), Quaternion.identity);
+            miniMapPoint.transform.SetParent(transform); // MiniMapPoint를 플레이어의 자식으로 설정
         }
     }
 
+    private void UpdateMiniMapPointPosition()
+    {
+        if (miniMapPoint != null)
+        {
+            // 플레이어의 위치에 x축으로 150만큼 이동한 위치로 MiniMapPoint를 업데이트
+            miniMapPoint.transform.position = transform.position + new Vector3(150f, 0, 0);
+        }
+    }
     [PunRPC]
     void Death()
     {
@@ -186,7 +208,7 @@ public class PlayerController : MonoBehaviourPun
         { "isDead" , true }
         };
         PhotonNetwork.LocalPlayer.SetCustomProperties(props);
-        
+
     }
 
     [PunRPC]
