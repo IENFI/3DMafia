@@ -47,10 +47,14 @@ public class PlayerController : MonoBehaviourPun
     public GameObject[] objectsToHide;
 
     [SerializeField]
-    private GameObject miniMapPointPrefab; // MiniMapPoint 프리팹
-    private GameObject miniMapPoint; // MiniMapPoint 인스턴스
+    private GameObject miniMapPointPrefab1; // MiniMapPoint 프리팹
+    private GameObject miniMapPoint1; // MiniMapPoint 인스턴스
 
-    
+    [SerializeField]
+    private GameObject miniMapPointPrefab2; // MiniMapPoint 프리팹
+    private GameObject miniMapPoint2; // MiniMapPoint 인스턴스
+
+
     void Start()
     {
         movement = GetComponent<Movement>();
@@ -181,19 +185,28 @@ public class PlayerController : MonoBehaviourPun
     }
     private void CreateMiniMapPoint()
     {
-        if (miniMapPointPrefab != null)
+        if (miniMapPointPrefab1 != null)
         {
-            miniMapPoint = Instantiate(miniMapPointPrefab, transform.position + new Vector3(150f, 0, 0), Quaternion.identity);
-            miniMapPoint.transform.SetParent(transform); // MiniMapPoint를 플레이어의 자식으로 설정
+            miniMapPoint1 = Instantiate(miniMapPointPrefab1, transform.position + new Vector3(150f, 0, 0), Quaternion.identity);
+            miniMapPoint1.transform.SetParent(transform); // MiniMapPoint를 플레이어의 자식으로 설정
+
+            miniMapPoint2 = Instantiate(miniMapPointPrefab2, transform.position + new Vector3(300f, 0, 0), Quaternion.identity);
+            miniMapPoint2.transform.SetParent(transform); // MiniMapPoint를 플레이어의 자식으로 설정
         }
     }
 
     private void UpdateMiniMapPointPosition()
     {
-        if (miniMapPoint != null)
+        if (miniMapPoint1 != null)
         {
             // 플레이어의 위치에 x축으로 150만큼 이동한 위치로 MiniMapPoint를 업데이트
-            miniMapPoint.transform.position = transform.position + new Vector3(150f, 0, 0);
+            miniMapPoint1.transform.position = transform.position + new Vector3(150f, 0, 0);
+        }
+
+        if (miniMapPoint2 != null)
+        {
+            // 플레이어의 위치에 x축으로 150만큼 이동한 위치로 MiniMapPoint를 업데이트
+            miniMapPoint2.transform.position = transform.position + new Vector3(300f, 0, 0);
         }
     }
     [PunRPC]
