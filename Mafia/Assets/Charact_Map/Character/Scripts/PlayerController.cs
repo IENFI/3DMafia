@@ -50,6 +50,7 @@ public class PlayerController : MonoBehaviourPun
     private GameObject miniMapPointPrefab; // MiniMapPoint 프리팹
     private GameObject miniMapPoint; // MiniMapPoint 인스턴스
 
+    
     void Start()
     {
         movement = GetComponent<Movement>();
@@ -85,6 +86,7 @@ public class PlayerController : MonoBehaviourPun
         // 이 객체가 로컬 플레이어의 객체인지 확인
         if (photonView.IsMine)
         {
+
             if (isDead) return;
 
             if (GameManager.instance != null && GameManager.instance.IsAnyUIOpen())
