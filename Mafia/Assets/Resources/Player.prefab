@@ -2688,6 +2688,8 @@ MonoBehaviour:
   objectsToHide:
   - {fileID: 2243264917339039516}
   - {fileID: 6683848085236309314}
+  miniMapPointPrefab1: {fileID: 1075559343291363416, guid: 217a988d720bbf947836cd19ea5bb2e9, type: 3}
+  miniMapPointPrefab2: {fileID: 1075559343291363416, guid: 217a988d720bbf947836cd19ea5bb2e9, type: 3}
 --- !u!114 &6667265159653745265
 MonoBehaviour:
   m_ObjectHideFlags: 0
