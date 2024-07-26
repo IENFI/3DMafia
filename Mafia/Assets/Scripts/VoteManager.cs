@@ -404,41 +404,38 @@ public class VoteManager : MonoBehaviourPunCallbacks
         CanvasGroup uiToActivate1 = null;
         if (VoteSelectPlayerNum != -1)
         {
-
             if ((bool)PhotonNetwork.PlayerList[VoteSelectPlayerNum].CustomProperties["isMafia"])
             {
-                // 닉네임과함께 마피아인지, 시민인지표시 (닉네임 인자를 받아야함.)
-                // resultMessage = PhotonNetwork.PlayerList[i].NickName+"님은 마피아 였습니다!!";
                 resultMessage.text = "마피아를 찾아냈습니다!!";
-                VoteResultUI.gameObject.SetActive(true);
-                uiToActivate1 = VoteResultUI;
+                resultMessage.color = Color.red;
             }
-
             else
             {
                 resultMessage.text = "무고한 시민이 죽었습니다..";
-                VoteResultUI.gameObject.SetActive(true);
-                uiToActivate1 = VoteResultUI;
-            }
-
-            if (uiToActivate1 != null)
-            {
-                yield return StartCoroutine(FadeCanvasGroup(uiToActivate1, 0, 1, 3)); // 페이드 인을 3초 동안 수행
-
-                yield return new WaitForSeconds(2); // 2초 대기
-                VoteUI.SetActive(false);
-                GameObject playerObject = PhotonNetwork.LocalPlayer.TagObject as GameObject;
-                PhotonView playerPhotonView = playerObject.GetComponent<PhotonView>();
-                playerPhotonView.RPC("DisableAllCorpses", RpcTarget.All);
-
-                yield return StartCoroutine(FadeCanvasGroup(uiToActivate1, 1, 0, 1)); // 페이드 아웃을 1초 동안 수행
-                uiToActivate1.gameObject.SetActive(false);
-
+                resultMessage.color = Color.green;
             }
         }
         else
         {
+            resultMessage.text = "아무도 투표로 지목되지 않았습니다";
+            resultMessage.color = Color.yellow;    
+        }
+
+        VoteResultUI.gameObject.SetActive(true);
+        uiToActivate1 = VoteResultUI;
+        if (uiToActivate1 != null)
+        {
+            yield return StartCoroutine(FadeCanvasGroup(uiToActivate1, 0, 1, 3)); // 페이드 인을 3초 동안 수행
+
+            yield return new WaitForSeconds(2); // 2초 대기
             VoteUI.SetActive(false);
+            GameObject playerObject = PhotonNetwork.LocalPlayer.TagObject as GameObject;
+            PhotonView playerPhotonView = playerObject.GetComponent<PhotonView>();
+            playerPhotonView.RPC("DisableAllCorpses", RpcTarget.All);
+
+            yield return StartCoroutine(FadeCanvasGroup(uiToActivate1, 1, 0, 1)); // 페이드 아웃을 1초 동안 수행
+            uiToActivate1.gameObject.SetActive(false);
+
         }
     }
 
