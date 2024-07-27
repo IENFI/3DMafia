@@ -8,7 +8,7 @@ using UnityEngine.Rendering;
 using UnityEngine.UI;
 using Photon.Pun.Demo.PunBasics;
 
-public class PlayerController : MonoBehaviourPun
+public class PlayerController : MonoBehaviourPun, IPunObservable
 {
     [SerializeField]
     private KeyCode jumpKeyCode = KeyCode.Space; // 점프 키 (Space 키)
@@ -54,6 +54,9 @@ public class PlayerController : MonoBehaviourPun
     private GameObject miniMapPointPrefab2; // MiniMapPoint 프리팹
     private GameObject miniMapPoint2; // MiniMapPoint 인스턴스
 
+    private Vector3 networkPosition;
+    private Quaternion networkRotation;
+    public float smoothing = 10f;
 
     void Start()
     {
@@ -80,12 +83,20 @@ public class PlayerController : MonoBehaviourPun
         {
             HideObjects();
             CreateMiniMapPoint(); // MiniMapPoint 생성
+            CharacterController characterController = GetComponent<CharacterController>();
+            characterController.enabled = true;
         }
     }
 
     // 매 프레임마다 호출되는 Update 함수
     void Update()
     {
+        if (!photonView.IsMine)
+        {
+            transform.position = Vector3.Lerp(transform.position, networkPosition, Time.deltaTime * smoothing);
+            transform.rotation = Quaternion.Lerp(transform.rotation, networkRotation, Time.deltaTime * smoothing);
+            return;
+        }
 
         // 이 객체가 로컬 플레이어의 객체인지 확인
         if (photonView.IsMine)
@@ -296,5 +307,22 @@ public class PlayerController : MonoBehaviourPun
                 }
             }
         }
+    }
+
+    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    {
+        if (stream.IsWriting)
+        {
+            // 로컬 플레이어의 데이터를 네트워크로 전송
+            stream.SendNext(transform.position);
+            stream.SendNext(transform.rotation);
+        }
+        else
+        {
+            // 네트워크에서 받은 데이터로 원격 플레이어 업데이트
+            networkPosition = (Vector3)stream.ReceiveNext();
+            networkRotation = (Quaternion)stream.ReceiveNext();
+        }
+
     }
 }
