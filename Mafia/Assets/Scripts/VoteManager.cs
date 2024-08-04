@@ -125,8 +125,8 @@ public class VoteManager : MonoBehaviourPunCallbacks
 
     void Update()
     {
-        if ((bool)PhotonNetwork.LocalPlayer.CustomProperties["isDead"])
-            return;
+        //if ((bool)PhotonNetwork.LocalPlayer.CustomProperties["isDead"])
+        //    return;
 
         if (isMeetingActivated)
         {
@@ -186,6 +186,14 @@ public class VoteManager : MonoBehaviourPunCallbacks
                     btns[i].GetComponent<Button>().interactable = true;
             }
             else
+            {
+                btns[i].GetComponent<Button>().interactable = false;
+            }
+        }
+
+        if ((bool)PhotonNetwork.LocalPlayer.CustomProperties["isDead"])
+        {
+            for (int i = 0; i < PhotonNetwork.PlayerList.Length; i++)
             {
                 btns[i].GetComponent<Button>().interactable = false;
             }
