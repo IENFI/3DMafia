@@ -73,7 +73,7 @@ public class Timer : MonoBehaviourPun
             GameObject playerObject = PhotonNetwork.LocalPlayer.TagObject as GameObject;
             PhotonView playerPhotonView = playerObject.GetComponent<PhotonView>();
 
-            playerPhotonView.RPC("Spawn", RpcTarget.All);
+            playerPhotonView.RPC("Spawn", PhotonNetwork.LocalPlayer);
         
             playerPhotonView.RPC("DisableAllCorpses", RpcTarget.All);
 

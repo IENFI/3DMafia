@@ -10,12 +10,14 @@ public class RandomSpawn : MonoBehaviour
 
     private void Start()
     {
-        trees = GameObject.FindGameObjectsWithTag("Spawn");
+        //trees = GameObject.FindGameObjectsWithTag("Spawn");
     }
 
     [PunRPC]
     void Spawn()
     {
+        trees = GameObject.FindGameObjectsWithTag("Spawn");
+
         Debug.Log("Spawn");
         // 하위 오브젝트의 수를 얻음
         int childCount = trees[0].transform.childCount;
