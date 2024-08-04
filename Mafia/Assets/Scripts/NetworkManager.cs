@@ -11,20 +11,19 @@ public class NetworkManager : MonoBehaviourPunCallbacks // 안현석 똑바로�
     [Header("DisconnectPanel")]
     public GameObject DisconnectPanel;
     public TMP_InputField NickNameInput;
+    public TextMeshProUGUI NickNameError;
 
     [Header("LobbyPanel")]
     public GameObject LobbyPanel;
-    public TMP_InputField RoomInput;
     public TextMeshProUGUI WelcomeText;
     public TextMeshProUGUI LobbyInfoText;
     public Button[] CellBtn;
     public Button PreviousBtn;
     public Button NextBtn;
-    public TextMeshProUGUI ListText;
-    public TextMeshProUGUI RoomInfoText;
 
     [Header("CreateRoomUI")]
     public GameObject CreateRoomUI;
+    public TMP_InputField RoomInput;
 
     [Header("ETC")]
     public TextMeshProUGUI StatusText;
@@ -130,14 +129,6 @@ public class NetworkManager : MonoBehaviourPunCallbacks // 안현석 똑바로�
         // Update the UI to display the updated room list
         MyListRenewal();
     }
-
-
-
-
-
-
-
-
     #endregion
 
     #region 서버연결
@@ -157,7 +148,25 @@ public class NetworkManager : MonoBehaviourPunCallbacks // 안현석 똑바로�
         LobbyInfoText.text = "전체: " + PhotonNetwork.CountOfPlayers + ",     로비: " + (PhotonNetwork.CountOfPlayers - PhotonNetwork.CountOfPlayersInRooms);
     }
 
-    public void Connect() => PhotonNetwork.ConnectUsingSettings();
+    public void Connect()
+    {
+        string nickName = NickNameInput.text;
+        if (string.IsNullOrEmpty(nickName))
+        {
+            NickNameError.text = "닉네임을 입력하시오.";
+            return;
+        }
+        else if (DBInteraction.Login(nickName))
+        {
+            PhotonNetwork.ConnectUsingSettings();
+        }
+        else
+        {
+            NickNameError.text = "이미 사용 중인 닉네임입니다.";
+            return;
+        }
+        
+    }
 
     public override void OnConnectedToMaster() => PhotonNetwork.JoinLobby();
 
@@ -176,7 +185,21 @@ public class NetworkManager : MonoBehaviourPunCallbacks // 안현석 똑바로�
         myList.Clear();
     }
 
-    public void Disconnect() => PhotonNetwork.Disconnect();
+    public void ShowPlayer()
+    {
+        // 룸에 있는 모든 플레이어의 닉네임 출력
+        foreach (Player player in PhotonNetwork.PlayerList)
+        {
+            Debug.Log("룸 내 플레이어 닉네임: " + player.NickName);
+        }
+    }
+    public void Disconnect()
+    {
+        if (DBInteraction.DeletePlayer())
+        {
+            PhotonNetwork.Disconnect();
+        }
+    }
 
     public override void OnDisconnected(DisconnectCause cause)
     {
