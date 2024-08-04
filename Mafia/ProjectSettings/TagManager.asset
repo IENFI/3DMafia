@@ -18,6 +18,7 @@ TagManager:
   - Spawn
   - DeadImage
   - Minigame
+  - Report
   layers:
   - Default
   - TransparentFX

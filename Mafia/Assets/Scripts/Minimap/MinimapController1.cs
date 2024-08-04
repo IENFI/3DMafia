@@ -27,7 +27,6 @@ public class MinimapController : MonoBehaviour
 
         StartCoroutine(FindLocalPlayerController());
         originalColor = minimapImage.color;
-        lastPlayerPosition = player.transform.position;
 
     }
 

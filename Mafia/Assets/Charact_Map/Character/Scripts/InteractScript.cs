@@ -12,12 +12,17 @@ public class InteractScript : MonoBehaviourPun
 
     int playerLayer;
     int layerMask;
+    int reportChance;
 
     Camera[] cameras;
     Camera fpCamera;
     private CharacterController characterController;
+    private PlayerController playerController;
     private Collider lastMinigameCollider;
     private Collider lastMerchantCollider;
+    private Collider lastReportCollider;
+
+    PhotonView votingSystemPhotonView;
 
     private void Awake()
     {
@@ -36,6 +41,7 @@ public class InteractScript : MonoBehaviourPun
                 break;
             }
         }
+        reportChance = 1;
 
     }
     void Update()
@@ -65,7 +71,7 @@ public class InteractScript : MonoBehaviourPun
                     }
                     else
                     {
-                        Debug.LogError("The Door object does not have a PhotonView component.");
+                        //Debug.LogError("The Door object does not have a PhotonView component.");
                     }
                 }
             }
@@ -104,7 +110,7 @@ public class InteractScript : MonoBehaviourPun
                 }
                 else
                 {
-                    Debug.Log("Camera is not looking at the target object.");
+                    //Debug.Log("Camera is not looking at the target object.");
                     characterController = null;
                     // 이전에 minigame과 상호작용하고 있었다면, 그 충돌체를 업데이트
                     if (lastMinigameCollider != null)
@@ -137,7 +143,7 @@ public class InteractScript : MonoBehaviourPun
                 // 상점 코드
                 if (hit.collider.CompareTag("ShopNPC"))
                 {
-                    Debug.Log("Camera is looking at the minigame.");// 다른 작업 수행
+                    Debug.Log("Camera is looking at the merchant.");// 다른 작업 수행
                     characterController = GetComponent<CharacterController>();
                     // 모자를 파란색으로 변경
                     hit.collider.GetComponent<ShopInteraction>().ChangeOutlineRenderer(Color.blue);
@@ -156,7 +162,7 @@ public class InteractScript : MonoBehaviourPun
                 }
                 else
                 {
-                    Debug.Log("Camera is not looking at the target object.");
+                    //Debug.Log("Camera is not looking at the target object.");
                     characterController = null;
                     // 이전에 Merchant와 상호작용하고 있었다면, 그 충돌체를 업데이트
                     if (lastMerchantCollider != null)
@@ -181,6 +187,63 @@ public class InteractScript : MonoBehaviourPun
 
                     // 충돌체 상태 초기화
                     lastMerchantCollider = null;
+                }
+            }
+
+            if (Physics.Raycast(fpCamera.transform.position, fpCamera.transform.forward, out hit, interactDistance, layerMask))
+            {
+                // 상점 코드
+                if (hit.collider.CompareTag("Report"))
+                {
+                    Debug.Log("Camera is looking at the report.");// 다른 작업 수행
+                    characterController = GetComponent<CharacterController>();
+                    playerController = GetComponent<PlayerController>();
+                    // 모자를 파란색으로 변경
+                    hit.collider.GetComponent<ReportButtonScript>().ChangeOutlineRenderer(true);
+                    if (characterController.isGrounded && Input.GetKeyDown(KeyCode.R) && (reportChance == 1))
+                    {
+                        if (Time.time - playerController.GetLastReportTime() >= playerController.reportCooldown)
+                        {
+                            playerController.SetLastReportTime(Time.time);
+                            votingSystemPhotonView = FindObjectOfType<VotingSystem>().GetComponent<PhotonView>();
+                            if (votingSystemPhotonView != null)
+                            {
+                                votingSystemPhotonView.RPC("StartVote", RpcTarget.All);
+                                reportChance = 0;
+                            }
+                        }
+                    }
+
+                    // 현재 충돌체를 lastMinigameCollider로 저장
+                    lastReportCollider = hit.collider;
+
+                }
+                else
+                {
+                    //Debug.Log("Camera is not looking at the target object.");
+                    characterController = null;
+                    playerController = null;
+                    // 이전에 buttonlastReportButtonScript 상호작용하고 있었다면, 그 충돌체를 업데이트
+                    if (lastReportCollider != null)
+                    {
+                        ReportButtonScript lastReportButtonScript = lastReportCollider.GetComponent<ReportButtonScript>();
+                        lastReportButtonScript.ChangeOutlineRenderer(false);
+
+                        // 충돌체 상태 초기화
+                        lastReportCollider = null;
+                    }
+                }
+            }
+            else
+            {
+                // 레이캐스트가 아무것도 맞추지 않았을 때도 이전에 Merchant와 상호작용하고 있었다면 상태 초기화
+                if (lastReportCollider != null)
+                {
+                    ReportButtonScript lastReportButtonScript = lastReportCollider.GetComponent<ReportButtonScript>();
+                    lastReportButtonScript.ChangeOutlineRenderer(false);
+
+                    // 충돌체 상태 초기화
+                    lastReportCollider = null;
                 }
             }
         }

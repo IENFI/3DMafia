@@ -58,6 +58,16 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
     private Quaternion networkRotation;
     public float smoothing = 10f;
 
+    public float GetLastReportTime()
+    {
+        return lastReportTime;
+    }
+
+    public void SetLastReportTime(float reportTime)
+    {
+        lastReportTime = reportTime;
+    }
+
     void Start()
     {
         movement = GetComponent<Movement>();
