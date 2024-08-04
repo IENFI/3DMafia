@@ -20,6 +20,14 @@ public class GhostController : MonoBehaviourPun, IPunObservable
     public TextMeshProUGUI nickName;
     public PhotonView PV;
 
+    [SerializeField]
+    private GameObject miniMapPointPrefab1; // MiniMapPoint 프리팹
+    private GameObject miniMapPoint1; // MiniMapPoint 인스턴스
+
+    [SerializeField]
+    private GameObject miniMapPointPrefab2; // MiniMapPoint 프리팹
+    private GameObject miniMapPoint2; // MiniMapPoint 인스턴스
+
     public void InitializeAsGhost()
     {
         // 유령으로 변환할 때 필요한 설정
@@ -56,6 +64,7 @@ public class GhostController : MonoBehaviourPun, IPunObservable
         ghostCamera.cullingMask = ~0;
 
         nickName.text = PV.Owner.NickName;
+        CreateMiniMapPoint2();
     }
 
 
@@ -89,6 +98,33 @@ public class GhostController : MonoBehaviourPun, IPunObservable
             float mouseY = Input.GetAxis("Mouse Y");
 
             cameraController.RotateTo(mouseX, mouseY);
+            UpdateMiniMapPointPosition2();
+        }
+    }
+    private void CreateMiniMapPoint2()
+    {
+        if (miniMapPointPrefab1 != null)
+        {
+            miniMapPoint1 = Instantiate(miniMapPointPrefab1, transform.position + new Vector3(150f, 0, 0), Quaternion.identity);
+            miniMapPoint1.transform.SetParent(transform); // MiniMapPoint를 플레이어의 자식으로 설정
+
+            miniMapPoint2 = Instantiate(miniMapPointPrefab2, transform.position + new Vector3(300f, 0, 0), Quaternion.identity);
+            miniMapPoint2.transform.SetParent(transform); // MiniMapPoint를 플레이어의 자식으로 설정
+        }
+    }
+
+    private void UpdateMiniMapPointPosition2()
+    {
+        if (miniMapPoint1 != null)
+        {
+            // 플레이어의 위치에 x축으로 150만큼 이동한 위치로 MiniMapPoint를 업데이트
+            miniMapPoint1.transform.position = transform.position + new Vector3(150f, 0, 0);
+        }
+
+        if (miniMapPoint2 != null)
+        {
+            // 플레이어의 위치에 x축으로 150만큼 이동한 위치로 MiniMapPoint를 업데이트
+            miniMapPoint2.transform.position = transform.position + new Vector3(300f, 0, 0);
         }
     }
 
@@ -114,6 +150,7 @@ public class GhostController : MonoBehaviourPun, IPunObservable
             transform.rotation = (Quaternion)stream.ReceiveNext();
         }
     }
+
 
     private void SetupGhostCamera()
     {
