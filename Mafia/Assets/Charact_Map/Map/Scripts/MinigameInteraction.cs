@@ -41,14 +41,14 @@ public class MinigameInteraction : MonoBehaviourPunCallbacks
 
             if (player == null)
             {
-                Debug.Log("(MinigameInteraction) PlayerCoinController를 찾는 중...");
+                //Debug.Log("(MinigameInteraction) PlayerCoinController를 찾는 중...");
             }
 
             // 다음 프레임까지 대기
             yield return null;
         }
 
-        Debug.Log("(MinigameInteraction) PlayerCoinController를 찾았습니다.");
+        //Debug.Log("(MinigameInteraction) PlayerCoinController를 찾았습니다.");
     }
 
     public void ChangeAllChildMaterials(Transform parent, bool change)
@@ -78,7 +78,7 @@ public class MinigameInteraction : MonoBehaviourPunCallbacks
             }
             else
             {
-                Debug.LogError("PlayerCoinController가 할당되지 않았습니다.");
+                //Debug.LogError("PlayerCoinController가 할당되지 않았습니다.");
             }
             ExitCode = false;
         }

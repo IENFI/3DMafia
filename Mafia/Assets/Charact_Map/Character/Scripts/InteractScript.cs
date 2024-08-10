@@ -21,8 +21,11 @@ public class InteractScript : MonoBehaviourPun
     private Collider lastMinigameCollider;
     private Collider lastMerchantCollider;
     private Collider lastReportCollider;
+    private Collider lastCustomizeCollider;
 
     PhotonView votingSystemPhotonView;
+
+    private Color originCustomizeObjectColor;
 
     private void Awake()
     {
@@ -91,7 +94,7 @@ public class InteractScript : MonoBehaviourPun
                 // 미니게임 코드
                 if (hit.collider.CompareTag("Minigame"))
                 {
-                    Debug.Log("Camera is looking at the minigame.");// 다른 작업 수행
+                    //Debug.Log("Camera is looking at the minigame.");// 다른 작업 수행
                     characterController = GetComponent<CharacterController>();
                     // true가 light
                     hit.collider.GetComponent<MinigameInteraction>().ChangeAllChildMaterials(hit.collider.transform, true);
@@ -143,7 +146,7 @@ public class InteractScript : MonoBehaviourPun
                 // 상점 코드
                 if (hit.collider.CompareTag("ShopNPC"))
                 {
-                    Debug.Log("Camera is looking at the merchant.");// 다른 작업 수행
+                    //Debug.Log("Camera is looking at the merchant.");// 다른 작업 수행
                     characterController = GetComponent<CharacterController>();
                     // 모자를 파란색으로 변경
                     hit.collider.GetComponent<ShopInteraction>().ChangeOutlineRenderer(Color.blue);
@@ -195,7 +198,7 @@ public class InteractScript : MonoBehaviourPun
                 // 상점 코드
                 if (hit.collider.CompareTag("Report"))
                 {
-                    Debug.Log("Camera is looking at the report.");// 다른 작업 수행
+                    //Debug.Log("Camera is looking at the report.");// 다른 작업 수행
                     characterController = GetComponent<CharacterController>();
                     playerController = GetComponent<PlayerController>();
                     // 모자를 파란색으로 변경
@@ -233,6 +236,38 @@ public class InteractScript : MonoBehaviourPun
                         lastReportCollider = null;
                     }
                 }
+
+                
+
+                // 커스터마이징 UI 활성화
+                if (hit.collider.CompareTag("Customize"))
+                {
+                    originCustomizeObjectColor = hit.collider.GetComponent<CustomizeScript>().originColor;
+                    hit.collider.transform.GetComponent<Renderer>().material.color = Color.black;
+                    if (Input.GetKeyDown(KeyCode.E))
+                    {
+                        hit.collider.GetComponent<CustomizeScript>().CustomizingUI.SetActive(true);
+                    }
+                    if (hit.collider.GetComponent<CustomizeScript>().CustomizingUI.activeSelf && Input.GetKeyDown(KeyCode.Escape))
+                    {
+                        hit.collider.GetComponent<CustomizeScript>().CustomizingUI.SetActive(false);
+                    }
+
+                    // 현재 충돌체를 lastCustomizeCollider로 저장
+                    lastCustomizeCollider = hit.collider;
+                }
+                else
+                {
+                    if (lastCustomizeCollider != null)
+                    {
+                        lastCustomizeCollider.transform.GetComponent<Renderer>().material.color = originCustomizeObjectColor;
+
+                        if (lastCustomizeCollider.GetComponent<CustomizeScript>().CustomizingUI.activeSelf)
+                            lastCustomizeCollider.GetComponent<CustomizeScript>().CustomizingUI.SetActive(false);
+
+                        lastCustomizeCollider = null;
+                    }
+                }
             }
             else
             {
@@ -245,7 +280,22 @@ public class InteractScript : MonoBehaviourPun
                     // 충돌체 상태 초기화
                     lastReportCollider = null;
                 }
+
+
+
+                if (lastCustomizeCollider != null)
+                {
+                    lastCustomizeCollider.transform.GetComponent<Renderer>().material.color = originCustomizeObjectColor;
+
+                    if (lastCustomizeCollider.GetComponent<CustomizeScript>().CustomizingUI.activeSelf)
+                        lastCustomizeCollider.GetComponent<CustomizeScript>().CustomizingUI.SetActive(false);
+
+                    lastCustomizeCollider = null;
+                }
+
+
             }
+
         }
 
     }
