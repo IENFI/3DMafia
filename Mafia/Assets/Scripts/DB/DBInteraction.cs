@@ -25,11 +25,11 @@ public class DBInteraction : MonoBehaviourPunCallbacks
         // networkManager.Connect(); // Connect to the network
     }
 
-    public static bool DeletePlayer()
+    public static bool DeletePlayer(string playerName)
     {
-        string query = "DELETE FROM player WHERE id = (SELECT id FROM (SELECT id FROM player ORDER BY id DESC LIMIT 1) AS sub)";
+        string query = $"DELETE FROM player WHERE name = '{playerName}'";
         AWSDBManager.ExecuteQuery(query);
-        Debug.Log("Last player deleted from the database");
+        Debug.Log("Player deleted from the database");
         return true;
         // PrintPlayers();
     }

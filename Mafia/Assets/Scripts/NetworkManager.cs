@@ -35,7 +35,6 @@ public class NetworkManager : MonoBehaviourPunCallbacks // 안현석 똑바로�
     [SerializeField]
     private CreateRoomUI createRoomUI;
 
-
     #region 방리스트 갱신
     // ◀버튼 -2 , ▶버튼 -1 , 셀 숫자
     public void MyListClick(int num)
@@ -150,13 +149,13 @@ public class NetworkManager : MonoBehaviourPunCallbacks // 안현석 똑바로�
 
     public void Connect()
     {
-        string nickName = NickNameInput.text;
-        if (string.IsNullOrEmpty(nickName))
+        PhotonNetwork.NickName = NickNameInput.text;
+        if (string.IsNullOrEmpty(PhotonNetwork.NickName))
         {
             NickNameError.text = "닉네임을 입력하시오.";
             return;
         }
-        else if (DBInteraction.Login(nickName))
+        else if (DBInteraction.Login(PhotonNetwork.NickName))
         {
             PhotonNetwork.ConnectUsingSettings();
         }
@@ -165,7 +164,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks // 안현석 똑바로�
             NickNameError.text = "이미 사용 중인 닉네임입니다.";
             return;
         }
-        
+
     }
 
     public override void OnConnectedToMaster() => PhotonNetwork.JoinLobby();
@@ -193,19 +192,24 @@ public class NetworkManager : MonoBehaviourPunCallbacks // 안현석 똑바로�
             Debug.Log("룸 내 플레이어 닉네임: " + player.NickName);
         }
     }
-    public void Disconnect()
+    public void Disconnect() => PhotonNetwork.Disconnect();
+
+    void OnApplicationQuit()
     {
-        if (DBInteraction.DeletePlayer())
-        {
-            PhotonNetwork.Disconnect();
-        }
+        // 창을 닫을 때 실행할 코드 작성
+        Debug.Log("애플리케이션이 종료됩니다.");
+        // 예를 들어, 데이터를 저장하거나, 서버에 연결을 종료하는 등의 작업을 수행할 수 있습니다.
+        DBInteraction.DeletePlayer(PhotonNetwork.NickName);
     }
 
     public override void OnDisconnected(DisconnectCause cause)
     {
+        DBInteraction.DeletePlayer(PhotonNetwork.NickName);
+
         if (DisconnectPanel != null)
         {
             DisconnectPanel.SetActive(true);
+            NickNameError.text = "";
         }
         else
         {
