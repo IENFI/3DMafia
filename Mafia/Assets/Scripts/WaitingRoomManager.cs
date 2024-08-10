@@ -231,6 +231,7 @@ public class WaitingRoomManager : MonoBehaviourPunCallbacks
                 return;
             }
 
+            PhotonNetwork.DestroyAll();
             PhotonNetwork.LoadLevel("Level_1");
             Debug.Log("Level_1 입장 완료");
 

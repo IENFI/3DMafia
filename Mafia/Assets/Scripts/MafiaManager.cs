@@ -176,6 +176,7 @@ public class MafiaManager : MonoBehaviourPunCallbacks
         PhotonNetwork.AutomaticallySyncScene = true;
         if (PhotonNetwork.IsMasterClient)
         {
+            PhotonNetwork.DestroyAll();
             PhotonNetwork.LoadLevel("Level_0");
         }
     }
