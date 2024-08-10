@@ -19,6 +19,7 @@ TagManager:
   - DeadImage
   - Minigame
   - Report
+  - Customize
   layers:
   - Default
   - TransparentFX

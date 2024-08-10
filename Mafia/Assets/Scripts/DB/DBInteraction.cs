@@ -4,6 +4,7 @@ using MySql.Data.MySqlClient;
 using System;
 using TMPro;
 using Photon.Pun;
+using Photon.Realtime;
 
 public class DBInteraction : MonoBehaviourPunCallbacks
 {

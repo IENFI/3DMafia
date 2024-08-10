@@ -323,13 +323,36 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
         {
             if (obj != null)
             {
-                Renderer[] renderers = obj.GetComponentsInChildren<Renderer>();
+                Renderer[] renderers = GetAllRenderersIncludingInactive(obj);
                 foreach (Renderer renderer in renderers)
                 {
                     // 그림자는 보이게 하기
                     renderer.shadowCastingMode = ShadowCastingMode.ShadowsOnly;
                 }
             }
+        }
+    }
+
+    public Renderer[] GetAllRenderersIncludingInactive(GameObject root)
+    {
+        List<Renderer> renderers = new List<Renderer>();
+        AddRenderersRecursive(root.transform, renderers);
+        return renderers.ToArray();
+    }
+
+    private void AddRenderersRecursive(Transform current, List<Renderer> renderers)
+    {
+        // 현재 오브젝트의 Renderer를 가져옴
+        Renderer renderer = current.GetComponent<Renderer>();
+        if (renderer != null)
+        {
+            renderers.Add(renderer);
+        }
+
+        // 자식들을 순회하며 재귀적으로 호출
+        foreach (Transform child in current)
+        {
+            AddRenderersRecursive(child, renderers);
         }
     }
 

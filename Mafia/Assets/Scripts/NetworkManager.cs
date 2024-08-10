@@ -193,16 +193,15 @@ public class NetworkManager : MonoBehaviourPunCallbacks // 안현석 똑바로�
             Debug.Log("룸 내 플레이어 닉네임: " + player.NickName);
         }
     }
+
     public void Disconnect()
     {
-        if (DBInteraction.DeletePlayer())
-        {
-            PhotonNetwork.Disconnect();
-        }
+        PhotonNetwork.Disconnect();
     }
 
     public override void OnDisconnected(DisconnectCause cause)
     {
+        DBInteraction.DeletePlayer();
         if (DisconnectPanel != null)
         {
             DisconnectPanel.SetActive(true);

@@ -90,14 +90,14 @@ public class ShopInteraction : MonoBehaviourPunCallbacks
 
             if (player == null)
             {
-                Debug.Log("(ShopInteraction) PlayerCoinController를 찾는 중...");
+                //Debug.Log("(ShopInteraction) PlayerCoinController를 찾는 중...");
             }
 
             // 다음 프레임까지 대기
             yield return null;
         }
 
-        Debug.Log("(ShopInteraction) PlayerCoinController를 찾았습니다.");
+        //Debug.Log("(ShopInteraction) PlayerCoinController를 찾았습니다.");
     }
 
     /*private void OnDestroy()

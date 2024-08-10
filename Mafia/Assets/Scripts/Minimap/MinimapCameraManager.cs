@@ -36,14 +36,14 @@ public class MinimapCameraManager : MonoBehaviour
 
             if (player == null)
             {
-                Debug.Log("(MinigameInteraction) PlayerController를 찾는 중...");
+                //Debug.Log("(MinimapCameraManager) PlayerController를 찾는 중...");
             }
 
             // 다음 프레임까지 대기
             yield return null;
         }
 
-        Debug.Log("(MinigameInteraction) PlayerController를 찾았습니다.");
+        //Debug.Log("(MinimapCameraManager) PlayerController를 찾았습니다.");
 
         UpdateCamera();
     }
@@ -61,18 +61,18 @@ public class MinimapCameraManager : MonoBehaviour
     void UpdateCamera()
     {
         float playerY = player.transform.position.y;
-        Debug.Log("Player Y position: " + playerY);
+        //Debug.Log("Player Y position: " + playerY);
 
         if (playerY < switchHeight)
         {
             // 플레이어가 1층에 있을 때
-            Debug.Log("Switching to 1F camera");
+            //Debug.Log("Switching to 1F camera");
             SetCameraAndRawImage(camera1F, camera2F, rawImage1F, rawImage2F);
         }
         else
         {
             // 플레이어가 2층에 있을 때
-            Debug.Log("Switching to 2F camera");
+            //Debug.Log("Switching to 2F camera");
             SetCameraAndRawImage(camera2F, camera1F, rawImage2F, rawImage1F);
         }
     }

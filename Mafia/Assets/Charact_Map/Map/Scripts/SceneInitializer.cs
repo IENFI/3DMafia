@@ -98,7 +98,7 @@ public class SceneInitializer : MonoBehaviourPunCallbacks
             }
 
             // Builder 하위 오브젝트에 있는 PlayerAnimator 스크립트를 찾습니다.
-            Transform builder = player.transform.Find("Builder");
+            Transform builder = player.transform.Find("Avartar");
             if (builder != null)
             {
                 PlayerAnimator playerAnimator = builder.GetComponent<PlayerAnimator>();
