@@ -63,6 +63,8 @@ MonoBehaviour:
   - SaveMoney
   - ChangeDoorState
   - RPC_ChangeAvatar
+  - ReceiveAvatarState
+  - RequestAvatarState
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1
