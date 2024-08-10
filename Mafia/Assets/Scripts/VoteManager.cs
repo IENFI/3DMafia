@@ -27,6 +27,8 @@ public class VoteManager : MonoBehaviourPunCallbacks
     public Button btn8;
     public Button btn9;
 
+    public Button btn_skip;
+
     private TMP_Text btnText0;
     private TMP_Text btnText1;
     private TMP_Text btnText2;
@@ -37,6 +39,8 @@ public class VoteManager : MonoBehaviourPunCallbacks
     private TMP_Text btnText7;
     private TMP_Text btnText8;
     private TMP_Text btnText9;
+
+    private TMP_Text btn_skipText;
 
     [SerializeField]
     public GameObject voteManager;
@@ -57,6 +61,7 @@ public class VoteManager : MonoBehaviourPunCallbacks
     private int[] voteList = new int[10]; //10    ִ   ÷  ̾    ,     list  ƴϰ  array  , 0      ʱ ȭ
     private int criterion; // ÷  ̾       ݼ 
     private int remainingPlayerNum;
+    private int skiped;
 
     private bool VoteResultBool;
     private int VoteSelectPlayerNum = -1;
@@ -78,6 +83,8 @@ public class VoteManager : MonoBehaviourPunCallbacks
         btnText7 = btn7.GetComponentInChildren<TMP_Text>();
         btnText8 = btn8.GetComponentInChildren<TMP_Text>();
         btnText9 = btn9.GetComponentInChildren<TMP_Text>();
+
+        btn_skipText = btn_skip.GetComponentInChildren<TMP_Text>();
 
 
         // Dictionary  ʱ ȭ
@@ -160,6 +167,8 @@ public class VoteManager : MonoBehaviourPunCallbacks
     //   ึ    ʱ ȭ
     private void Initialize()
     {
+        btn_skip.GetComponent<Button>().interactable = true;
+
         for (int i = 0; i < 10; i++)
         {
             btnTexts[i].text = " ";
@@ -175,6 +184,8 @@ public class VoteManager : MonoBehaviourPunCallbacks
         {
             voteList[i] = 0;
         }
+
+        skiped = 0;
 
         for (int i = 0; i < 10; i++)
         {
@@ -197,12 +208,15 @@ public class VoteManager : MonoBehaviourPunCallbacks
             {
                 btns[i].GetComponent<Button>().interactable = false;
             }
+            btn_skip.GetComponent<Button>().interactable = false;
         }
 
         for (int i = 0; i < PhotonNetwork.PlayerList.Length; i++)
         {
             SendText(i, 0);
         }
+
+        SendSkip(skiped);
     }
 
     // ÷  ̾     °        Ʈ  Ƿ    OnPlayerPropertiesUpdate       ٷ     
@@ -227,8 +241,26 @@ public class VoteManager : MonoBehaviourPunCallbacks
                         {
                             btns[i].GetComponent<Button>().interactable = false;
                         }
+
+                        btn_skip.GetComponent<Button>().interactable = false;
                     }
                     SendText(num, voteList[num]);
+                }
+
+                if (num == -13)
+                {
+                    skiped++;
+                    if (PhotonNetwork.LocalPlayer == player)
+                    {
+                        //  ǥ  Ϸ             ̻    ǥ     
+                        for (int i = 0; i < 10; i++)
+                        {
+                            btns[i].GetComponent<Button>().interactable = false;
+                        }
+
+                        btn_skip.GetComponent<Button>().interactable = false;
+                    }
+                    SendSkip(skiped);
                 }
             }
         }
@@ -239,8 +271,22 @@ public class VoteManager : MonoBehaviourPunCallbacks
         btnTexts[i].text = PhotonNetwork.PlayerList[i].NickName + "\n" + voteCount.ToString();
     }
 
+    private void SendSkip(int num)
+    {
+        btn_skipText.text = "SKIP!!" + "\n" + num.ToString();
+    }
+
     #region Voting functions
-    //  ư            
+
+    public void Skip()
+    {
+        ExitGames.Client.Photon.Hashtable props = new ExitGames.Client.Photon.Hashtable
+        {
+        { "voted" , -13 }
+        };
+        PhotonNetwork.LocalPlayer.SetCustomProperties(props);
+    }
+
     public void Vote0()
     {
         int btnNum;
@@ -387,7 +433,7 @@ public class VoteManager : MonoBehaviourPunCallbacks
                     break;
                 }
             }
-
+/*
             if (PhotonNetwork.LocalPlayer == PhotonNetwork.PlayerList[LivingMan])
             {
                 // 타이머를 0으로 설정하고 다시 시작
@@ -401,7 +447,7 @@ public class VoteManager : MonoBehaviourPunCallbacks
                     Debug.LogError("GameTimer 태그를 가진 타이머 오브젝트를 찾을 수 없습니다.");
                 }
             }
-
+*/
 
         }
 
@@ -426,7 +472,7 @@ public class VoteManager : MonoBehaviourPunCallbacks
         else
         {
             resultMessage.text = "아무도 투표로 지목되지 않았습니다";
-            resultMessage.color = Color.yellow;    
+            resultMessage.color = Color.yellow;
         }
 
         VoteResultUI.gameObject.SetActive(true);
@@ -491,6 +537,7 @@ public class VoteManager : MonoBehaviourPunCallbacks
         {
             count += voteList[i];
         }
+        count += skiped;
         if (count == remainingPlayerNum)
         {
             result = true;
