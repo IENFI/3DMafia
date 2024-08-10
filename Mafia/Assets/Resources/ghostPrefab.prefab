@@ -400,6 +400,8 @@ MonoBehaviour:
   ghostCamera: {fileID: 1702662082678770931}
   nickName: {fileID: 3607512143171566106}
   PV: {fileID: 515477959225966827}
+  miniMapPointPrefab1: {fileID: 1075559343291363416, guid: 217a988d720bbf947836cd19ea5bb2e9, type: 3}
+  miniMapPointPrefab2: {fileID: 1075559343291363416, guid: 217a988d720bbf947836cd19ea5bb2e9, type: 3}
 --- !u!114 &7083465359978966174
 MonoBehaviour:
   m_ObjectHideFlags: 0
