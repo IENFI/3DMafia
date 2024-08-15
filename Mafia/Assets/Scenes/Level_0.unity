@@ -868,6 +868,7 @@ GameObject:
   - component: {fileID: 323019453}
   - component: {fileID: 323019455}
   - component: {fileID: 323019456}
+  - component: {fileID: 323019457}
   m_Layer: 5
   m_Name: CustomizingUI
   m_TagString: Untagged
@@ -967,6 +968,18 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &323019457
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 323019451}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cd816eb3429a2b645b84cc8e9c11476a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &362077079
 GameObject:
   m_ObjectHideFlags: 0

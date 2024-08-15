@@ -58,6 +58,21 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
     private Quaternion networkRotation;
     public float smoothing = 10f;
 
+
+    [SerializeField]
+    private bool canControl = true; // 플레이어 컨트롤 가능 여부
+    float x_;
+    float z_;
+    // 플레이어 컨트롤 활성화/비활성화 함수
+    public void EnableControl(bool enable)
+    {
+        Debug.Log("Player EnableControl() : enable : " + enable);
+        canControl = enable;
+
+        x_ = Input.GetAxis("Horizontal");
+        z_ = Input.GetAxis("Vertical");
+    }
+
     public float GetLastReportTime()
     {
         return lastReportTime;
@@ -134,13 +149,11 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
         // 이 객체가 로컬 플레이어의 객체인지 확인
         if (photonView.IsMine)
         {
-
             if (isDead) return;
 
             if (GameManager.instance != null && GameManager.instance.IsAnyUIOpen())
             {
                 movement.PauseMovement();
-                return;
             }
             else
             {
@@ -157,7 +170,21 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
             // Debug.Log(offset);
             // 애니메이션 값 설정 (-1 : 왼쪽, 0 : 가운데, 1 : 오른쪽)
             // 애니메이션 파라미터 설정 (horizontal, vertical)
-            playerAnimator.OnMovement(x * offset, z * offset);
+
+            if (canControl)
+            {
+                playerAnimator.OnMovement(x * offset, z * offset);
+            }
+            else
+            {
+                // 플레이어가 제어 불가능할 때의 파라미터 값을 부드럽게 0으로 줄이기
+                x_ = Mathf.Lerp(x_, 0f, Time.deltaTime * 5f);
+                z_ = Mathf.Lerp(z_, 0f, Time.deltaTime * 5f);
+
+                // 변경된 x, z 값을 애니메이터에 전달
+                playerAnimator.OnMovement(x_ * offset, z_ * offset);
+            }
+
 
             // 이동 속도 설정
             if (offset == 1)
@@ -220,10 +247,13 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
                 }
             }
 
-            float mouseX = Input.GetAxis("Mouse X");
-            float mouseY = Input.GetAxis("Mouse Y");
+            if (canControl)
+            {
+                float mouseX = Input.GetAxis("Mouse X");
+                float mouseY = Input.GetAxis("Mouse Y");
 
-            cameraController.RotateTo(mouseX, mouseY); // 카메라 회전 함수 호출
+                cameraController.RotateTo(mouseX, mouseY); // 카메라 회전 함수 호출
+            }
             UpdateMiniMapPointPosition(); // MiniMapPoint 위치 업데이트
         }
     }
