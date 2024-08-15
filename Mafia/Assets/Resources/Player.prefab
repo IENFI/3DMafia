@@ -5943,6 +5943,12 @@ MonoBehaviour:
   business_woman: {fileID: 6447198360490357249}
   cashier: {fileID: 2258352583022438901}
   chef: {fileID: 5592668983963432698}
+  fisherman: {fileID: 7941614563662595344}
+  miner: {fileID: 7010576061648002189}
+  nurse: {fileID: 6688241421713660150}
+  police: {fileID: 5523418195150318153}
+  security: {fileID: 4823476751447069315}
+  worker: {fileID: 2544270101047102985}
   currentAvatarName: builder
 --- !u!1 &7001936556836551561
 GameObject:

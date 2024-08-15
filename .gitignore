@@ -72,3 +72,6 @@ crashlytics-build.properties
 /[Aa]ssets/[Ss]treamingAssets/aa/*
 
 temp.txt
+Mafia/UserSettings/EditorUserSettings.asset
+Mafia/UserSettings/EditorUserSettings.asset
+/Mafia/UserSettings

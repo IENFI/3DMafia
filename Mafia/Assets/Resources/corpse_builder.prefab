@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 3360403722078804448}
   - component: {fileID: 6581926229507120891}
   m_Layer: 6
-  m_Name: corpsePrefab
+  m_Name: corpse_builder
   m_TagString: Corpse
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

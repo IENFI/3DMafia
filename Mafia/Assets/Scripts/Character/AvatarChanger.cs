@@ -12,6 +12,12 @@ public class AvatarChanger : MonoBehaviourPunCallbacks
     public GameObject business_woman;
     public GameObject cashier;
     public GameObject chef;
+    public GameObject fisherman;
+    public GameObject miner;
+    public GameObject nurse;
+    public GameObject police;
+    public GameObject security;
+    public GameObject worker;
 
     private Dictionary<string, GameObject> avatarDict = new Dictionary<string, GameObject>();
     private const string targetSceneName = "Level_0";
@@ -22,12 +28,23 @@ public class AvatarChanger : MonoBehaviourPunCallbacks
 
     Renderer[] Avatar;
 
+    public string getCurrentAvatarName()
+    {
+        return currentAvatarName;
+    }
+
     private void Awake()
     {
         avatarDict.Add("builder", builder);
         avatarDict.Add("businessWoman", business_woman);
         avatarDict.Add("cashier", cashier);
         avatarDict.Add("chef", chef);
+        avatarDict.Add("fisherman", fisherman);
+        avatarDict.Add("miner", miner);
+        avatarDict.Add("nurse", nurse);
+        avatarDict.Add("police", police);
+        avatarDict.Add("security", security);
+        avatarDict.Add("worker", worker);
 
         foreach (var avatar in avatarDict)
         {

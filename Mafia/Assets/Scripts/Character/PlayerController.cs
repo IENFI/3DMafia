@@ -273,7 +273,23 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
         yield return new WaitForSeconds(playerAnimator.GetAnimatorTime().length);
 
         PhotonNetwork.Instantiate(ghostPrefab.name, transform.position, transform.rotation);
-        PhotonNetwork.Instantiate(corpsePrefab.name, transform.position, transform.rotation);
+
+        // 현재 아바타 이름을 기반으로 한 corpseAvatar 문자열 생성
+        string corpseAvatar = "corpse_"+GetComponent<AvatarChanger>().getCurrentAvatarName();
+
+        // Resources 폴더에서 corpseAvatar 이름과 동일한 프리팹을 로드
+        GameObject corpsePrefab = Resources.Load<GameObject>(corpseAvatar);
+
+        // 프리팹이 로드되었는지 확인 (null 체크)
+        if (corpsePrefab != null)
+        {
+            // PhotonNetwork를 사용하여 프리팹을 인스턴스화
+            PhotonNetwork.Instantiate(corpsePrefab.name, transform.position, transform.rotation);
+        }
+        else
+        {
+            Debug.LogError("Prefab not found: " + corpseAvatar);
+        }
 
         // RPC를 통해 모든 클라이언트에서 gameObject를 비활성화합니다.
         photonView.RPC("DisableGameObject", RpcTarget.All);
