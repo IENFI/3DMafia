@@ -112,6 +112,15 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
         }
     }
 
+    public void UpdateNicknameColor(Color color)
+    {
+        if (nickName != null)
+        {
+            nickName.color = color;
+        }
+    }
+
+
     // 매 프레임마다 호출되는 Update 함수
     void Update()
     {
