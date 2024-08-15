@@ -195,7 +195,7 @@ public class InteractScript : MonoBehaviourPun
 
             if (Physics.Raycast(fpCamera.transform.position, fpCamera.transform.forward, out hit, interactDistance, layerMask))
             {
-                // 상점 코드
+                // 신고 코드
                 if (hit.collider.CompareTag("Report"))
                 {
                     //Debug.Log("Camera is looking at the report.");// 다른 작업 수행
@@ -242,9 +242,10 @@ public class InteractScript : MonoBehaviourPun
                 // 커스터마이징 UI 활성화
                 if (hit.collider.CompareTag("Customize"))
                 {
+                    characterController = GetComponent<CharacterController>();
                     originCustomizeObjectColor = hit.collider.GetComponent<CustomizeScript>().originColor;
                     hit.collider.transform.GetComponent<Renderer>().material.color = Color.black;
-                    if (Input.GetKeyDown(KeyCode.E))
+                    if (characterController.isGrounded && Input.GetKeyDown(KeyCode.E))
                     {
                         hit.collider.GetComponent<CustomizeScript>().CustomizingUI.SetActive(true);
                     }
@@ -258,6 +259,7 @@ public class InteractScript : MonoBehaviourPun
                 }
                 else
                 {
+                    characterController = null;
                     if (lastCustomizeCollider != null)
                     {
                         lastCustomizeCollider.transform.GetComponent<Renderer>().material.color = originCustomizeObjectColor;

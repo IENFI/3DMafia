@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 using Photon.Realtime;
+using Unity.Burst.CompilerServices;
 
 public class VotingSystem : MonoBehaviourPunCallbacks
 {
