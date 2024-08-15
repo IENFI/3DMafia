@@ -173,7 +173,7 @@ public class AvatarChanger : MonoBehaviourPunCallbacks
 
     private void Update()
     {
-        Debug.Log($"Player {photonView.Owner.ActorNumber} - CurrentAvatarName: {currentAvatarName}");
+        // Debug.Log($"Player {photonView.Owner.ActorNumber} - CurrentAvatarName: {currentAvatarName}");
     }
 
     [PunRPC]
