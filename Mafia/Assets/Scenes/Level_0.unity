@@ -1509,6 +1509,7 @@ GameObject:
   - component: {fileID: 323019453}
   - component: {fileID: 323019455}
   - component: {fileID: 323019456}
+  - component: {fileID: 323019457}
   m_Layer: 5
   m_Name: CustomizingUI
   m_TagString: Untagged
@@ -1657,6 +1658,7 @@ CanvasRenderer:
   m_GameObject: {fileID: 354033010}
   m_CullTransparentMesh: 1
 --- !u!114 &354033013
+--- !u!114 &323019457
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1671,6 +1673,12 @@ MonoBehaviour:
   m_EffectColor: {r: 1, g: 1, b: 1, a: 0.5}
   m_EffectDistance: {x: 2, y: -2}
   m_UseGraphicAlpha: 1
+  m_GameObject: {fileID: 323019451}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cd816eb3429a2b645b84cc8e9c11476a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &362077079
 GameObject:
   m_ObjectHideFlags: 0
