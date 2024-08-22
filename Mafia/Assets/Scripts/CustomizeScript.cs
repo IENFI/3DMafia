@@ -18,12 +18,7 @@ public class CustomizeScript : MonoBehaviour
         originColor = GetComponent<Renderer>().material.color;
         StartCoroutine(FindLocalAvatarChanger());
 
-        // 현재 아바타 이름 표시
-        if (currentAvatarText != null)
-        {
-            UpdateAvatarText(player.getCurrentAvatarName());
-            Debug.Log("호출되었따 이말이야!");
-        }
+        
     }
 
 
@@ -56,6 +51,13 @@ public class CustomizeScript : MonoBehaviour
         }
 
         Debug.Log("(CustomizeScript) AvatarChanger를 찾았습니다.");
+
+        // 현재 아바타 이름 표시
+        if (currentAvatarText != null)
+        {
+            UpdateAvatarText(player.getCurrentAvatarName());
+            Debug.Log("호출되었따 이말이야!");
+        }
 
     }
 

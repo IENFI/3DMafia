@@ -31,8 +31,10 @@ public class InteractScript : MonoBehaviourPun
     {
         // Player 레이어의 인덱스를 가져옵니다
         playerLayer = LayerMask.NameToLayer("Player");
+        // Ghost 레이어의 인덱스를 가져옵니다
+        int ghostLayer = LayerMask.NameToLayer("Ghost");
         // 모든 레이어를 포함하는 LayerMask를 생성합니다
-        layerMask = Physics.DefaultRaycastLayers & ~(1 << playerLayer);
+        layerMask = Physics.DefaultRaycastLayers & ~(1 << playerLayer) & ~(1 << ghostLayer);
 
         cameras = GetComponentsInChildren<Camera>();
         fpCamera = null;
@@ -251,6 +253,8 @@ public class InteractScript : MonoBehaviourPun
                     }
                     if (hit.collider.GetComponent<CustomizeScript>().CustomizingUI.activeSelf && Input.GetKeyDown(KeyCode.Escape))
                     {
+                        Debug.Log("1");
+
                         hit.collider.GetComponent<CustomizeScript>().CustomizingUI.SetActive(false);
                     }
 
@@ -265,7 +269,10 @@ public class InteractScript : MonoBehaviourPun
                         lastCustomizeCollider.transform.GetComponent<Renderer>().material.color = originCustomizeObjectColor;
 
                         if (lastCustomizeCollider.GetComponent<CustomizeScript>().CustomizingUI.activeSelf)
+                        {
+                            Debug.Log("2");
                             lastCustomizeCollider.GetComponent<CustomizeScript>().CustomizingUI.SetActive(false);
+                        }
 
                         lastCustomizeCollider = null;
                     }

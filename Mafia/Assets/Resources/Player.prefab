@@ -3380,6 +3380,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd41dea329852f54e839a2ca41f8980f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  canRotate: 1
 --- !u!114 &3145651988097978649
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5796,6 +5797,7 @@ MonoBehaviour:
   miniMapPointPrefab1: {fileID: 1075559343291363416, guid: 217a988d720bbf947836cd19ea5bb2e9, type: 3}
   miniMapPointPrefab2: {fileID: 1075559343291363416, guid: 217a988d720bbf947836cd19ea5bb2e9, type: 3}
   smoothing: 10
+  canControl: 1
 --- !u!114 &6667265159653745265
 MonoBehaviour:
   m_ObjectHideFlags: 0

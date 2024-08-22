@@ -28,7 +28,10 @@ public class RandomSpawn : MonoBehaviour
         // 랜덤 정수번째 하위 오브젝트의 트랜스폼을 얻음
         Transform randomChild = trees[0].transform.GetChild(randomIndex);
 
+        this.GetComponent<PlayerController>().EnableControl(false);
         // 플레이어를 하위 오브젝트의 위치로 이동
         this.gameObject.transform.position = randomChild.position;
+        this.GetComponent<PlayerController>().EnableControl(true);
+
     }
 }

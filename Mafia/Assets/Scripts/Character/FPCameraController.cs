@@ -11,7 +11,9 @@ public class FPCameraController : MonoBehaviour
     private float eulerAngleX;
     private float eulerAngleY;
 
+    [SerializeField]
     private bool canRotate = true; // 회전 기능을 활성화/비활성화할 수 있는 플래그 변수
+    private Quaternion fixedRotation;
 
 
     //public Transform player;       // 플레이어의 Transform
@@ -53,9 +55,26 @@ public class FPCameraController : MonoBehaviour
     //    }
     //}
 
+    private void Update()
+    {
+        // 카메라가 회전하지 않도록 고정된 회전 값을 계속 유지
+        if (!canRotate)
+        {
+            transform.rotation = fixedRotation;
+        }
+    }
+
     public void RotateTo(float mouseX, float mouseY)
     {
-        if (!canRotate) return;
+        if (!canRotate)
+        {
+            // 마우스 입력 초기화 (필요에 따라 적용)
+            mouseX = 0;
+            mouseY = 0;
+            eulerAngleX = 0;
+            eulerAngleY = 0;
+            return;
+        }
         // 마우스를 좌/우로 움직이는 mouseX 값을 y축에 대입하는 이유는
         // 마우스를 좌/우로 움직일 때 카메라도 좌/우를 보려면 카메라 오브젝트의
         // y축이 회전되어야 하기 때문
@@ -84,6 +103,7 @@ public class FPCameraController : MonoBehaviour
     public void DisableRotation()
     {
         canRotate = false;
+        fixedRotation = transform.rotation; // 현재 회전을 고정된 회전 값으로 저장
     }
 
     // 회전 기능을 활성화하는 메서드

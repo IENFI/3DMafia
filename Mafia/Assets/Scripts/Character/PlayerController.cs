@@ -7,6 +7,7 @@ using TMPro;
 using UnityEngine.Rendering;
 using UnityEngine.UI;
 using Photon.Pun.Demo.PunBasics;
+using System.Threading;
 
 public class PlayerController : MonoBehaviourPun, IPunObservable
 {
@@ -68,6 +69,12 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
     {
         Debug.Log("Player EnableControl() : enable : " + enable);
         canControl = enable;
+        if (enable)
+            cameraController.EnableRotation();
+        else
+        {
+            cameraController.DisableRotation();
+        }
 
         x_ = Input.GetAxis("Horizontal");
         z_ = Input.GetAxis("Vertical");
