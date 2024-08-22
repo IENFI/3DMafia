@@ -4,6 +4,7 @@ using UnityEngine;
 using Photon.Pun;
 using Photon.Realtime;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 public class ChatManager : MonoBehaviour
 {
@@ -18,24 +19,46 @@ public class ChatManager : MonoBehaviour
     public TextMeshProUGUI[] ChatText;
     public TMP_InputField ChatInput;
 
+    public GameObject VoteUI;
+
     bool chat_check = false;
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.T) && chat_check == false)
+        // 현재 활성화된 씬을 가져옵니다.
+        Scene currentScene = SceneManager.GetActiveScene();
+
+        // 씬의 이름을 확인합니다.
+        if (currentScene.name == "Level_0")
         {
-            RoomPanel.SetActive(true);
-            chat_check = true;
+            if (Input.GetKeyDown(KeyCode.T) && chat_check == false)
+            {
+                RoomPanel.SetActive(true);
+                chat_check = true;
+            }
+            else if (Input.GetKeyDown(KeyCode.Escape) && chat_check == true)
+            {
+                RoomPanel.SetActive(false);
+                chat_check = false;
+            }
         }
-        else if (Input.GetKeyDown(KeyCode.T) && chat_check == true)
+        else if (currentScene.name == "Level_1")
         {
-            RoomPanel.SetActive(false);
-            chat_check = false;
-        }
-        // ShopUI가 활성화되어 있고, ESC 버튼을 누르면 창을 닫음
-        if (RoomPanel.activeSelf && Input.GetKeyDown(KeyCode.Escape))
-        {
-            RoomPanel.SetActive(false);
+            if (Input.GetKeyDown(KeyCode.T) && chat_check == false && VoteUI.activeSelf)
+            {
+                RoomPanel.SetActive(true);
+                chat_check = true;
+            }
+            else if (Input.GetKeyDown(KeyCode.Escape) && chat_check == true && VoteUI.activeSelf)
+            {
+                RoomPanel.SetActive(false);
+                chat_check = false;
+            }
+            else if (chat_check == true && !VoteUI.activeSelf)
+            {
+                RoomPanel.SetActive(false);
+                chat_check = false;
+            }
         }
     }
 
