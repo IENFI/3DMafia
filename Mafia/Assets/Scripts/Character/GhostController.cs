@@ -28,6 +28,8 @@ public class GhostController : MonoBehaviourPun, IPunObservable
     private GameObject miniMapPointPrefab2; // MiniMapPoint 프리팹
     private GameObject miniMapPoint2; // MiniMapPoint 인스턴스
 
+    public bool GhostIsMafia = false;
+
     public void InitializeAsGhost()
     {
         // 유령으로 변환할 때 필요한 설정
@@ -63,8 +65,41 @@ public class GhostController : MonoBehaviourPun, IPunObservable
         // 유령은 모든 레이어를 볼 수 있도록 설정
         ghostCamera.cullingMask = ~0;
 
+        if (PhotonNetwork.LocalPlayer.CustomProperties.ContainsKey("isMafia") && (bool)PhotonNetwork.LocalPlayer.CustomProperties["isMafia"])
+        {
+            GhostIsMafia = true;
+        }
+
         nickName.text = PV.Owner.NickName;
+
+        if (PV.IsMine && GhostIsMafia)
+        {
+            PV.RPC("SetNicknameColorRed", RpcTarget.AllBuffered);
+        }
+
+        UpdateMafiaNicknames();
+
         CreateMiniMapPoint2();
+    }
+
+    [PunRPC]
+    void SetNicknameColorRed()
+    {
+        nickName.color = Color.red;
+    }
+
+    private void UpdateMafiaNicknames()
+    {
+        // 모든 PlayerController를 찾아서 isMafia 상태를 확인합니다.
+        PlayerController[] allPlayerControllers = FindObjectsOfType<PlayerController>();
+        foreach (PlayerController controller in allPlayerControllers)
+        {
+            if (controller.PV.Owner.CustomProperties.ContainsKey("isMafia") &&
+                (bool)controller.PV.Owner.CustomProperties["isMafia"])
+            {
+                controller.UpdateNicknameColor(Color.red);
+            }
+        }
     }
 
 

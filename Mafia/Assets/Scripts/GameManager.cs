@@ -13,10 +13,12 @@ public class GameManager : MonoBehaviour
     public int mafiaNum = 1;
 
     private bool isAnyUIOpen = false;
+    [SerializeField]
     private List<GameObject> uiWindows = new List<GameObject>();
 
     public GameObject LocalPlayer { get; private set; }  // 로컬 플레이어를 저장하기 위한 변수
 
+    private PlayerController playerController;
 
     private void Awake()
     {
@@ -32,6 +34,15 @@ public class GameManager : MonoBehaviour
             Debug.Log("게임매니저 2");
             Destroy(this.gameObject);
         }
+
+        foreach (var pcc in FindObjectsOfType<PlayerController>())
+        {
+            if (pcc.photonView.IsMine)
+            {
+                playerController = pcc;
+                break;
+            }
+        }
     }
 
     void Update()
@@ -41,6 +52,15 @@ public class GameManager : MonoBehaviour
             isConnected = false;
             StartCoroutine(WaitForConnectionAndCreatePlayer());
         }
+
+        if (isAnyUIOpen)
+        {
+            //if(! (playerController == null))
+            //playerController.EnableControl(false);
+        }
+        //if (!(playerController == null))
+            //playerController.EnableControl(true);
+
     }
 
     private IEnumerator WaitForConnectionAndCreatePlayer()
