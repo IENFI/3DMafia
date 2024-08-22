@@ -9,12 +9,12 @@ using Photon.Realtime;
 public class DBInteraction : MonoBehaviourPunCallbacks
 {
     public TMP_InputField inputField;
-    private NetworkManager networkManager;
+    //private NetworkManager networkManager;
 
     void Start()
     {
         // Initialize NetworkManager
-        networkManager = FindObjectOfType<NetworkManager>();
+        //networkManager = FindObjectOfType<NetworkManager>();
     }
 
     public static void AddPlayer(string playerName)
@@ -22,6 +22,9 @@ public class DBInteraction : MonoBehaviourPunCallbacks
         string query = $"INSERT INTO player (name) VALUES ('{playerName}')";
         AWSDBManager.ExecuteQuery(query);
         Debug.Log("Player added to the database");
+        PlayerDBController playerDBController = FindObjectOfType<PlayerDBController>();
+        playerDBController.SetConnectSign(true);
+        playerDBController.SetPlayerName(playerName);
         // PrintPlayers();
         // networkManager.Connect(); // Connect to the network
     }

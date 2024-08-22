@@ -29,7 +29,7 @@ public class AWSDBManager : MonoBehaviour
             return null;
         }
     }
-
+    
     public static void ExecuteQuery(string query)
     {
         using (MySqlConnection connection = GetDBConnection())

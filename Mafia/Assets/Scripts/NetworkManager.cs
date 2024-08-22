@@ -139,6 +139,10 @@ public class NetworkManager : MonoBehaviourPunCallbacks // 안현석 똑바로�
 
         // 게임 버전 지정
 
+        // 게임을 키면 디비에서 닉네임 정리
+        PlayerDBController playerDBController = FindObjectOfType<PlayerDBController>();
+        playerDBController.DeleteInactivePlayers();
+
     }
 
     void Update()
