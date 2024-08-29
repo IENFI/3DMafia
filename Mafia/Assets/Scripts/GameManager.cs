@@ -65,7 +65,7 @@ public class GameManager : MonoBehaviour
 
     private IEnumerator WaitForConnectionAndCreatePlayer()
     {
-        Debug.Log("게임매니저 WaitForConnectionAndCreatePlayer");
+        Debug.LogFormat("게임매니저 WaitForConnectionAndCreatePlayer");
         yield return new WaitUntil(() => PhotonNetwork.InRoom);
         CreatePlayer();
     }

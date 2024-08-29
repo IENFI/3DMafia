@@ -13,6 +13,7 @@ public class VoteManager : MonoBehaviourPunCallbacks
 {
     [SerializeField]
     public GameObject mafiaManager;
+    [SerializeField] private Timer timer;   
 
     [Header("VoteUI")]
     public GameObject VoteUI;
@@ -489,6 +490,15 @@ public class VoteManager : MonoBehaviourPunCallbacks
 
             yield return StartCoroutine(FadeCanvasGroup(uiToActivate1, 1, 0, 1)); // 페이드 아웃을 1초 동안 수행
             uiToActivate1.gameObject.SetActive(false);
+
+            if (timer != null)
+            {
+                StartCoroutine(timer.ShowPhaseChangeUI());
+            }
+            else
+            {
+                Debug.LogError("Timer reference is null in VoteManager");
+            }
 
         }
     }

@@ -1,4 +1,5 @@
 using Photon.Pun;
+using Photon.Pun.Demo.Cockpit;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -7,193 +8,213 @@ using UnityEngine.UI;
 
 public class Timer : MonoBehaviourPun
 {
-    [SerializeField] private TMP_Text text;
-    [SerializeField] private float time = 300f;  // 타이머 기본 시간
-    private float curTime;  // 현재 남은 시간
+    [SerializeField] private TMP_Text timerText;
+    [SerializeField] private float cycleDuration = 300f;
+    [SerializeField] private List<GameObject> merchants;
+    [SerializeField] private Image nightImage;
+    [SerializeField] private Image dayImage;
+    [SerializeField] private GameObject shopUI;
+    [SerializeField] private CanvasGroup phaseChangeUI;
+    [SerializeField] private TMP_Text phaseChangeText;
+
+    private float currentTime;
+    private bool isDaytime = true;
+    private bool isBlinking;
+    private int cycleCount = -1;
 
     private Light directionalLight;
-    private Coroutine blinkCoroutine;
-    private Coroutine timerCoroutine;  // 타이머 코루틴 참조 변수
-    private bool isBlinking;
     private fillAmountController fillController;
-    public GameObject ShopUI; // 상점 UI
-
-    [Header("Phase Image}")]
-    public Image Night; // 밤 이미지
-    public Image Day; // 낮 이미지
-
-    private int Start_count = -1;
-
-    private bool isDaytime = true; // 낮/밤 상태를 추적하는 변수
-
-    [SerializeField] private List<GameObject> Merchants; // 상인 GameObject 리스트
+    private Coroutine blinkCoroutine;
+    private Coroutine timerCoroutine;
 
     private void Awake()
     {
         directionalLight = GameObject.Find("Directional Light").GetComponent<Light>();
-        fillController = FindObjectOfType<fillAmountController>(); // fillAmountController 찾기
-        fillController.totalTime = time;
-        Debug.Log("Timer Awake: directionalLight and fillController initialized.");
+        fillController = FindObjectOfType<fillAmountController>();
+        fillController.totalTime = cycleDuration;
+        
+    }
+
+    [PunRPC]
+    public void PauseTimer()
+    {
+        if (timerCoroutine != null)
+        {
+            StopCoroutine(timerCoroutine);
+        }
+    }
+
+    [PunRPC]
+    public void ResumeTimer()
+    {
+        timerCoroutine = StartCoroutine(TimerCoroutine());
     }
 
     public void StartTimer()
     {
-        /*if (!isDaytime)
-        {
-            ActivateRandomMerchants();
-            Night.enabled = true;
-            Day.enabled = false;
-        }
-        else
-        {
-            DeactivateAllMerchants();
-            Night.enabled = false;
-            Day.enabled = true;
-        }*/
-        timerCoroutine = StartCoroutine(TimerCoroutine());  // 타이머 코루틴 시작
-        // 밤으로 전환될 때만 상인 활성화
+        UpdateDayNightState();
+        timerCoroutine = StartCoroutine(TimerCoroutine());
     }
-
 
     private IEnumerator TimerCoroutine()
     {
         while (true)
         {
-            if (Start_count == -1)
-            {
-                curTime = time + 5;
-                fillController.totalTime = curTime;
-                Start_count++;
-            }
-            else 
-            {
-                curTime = time;
-                fillController.totalTime = curTime;
-            }
+            InitializeNewCycle();
+            yield return RunTimerCycle();
+            yield return StartCoroutine(ShowPhaseChangeUI());
+
+           // yield return new WaitForSeconds(1f);
+        }
+    }
+
+    private void InitializeNewCycle()
+    {
+        if (cycleCount == -1) 
+        { 
+            currentTime = cycleDuration;
             GameObject playerObject = PhotonNetwork.LocalPlayer.TagObject as GameObject;
             PhotonView playerPhotonView = playerObject.GetComponent<PhotonView>();
-
             playerPhotonView.RPC("Spawn", PhotonNetwork.LocalPlayer);
-        
             playerPhotonView.RPC("DisableAllCorpses", RpcTarget.All);
+            fillController.totalTime = currentTime;
+            fillController.ResetFillAmount();
+        }
+        cycleCount++;
 
-            isBlinking = false;
+        isBlinking = false;
+        timerText.color = Color.black;
+    }
 
-            if (fillController != null)
-            {
-                fillController.ResetFillAmount(); // 각 사이클 시작 시 fill amount 초기화
-            }
+    private IEnumerator RunTimerCycle()
+    {
+        fillController.totalTime = currentTime;
+        fillController.ResetFillAmount(); // 여기로 이동합니다
+        while (currentTime > 0)
+        {
+            currentTime -= Time.deltaTime;
+            UpdateTimerDisplay();
+            CheckBlinkingCondition();
+            yield return null;
+        }
+    }
 
-            text.color = Color.black;  // 텍스트 색상 초기화
+    private void UpdateTimerDisplay()
+    {
+        int minutes = Mathf.FloorToInt(currentTime / 60);
+        int seconds = Mathf.FloorToInt(currentTime % 60);
+        timerText.text = $"{minutes:00}:{seconds:00}";
+    }
 
-            while (curTime > 0)
-            {
-                curTime -= Time.deltaTime;
-                int minute = (int)curTime / 60;
-                int second = (int)curTime % 60;
-                text.text = minute.ToString("00") + ":" + second.ToString("00");
+    private void CheckBlinkingCondition()
+    {
+        if (currentTime <= 10f && !isBlinking)
+        {
+            timerText.color = Color.red;
+            blinkCoroutine = StartCoroutine(BlinkText());
+            isBlinking = true;
+        }
+    }
 
-                if (curTime <= 10f && !isBlinking)  // 10초 이하로 남았을 때
-                {
-                    text.color = Color.red;
-                    blinkCoroutine = StartCoroutine(BlinkText());
-                    isBlinking = true;
-                }
+    private void EndCycle()
+    {
+        currentTime = cycleDuration;  // 여기서 타이머를 초기화합니다
+        directionalLight.enabled = !directionalLight.enabled;
+        isDaytime = !isDaytime;
+        UpdateDayNightState();
+        GameObject playerObject = PhotonNetwork.LocalPlayer.TagObject as GameObject;
+        PhotonView playerPhotonView = playerObject.GetComponent<PhotonView>();
+        playerPhotonView.RPC("Spawn", PhotonNetwork.LocalPlayer);
+        playerPhotonView.RPC("DisableAllCorpses", RpcTarget.All);
 
-                yield return null;
-            }
+        if (blinkCoroutine != null)
+        {
+            StopCoroutine(blinkCoroutine);
+            timerText.color = Color.black;
+        }
 
-            // 타이머가 종료되었을 때
-            Debug.Log("시간 종료");
-            curTime = 0;
-            // 자연광 전환
-            directionalLight.enabled = !directionalLight.enabled;
+        UpdateTimerDisplay();  // 타이머 표시를 즉시 업데이트합니다
+    }
 
-            // 낮/밤 상태 전환
-            isDaytime = !isDaytime;
-
-            /*// 밤으로 전환될 때만 상인 활성화
-            if (!isDaytime)
-            {
-                ActivateRandomMerchants();
-                Night.enabled = true;
-                Day.enabled = false;
-            }
-            else
-            {
-                DeactivateAllMerchants();
-                Night.enabled = false;
-                Day.enabled = true;
-
-            }*/
-
-            // 반짝임 코루틴 멈춤
-            if (blinkCoroutine != null)
-            {
-                StopCoroutine(blinkCoroutine);
-                text.color = Color.black;  // 텍스트 색상 초기화
-            }
-
-            // fillAmount 초기화
-            if (fillController != null)
-            {
-                fillController.ResetFillAmount();
-            }
-
-            // 다음 사이클을 위해 잠시 대기
-            yield return new WaitForSeconds(1f);  // 전환 후 1초 대기 (선택 사항)
+    private void UpdateDayNightState()
+    {
+        if (isDaytime)
+        {
+            DeactivateAllMerchants();
+            nightImage.enabled = false;
+            dayImage.enabled = true;
+        }
+        else
+        {
+            ActivateRandomMerchants();
+            nightImage.enabled = true;
+            dayImage.enabled = false;
         }
     }
 
     private void ActivateRandomMerchants()
     {
-        // 모든 상인 비활성화
-        foreach (var merchant in Merchants)
-        {
-            merchant.SetActive(false);
-        }
-
-        // 상인 중 2명을 무작위로 선택하여 활성화
+        DeactivateAllMerchants();
         List<int> selectedIndices = new List<int>();
         while (selectedIndices.Count < 2)
         {
-            int randomIndex = Random.Range(0, Merchants.Count);
+            int randomIndex = Random.Range(0, merchants.Count);
             if (!selectedIndices.Contains(randomIndex))
             {
                 selectedIndices.Add(randomIndex);
-                Merchants[randomIndex].SetActive(true);
+                merchants[randomIndex].SetActive(true);
             }
         }
-
     }
 
     private void DeactivateAllMerchants()
     {
-        foreach (var merchant in Merchants)
+        foreach (var merchant in merchants)
         {
             merchant.SetActive(false);
         }
-        ShopUI.SetActive(false);
+        shopUI.SetActive(false);
     }
 
     private IEnumerator BlinkText()
     {
         while (true)
         {
-            text.enabled = !text.enabled;  // 텍스트의 활성화 상태를 토글
-            yield return new WaitForSeconds(0.5f);  // 반짝임 속도 조절
+            timerText.enabled = !timerText.enabled;
+            yield return new WaitForSeconds(0.5f);
         }
     }
 
-    // Start is called before the first frame update
-    void Start()
+    public IEnumerator ShowPhaseChangeUI()
     {
-        // 필요한 경우 Start에서 초기화할 수 있습니다.
+        CanvasGroup uiToActivate1 = null;
+        EndCycle();
+        phaseChangeText.text = isDaytime ? "밤이 되었습니다" : "낮이 되었습니다";
+        phaseChangeText.color = isDaytime ? Color.red : Color.blue;
+        phaseChangeUI.gameObject.SetActive(true);
+        uiToActivate1 = phaseChangeUI;
+        if(uiToActivate1  != null) { 
+            
+            yield return StartCoroutine(FadeCanvasGroup(phaseChangeUI, 0, 1, 3f));
+            Debug.Log("페이드인 호출완료");
+            yield return new WaitForSeconds(2f);
+            Debug.Log("2초대기 호출완료");
+            yield return StartCoroutine(FadeCanvasGroup(phaseChangeUI, 1, 0, 2f));
+            Debug.Log("페이드아웃 호출완료");
+            uiToActivate1.gameObject.SetActive(false);
+        }
     }
 
-    // Update is called once per frame
-    void Update()
+    private IEnumerator FadeCanvasGroup(CanvasGroup canvasGroup, float start, float end, float duration)
     {
-
+        float elapsedTime = 0f;
+        while (elapsedTime < duration)
+        {
+            canvasGroup.alpha = Mathf.Lerp(start, end, elapsedTime / duration);
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+        canvasGroup.alpha = end;
+        Debug.Log("빠져나왔음");
     }
 }

@@ -12,6 +12,7 @@ public class VotingSystem : MonoBehaviourPunCallbacks
 
     [SerializeField]
     public GameObject voteManager;
+    [SerializeField] private Timer timer;
 
     // Start is called before the first frame update
     void Start()
@@ -38,6 +39,7 @@ public class VotingSystem : MonoBehaviourPunCallbacks
     {
         syncedCriterion = true;
         voteManager.SetActive(true);
+        timer.photonView.RPC("PauseTimer", RpcTarget.All);
         syncedCriterion = false;
     }
 }
