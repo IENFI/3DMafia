@@ -12,6 +12,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks // 안현석 똑바로�
     public GameObject DisconnectPanel;
     public TMP_InputField NickNameInput;
     public TextMeshProUGUI NickNameError;
+    public Button ConnectBtn;
 
     [Header("LobbyPanel")]
     public GameObject LobbyPanel;
@@ -162,6 +163,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks // 안현석 똑바로�
         else if (DBInteraction.Login(PhotonNetwork.NickName))
         {
             PhotonNetwork.ConnectUsingSettings();
+            ConnectBtn.interactable = false;
         }
         else
         {

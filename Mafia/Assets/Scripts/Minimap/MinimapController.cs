@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MinimapControlelr : MonoBehaviour
+public class MinimapController : MonoBehaviour
 {
     public Transform player1; // Inspector에서 할당할 변수
     public Transform player2; // 복사한 맵의 플레이어 위치를 동기화할 변수

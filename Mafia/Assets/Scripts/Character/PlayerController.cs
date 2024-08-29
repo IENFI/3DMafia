@@ -8,6 +8,7 @@ using UnityEngine.Rendering;
 using UnityEngine.UI;
 using Photon.Pun.Demo.PunBasics;
 using System.Threading;
+using UnityEngine.SceneManagement;
 
 public class PlayerController : MonoBehaviourPun, IPunObservable
 {
@@ -217,13 +218,26 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
             }
 
             // Z 버튼을 누르면 Kill
-            if (Input.GetKeyDown(KeyCode.Z))
+            Scene currentScene = SceneManager.GetActiveScene();
+
+            if (currentScene.name == "Level_1")
             {
-                if (Time.time - lastKillTime >= killCooldown && (bool)PhotonNetwork.LocalPlayer.CustomProperties["isMafia"])
+                if (Input.GetKeyDown(KeyCode.Z))
                 {
-                    playerAnimator.Kill();
-                    lastKillTime = Time.time;
-                    playerAttackCollision.SeletKillMember();
+                    if (Time.time - lastKillTime >= killCooldown && (bool)PhotonNetwork.LocalPlayer.CustomProperties["isMafia"])
+                    {
+                        playerAnimator.Kill();
+                        lastKillTime = Time.time;
+                        playerAttackCollision.SeletKillMember();
+                    }
+                }
+
+                if (Input.GetKeyDown(KeyCode.R) && reportRadius.IsCorpseInRange())
+                {
+                    if (Time.time - lastReportTime >= reportCooldown)
+                    {
+                        ReportCorpse();
+                    }
                 }
             }
 
@@ -243,16 +257,7 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
                if (Input.GetKeyDown(KeyCode.K))
                {
                    photonView.RPC("DisableAllCorpses", RpcTarget.All);
-               }*/
-
-            if (Input.GetKeyDown(KeyCode.R) && reportRadius.IsCorpseInRange())
-            {
-
-                if (Time.time - lastReportTime >= reportCooldown)
-                {
-                    ReportCorpse();
-                }
-            }
+               }*/            
 
             if (canControl)
             {
