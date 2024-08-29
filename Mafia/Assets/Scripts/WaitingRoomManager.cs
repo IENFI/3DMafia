@@ -7,6 +7,7 @@ using TMPro;
 using System.Collections;
 using System.Collections.Generic;
 using Photon.Voice.Unity;
+using UnityEditor.MemoryProfiler;
 
 public class WaitingRoomManager : MonoBehaviourPunCallbacks
 {
@@ -27,6 +28,8 @@ public class WaitingRoomManager : MonoBehaviourPunCallbacks
     private static bool voiceConnectionInitialized = false;
 
     public int mafiaNum = 1;
+
+    private bool hasGameStarted = false; // 게임 시작 여부를 추적하는 변수
 
     void Awake()
     {
@@ -137,8 +140,13 @@ public class WaitingRoomManager : MonoBehaviourPunCallbacks
 
         if (PhotonNetwork.IsMasterClient)
         {
-            StartBtn.GetComponent<Button>().interactable = gameReady;
-            if(Input.GetKeyDown(KeyCode.F5))
+            // 게임이 시작되지 않았을 때만 버튼 상태를 업데이트
+            if (!hasGameStarted)
+            {
+                StartBtn.GetComponent<Button>().interactable = gameReady;
+            }
+
+            if (Input.GetKeyDown(KeyCode.F5))
             {
                 GameStart();
             }
@@ -230,6 +238,10 @@ public class WaitingRoomManager : MonoBehaviourPunCallbacks
                 Debug.LogError("PhotonNetwork.CurrentRoom is null.");
                 return;
             }
+
+            // StartBtn 비활성화
+            StartBtn.GetComponent<Button>().interactable = false;
+            hasGameStarted = true; // 게임 시작 상태로 설정
 
             PhotonNetwork.DestroyAll();
             PhotonNetwork.LoadLevel("Level_1");
