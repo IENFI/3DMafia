@@ -4,6 +4,7 @@ using Photon.Pun;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using Photon.Voice.Unity;
 
 public class GhostController : MonoBehaviourPun, IPunObservable
 {
@@ -53,6 +54,7 @@ public class GhostController : MonoBehaviourPun, IPunObservable
 
     private void Start()
     {
+        RemoveDuplicateRecorders();
 
         if (!photonView.IsMine)
         {
@@ -82,6 +84,17 @@ public class GhostController : MonoBehaviourPun, IPunObservable
         CreateMiniMapPoint2();
     }
 
+    private void RemoveDuplicateRecorders()
+    {
+        var recorders = GetComponents<Recorder>();
+        if (recorders.Length > 1)
+        {
+            for (int i = 1; i < recorders.Length; i++)
+            {
+                Destroy(recorders[i]);
+            }
+        }
+    }
     [PunRPC]
     void SetNicknameColorRed()
     {
@@ -101,7 +114,7 @@ public class GhostController : MonoBehaviourPun, IPunObservable
             }
         }
     }
-
+    
 
     void Update()
     {

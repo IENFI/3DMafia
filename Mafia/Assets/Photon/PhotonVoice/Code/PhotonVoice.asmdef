@@ -1,11 +1,17 @@
 {
     "name": "PhotonVoice",
+    "rootNamespace": "",
     "references": [
         "PhotonRealtime",
         "PhotonVoice.API"
     ],
-    "optionalUnityReferences": [],
     "includePlatforms": [],
     "excludePlatforms": [],
-    "allowUnsafeCode": false
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
 }

@@ -7,6 +7,7 @@ using TMPro;
 using UnityEngine.Rendering;
 using UnityEngine.UI;
 using Photon.Pun.Demo.PunBasics;
+using Photon.Voice.Unity;
 
 public class PlayerController : MonoBehaviourPun, IPunObservable
 {
@@ -58,6 +59,7 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
     private Quaternion networkRotation;
     public float smoothing = 10f;
 
+    public VoiceManager voiceManager;
 
     [SerializeField]
     private bool canControl = true; // 플레이어 컨트롤 가능 여부
@@ -90,6 +92,7 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
         cameraController = GetComponentInChildren<FPCameraController>();
         playerAttackCollision = GetComponentInChildren<PlayerAttack>();
         FPcamera.cullingMask &= ~LayerMask.GetMask("Ghost");
+        voiceManager = FindObjectOfType<VoiceManager>();
 
         // 유령으로 변환할 때 필요한 설정
         int playerLayer = LayerMask.NameToLayer("Player");
@@ -297,6 +300,7 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
         { "isDead" , true }
         };
         PhotonNetwork.LocalPlayer.SetCustomProperties(props);
+        voiceManager?.OnPlayerDeath(gameObject);
 
     }
 
@@ -310,6 +314,7 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
     {
         // 애니메이션의 길이를 대기합니다.
         yield return new WaitForSeconds(playerAnimator.GetAnimatorTime().length);
+        
 
         PhotonNetwork.Instantiate(ghostPrefab.name, transform.position, transform.rotation);
 
@@ -319,12 +324,17 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
         // Resources 폴더에서 corpseAvatar 이름과 동일한 프리팹을 로드
         GameObject corpsePrefab = Resources.Load<GameObject>(corpseAvatar);
 
+        
+
+
         // 프리팹이 로드되었는지 확인 (null 체크)
         if (corpsePrefab != null)
         {
             // PhotonNetwork를 사용하여 프리팹을 인스턴스화
-            PhotonNetwork.Instantiate(corpsePrefab.name, transform.position, transform.rotation);
+            PhotonNetwork.Instantiate(ghostPrefab.name, transform.position, transform.rotation);
+            
         }
+
         else
         {
             Debug.LogError("Prefab not found: " + corpseAvatar);
@@ -333,6 +343,19 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
         // RPC를 통해 모든 클라이언트에서 gameObject를 비활성화합니다.
         photonView.RPC("DisableGameObject", RpcTarget.All);
     }
+    private void RemoveDuplicateRecorders(GameObject gameObject)
+    {
+        var recorders = gameObject.GetComponents<Recorder>();
+        if (recorders.Length > 1)
+        {
+            for (int i = 1; i < recorders.Length; i++)
+            {
+                Debug.Log("Removing duplicate Recorder: " + recorders[i].name);
+                Destroy(recorders[i]);
+            }
+        }
+    }
+
 
     public void ChangeMoveSpeed()
     {
