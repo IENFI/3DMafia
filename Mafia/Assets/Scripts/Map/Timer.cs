@@ -123,6 +123,8 @@ public class Timer : MonoBehaviourPun
 
             SetFarValue(isDaytime); //set far value of player camera
 
+            ControlLizard(isDaytime);
+
             /*// 밤으로 전환될 때만 상인 활성화
             if (!isDaytime)
             {
@@ -231,7 +233,23 @@ public class Timer : MonoBehaviourPun
         {
             playerCamera.farClipPlane = 25f;
         }
+    }
 
+    public void ControlLizard(bool state)
+    {
+        if (!PhotonNetwork.IsMasterClient) return;
+        if (state)
+        {
+            GameObject objectToDelete = GameObject.Find("Lizard");
+            if(objectToDelete != null)
+            {
+                PhotonNetwork.Destroy(objectToDelete);
+            }
+        }
+        else
+        {
+            PhotonNetwork.Instantiate("Lizard", new Vector3(15, 5, -20), Quaternion.identity, 0);
+        }
     }
 
     // Start is called before the first frame update
