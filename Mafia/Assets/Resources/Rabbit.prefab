@@ -149,7 +149,7 @@ MonoBehaviour:
   moveSpeed: 4
   vector: {x: 0, y: 0, z: 0}
   initialMomentum: 100
-  triggerMomentum: 20
+  triggerMomentum: 0
 --- !u!114 &7908560185542163916
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -296,6 +296,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5807be5c374f7214b920bec71688b9f8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  rotationSpeed: 20
 --- !u!4 &7987062555490535767 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 400040, guid: 0962bdca27eaca34aaa15f7fdf608faf, type: 3}
