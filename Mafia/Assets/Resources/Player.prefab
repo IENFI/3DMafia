@@ -5688,6 +5688,7 @@ GameObject:
   - component: {fileID: 2740067987458198289}
   - component: {fileID: 6225116211764668774}
   - component: {fileID: -4613009721008776646}
+  - component: {fileID: 540316867768108683}
   m_Layer: 6
   m_Name: Player
   m_TagString: Player
@@ -5968,6 +5969,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerName: none
   connectSign: 0
+--- !u!114 &540316867768108683
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6946556922499648511}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a0829f66d86ce1649a255ed4556827d4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  flashlight: {fileID: 7495985006315593879}
 --- !u!1 &7001936556836551561
 GameObject:
   m_ObjectHideFlags: 0
@@ -6362,12 +6376,12 @@ GameObject:
   - component: {fileID: 6901992537516393632}
   - component: {fileID: 5867425169351743096}
   m_Layer: 0
-  m_Name: SpotLight
+  m_Name: flashlight
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &6901992537516393632
 Transform:
   m_ObjectHideFlags: 0
