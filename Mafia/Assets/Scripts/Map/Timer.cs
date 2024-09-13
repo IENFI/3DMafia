@@ -28,6 +28,11 @@ public class Timer : MonoBehaviourPun
 
     [SerializeField] private List<GameObject> Merchants; // 상인 GameObject 리스트
 
+    [SerializeField]
+    public Material daySkybox;
+    public Material nightSkybox;
+    //materials of skybox
+
     private void Awake()
     {
         directionalLight = GameObject.Find("Directional Light").GetComponent<Light>();
@@ -65,7 +70,7 @@ public class Timer : MonoBehaviourPun
                 fillController.totalTime = curTime;
                 Start_count++;
             }
-            else 
+            else
             {
                 curTime = time;
                 fillController.totalTime = curTime;
@@ -74,7 +79,7 @@ public class Timer : MonoBehaviourPun
             PhotonView playerPhotonView = playerObject.GetComponent<PhotonView>();
 
             playerPhotonView.RPC("Spawn", PhotonNetwork.LocalPlayer);
-        
+
             playerPhotonView.RPC("DisableAllCorpses", RpcTarget.All);
 
             isBlinking = false;
@@ -107,10 +112,16 @@ public class Timer : MonoBehaviourPun
             Debug.Log("시간 종료");
             curTime = 0;
             // 자연광 전환
-            directionalLight.enabled = !directionalLight.enabled;
+            //directionalLight.enabled = !directionalLight.enabled;
 
             // 낮/밤 상태 전환
             isDaytime = !isDaytime;
+
+            ToggleAllLights(isDaytime); //turn on or off all the lights
+
+            ChangeSkybox(isDaytime); //change the material of skybox!
+
+            SetFarValue(isDaytime); //set far value of player camera
 
             /*// 밤으로 전환될 때만 상인 활성화
             if (!isDaytime)
@@ -183,6 +194,44 @@ public class Timer : MonoBehaviourPun
             text.enabled = !text.enabled;  // 텍스트의 활성화 상태를 토글
             yield return new WaitForSeconds(0.5f);  // 반짝임 속도 조절
         }
+    }
+
+    public void ToggleAllLights(bool state)
+    {
+        Light[] allLights = FindObjectsOfType<Light>();
+
+        foreach (Light light in allLights)
+        {
+            light.enabled = state;
+        }
+    }
+
+    public void ChangeSkybox(bool state)
+    {
+        if (state)
+        {
+            RenderSettings.skybox = daySkybox;
+        }
+        else
+        {
+            RenderSettings.skybox = nightSkybox;
+        }
+    }
+
+    public void SetFarValue(bool state)
+    {
+        Camera playerCamera;
+        playerCamera = Camera.main;
+
+        if (state)
+        {
+            playerCamera.farClipPlane = 1000f;
+        }
+        else
+        {
+            playerCamera.farClipPlane = 25f;
+        }
+
     }
 
     // Start is called before the first frame update
