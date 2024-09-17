@@ -34,6 +34,9 @@ public class Sudoku : MonoBehaviour
 
     // 플레이어가 입력한 현재 상태 배열
     private int[,] playerAnswers = new int[4, 4];
+    [SerializeField]
+    private GameObject answerText;
+    private int uncorrectNumber = 0;
 
     // 게임 시작 시 빈칸으로 만들 버튼의 위치를 저장하는 리스트
     private List<Vector2Int> emptyCells = new List<Vector2Int>();
@@ -70,6 +73,7 @@ public class Sudoku : MonoBehaviour
         InitializeButtons();
         HideRandomCells();
         SetKeypadButtonsInteractable(false);
+        AnswerButton.interactable = false;
     }
 
     // 버튼을 초기화하고 각 버튼에 숫자를 설정
@@ -105,7 +109,18 @@ public class Sudoku : MonoBehaviour
             {
                 buttons[randomRow, randomCol].GetComponentInChildren<TextMeshProUGUI>().text = "";
                 playerAnswers[randomRow, randomCol] = 0; // 빈칸은 0으로 표시
+
+                // 빈칸인 경우 테두리 강조
+                Outline outline = buttons[randomRow, randomCol].GetComponent<Outline>();
+                if (outline != null)
+                {
+                    outline.effectColor = Color.black; // 테두리 색상 설정 (원하는 색상으로 설정 가능)
+                    outline.effectDistance = new Vector2(1, 1); // 테두리 두께 설정
+                    outline.enabled = true; // 테두리 활성화
+                }
+
                 emptyCells.Add(new Vector2Int(randomRow, randomCol));
+                
                 hiddenCount++;
             }
         }
@@ -132,12 +147,14 @@ public class Sudoku : MonoBehaviour
         else
         {
             Debug.Log("빈 칸이 아닙니다.");  // 빈 칸이 아닌 경우 처리
+            SetKeypadButtonsInteractable(false);  // 키패드 버튼 비활성화
         }
     }
 
     // 키패드 버튼 클릭 처리 (숫자 1 ~ 4)
     public void OnKeypadButtonClick(int number)
     {
+        answerText.SetActive(false);
         if (selectedButton != null)
         {
             // 선택한 버튼에 숫자 입력
@@ -146,6 +163,10 @@ public class Sudoku : MonoBehaviour
 
             // 키패드 숨기기
             SetKeypadButtonsInteractable(false); 
+
+            // 빈칸이 다 채워졌는지 확인하고 정답 버튼 활성화 여부 결정
+            CheckIfAllCellsFilled();
+
             if (CheckWinCondition())
             {
                 Debug.Log("게임 성공!");
@@ -183,17 +204,21 @@ public class Sudoku : MonoBehaviour
 
     bool CheckWinCondition()
     {
+        uncorrectNumber= 0 ;
         for (int row = 0; row < 4; row++)
         {
             for (int col = 0; col < 4; col++)
             {
                 if (playerAnswers[row, col] != correctAnswers[row, col])
                 {
-                    return false;
+                    uncorrectNumber ++;
                 }
             }
         }
-        return true;
+        if (uncorrectNumber > 0)
+            return false;
+        else 
+            return true;
     }
 
     void OnClickAnswerButton(){
@@ -204,5 +229,27 @@ public class Sudoku : MonoBehaviour
             gameObject.SetActive(false);
             HideRandomCells();
         }
+        else {
+            answerText.SetActive(true);
+            answerText.GetComponentInChildren<TextMeshProUGUI>().text = "틀린 답이 "+uncorrectNumber.ToString()+"개 입니다.";
+        }
     }
+
+    void CheckIfAllCellsFilled()
+    {
+        foreach (var cell in emptyCells)
+        {
+            int row = cell.x;
+            int col = cell.y;
+            // 빈칸이 채워져 있지 않다면, 버튼 비활성화
+            if (string.IsNullOrEmpty(buttons[row, col].GetComponentInChildren<TextMeshProUGUI>().text))
+            {
+                AnswerButton.interactable = false;
+                return;
+            }
+        }
+        // 모든 빈칸이 채워졌다면 버튼 활성화
+        AnswerButton.interactable = true;
+    }
+
 }
