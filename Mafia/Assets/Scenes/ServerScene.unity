@@ -15,9 +15,9 @@ RenderSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 9
   m_Fog: 0
-  m_FogColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+  m_FogColor: {r: 0.9622642, g: 0, b: 0, a: 1}
   m_FogMode: 3
-  m_FogDensity: 0.01
+  m_FogDensity: 1
   m_LinearFogStart: 0
   m_LinearFogEnd: 300
   m_AmbientSkyColor: {r: 0.212, g: 0.227, b: 0.259, a: 1}
@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.12731704, g: 0.13414727, b: 0.121078536, a: 1}
+  m_IndirectSpecularColor: {r: 0.12731722, g: 0.13414752, b: 0.1210787, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -97,7 +97,7 @@ LightmapSettings:
     m_ExportTrainingData: 0
     m_TrainingDataDestination: TrainingData
     m_LightProbeSampleCountMultiplier: 4
-  m_LightingDataAsset: {fileID: 0}
+  m_LightingDataAsset: {fileID: 112000000, guid: 7f0e2a0efb6634ae188235ac9d0a247f, type: 2}
   m_LightingSettings: {fileID: 0}
 --- !u!196 &4
 NavMeshSettings:
@@ -2927,8 +2927,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: "\uB2C9\uB124\uC784 \uC785\uB825"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: eae204267f66ada49b84c9f872406c15, type: 2}
-  m_sharedMaterial: {fileID: -3477204484742694966, guid: eae204267f66ada49b84c9f872406c15, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: ffce72c19507847fa8aec689faa8f222, type: 2}
+  m_sharedMaterial: {fileID: 3442700050256312163, guid: ffce72c19507847fa8aec689faa8f222, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -3195,8 +3195,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: "\u200B"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: eae204267f66ada49b84c9f872406c15, type: 2}
-  m_sharedMaterial: {fileID: -3477204484742694966, guid: eae204267f66ada49b84c9f872406c15, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: ffce72c19507847fa8aec689faa8f222, type: 2}
+  m_sharedMaterial: {fileID: 3442700050256312163, guid: ffce72c19507847fa8aec689faa8f222, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -4274,8 +4274,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Dying Message
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: eae204267f66ada49b84c9f872406c15, type: 2}
-  m_sharedMaterial: {fileID: -3477204484742694966, guid: eae204267f66ada49b84c9f872406c15, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: ffce72c19507847fa8aec689faa8f222, type: 2}
+  m_sharedMaterial: {fileID: 3442700050256312163, guid: ffce72c19507847fa8aec689faa8f222, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -5458,7 +5458,7 @@ MonoBehaviour:
   m_CaretWidth: 1
   m_ReadOnly: 0
   m_RichText: 1
-  m_GlobalFontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_GlobalFontAsset: {fileID: 11400000, guid: ffce72c19507847fa8aec689faa8f222, type: 2}
   m_OnFocusSelectAll: 1
   m_ResetOnDeActivation: 1
   m_RestoreOriginalTextOnEscape: 1
@@ -9245,8 +9245,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: "\uC811\uC18D"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: eae204267f66ada49b84c9f872406c15, type: 2}
-  m_sharedMaterial: {fileID: -3477204484742694966, guid: eae204267f66ada49b84c9f872406c15, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: ffce72c19507847fa8aec689faa8f222, type: 2}
+  m_sharedMaterial: {fileID: 3442700050256312163, guid: ffce72c19507847fa8aec689faa8f222, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []

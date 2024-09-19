@@ -28,12 +28,21 @@ public class Timer : MonoBehaviourPun
 
     [SerializeField] private List<GameObject> Merchants; // 상인 GameObject 리스트
 
+    public MinigameManager minigameManager;
+
     private void Awake()
     {
         directionalLight = GameObject.Find("Directional Light").GetComponent<Light>();
         fillController = FindObjectOfType<fillAmountController>(); // fillAmountController 찾기
         fillController.totalTime = time;
         Debug.Log("Timer Awake: directionalLight and fillController initialized.");
+        minigameManager = FindObjectOfType<MinigameManager>();
+        if (minigameManager == null)
+        {
+            Debug.LogError("MinigameManager가 씬에 없습니다. 참조를 확인하세요.");
+        } 
+        // 게임이 시작할 때 미니게임 할당시키기
+        minigameManager.AssignRandomMinigame();
     }
 
     public void StartTimer()
@@ -111,6 +120,8 @@ public class Timer : MonoBehaviourPun
 
             // 낮/밤 상태 전환
             isDaytime = !isDaytime;
+            // 페이즈가 바뀔 때 마다 미니게임 할당시키기
+            minigameManager.AssignRandomMinigame();
 
             /*// 밤으로 전환될 때만 상인 활성화
             if (!isDaytime)

@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.18028378, g: 0.22571412, b: 0.30692285, a: 1}
+  m_IndirectSpecularColor: {r: 0.12731722, g: 0.13414752, b: 0.1210787, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -2728,7 +2728,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!108 &555093341
 Light:
   m_ObjectHideFlags: 0
@@ -7603,6 +7603,7 @@ MonoBehaviour:
   - {fileID: 4568750996705576628}
   - {fileID: 4701070874921446426}
   ChatInput: {fileID: 6608893845953510801}
+  VoteUI: {fileID: 0}
 --- !u!4 &1413697154
 Transform:
   m_ObjectHideFlags: 0
@@ -26708,8 +26709,8 @@ Light:
   m_Type: 2
   m_Shape: 0
   m_Color: {r: 1, g: 0.903344, b: 0.759434, a: 1}
-  m_Intensity: 2
-  m_Range: 100
+  m_Intensity: 2.45
+  m_Range: 17
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
   m_CookieSize: 10

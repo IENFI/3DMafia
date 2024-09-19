@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 
-
-
 public enum EWireColor
 {
     None = -1,
@@ -14,7 +12,7 @@ public enum EWireColor
     Magenta
 }
 
-public class FixWiringTask : MonoBehaviourPun
+public class FixWiringTask : MinigameBase
 {
     [SerializeField]
     private List<LeftWire> mLeftWires;
@@ -28,7 +26,18 @@ public class FixWiringTask : MonoBehaviourPun
     private List<RightWire> mRightWires;
 
     private LeftWire mSelectedWire;
+    [SerializeField]
+    private bool active = false;
 
+    public override void ReceiveToken()
+    {
+        Debug.Log("Fix Wiring 미니게임이 시작되었습니다.");
+        active = true;
+    }
+
+    public override bool GetActive(){
+        return active;
+    }
 
     private void OnEnable()
     {
@@ -147,7 +156,8 @@ public class FixWiringTask : MonoBehaviourPun
     {
         minigame.ExitCode = true;
         // 플레이어 움직임 제한하는 코드 추가?
-        gameObject.transform.parent.gameObject.SetActive(false);
+        active = false;
+        gameObject.SetActive(false);
         //gameObject.SetActive(false);
     }
 }

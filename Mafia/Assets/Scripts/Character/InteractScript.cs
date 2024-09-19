@@ -98,9 +98,14 @@ public class InteractScript : MonoBehaviourPun
                 {
                     //Debug.Log("Camera is looking at the minigame.");// 다른 작업 수행
                     characterController = GetComponent<CharacterController>();
-                    // true가 light
-                    hit.collider.GetComponent<MinigameInteraction>().ChangeAllChildMaterials(hit.collider.transform, true);
-                    if (characterController.isGrounded && Input.GetKeyDown(KeyCode.E))
+
+                    // 선택된 미니게임의 MinigameBase 클래스 참조 (Fix Wiring은 최상위 UI에 스크립트가 없어서 다시 선언해야 할 듯..?)
+                    MinigameBase minigameScript = hit.collider.GetComponent<MinigameInteraction>().TaskUI.GetComponent<MinigameBase>();
+                    if (minigameScript.GetActive()){
+                        // true가 light
+                        hit.collider.GetComponent<MinigameInteraction>().ChangeAllChildMaterials(hit.collider.transform, true);
+                    }
+                    if (characterController.isGrounded && Input.GetKeyDown(KeyCode.E) && minigameScript.GetActive())
                     {
                         hit.collider.GetComponent<MinigameInteraction>().TaskUI.SetActive(true);
                     }
