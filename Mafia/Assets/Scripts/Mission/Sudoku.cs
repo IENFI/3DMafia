@@ -4,7 +4,7 @@ using UnityEngine.UI;
 using UnityEngine;
 using TMPro;
 
-public class Sudoku : MonoBehaviour
+public class Sudoku : MinigameBase
 {
     // 4x4 스도쿠 정답 배열
     // private int[,] correctAnswers = new int[4, 4]
@@ -17,6 +17,18 @@ public class Sudoku : MonoBehaviour
     [SerializeField] private List<Button> keyButton;  // 키패드 버튼
     [SerializeField] private Button AnswerButton;
     private Button selectedButton;  // 클릭된 Sudoku 버튼을 저장할 변수
+    [SerializeField]
+    private bool active = false;
+
+    public override void ReceiveToken()
+    {
+        Debug.Log("Sudoku 미니게임이 시작되었습니다.");
+        active = true;
+    }
+
+    public override bool GetActive(){
+        return active;
+    }
 
     private int[,] correctAnswers = new int[4, 4]
     {
@@ -226,6 +238,7 @@ public class Sudoku : MonoBehaviour
         {
             // Debug.Log("게임 성공!");
             minigame.ExitCode = true;
+            active = false;
             gameObject.SetActive(false);
             HideRandomCells();
         }
