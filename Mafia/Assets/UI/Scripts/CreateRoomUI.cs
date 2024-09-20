@@ -16,6 +16,8 @@ public class CreateRoomUI : MonoBehaviour
 
     public CreateGameRoomData roomData;
 
+    public NetworkManager networkManager;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -32,7 +34,9 @@ public class CreateRoomUI : MonoBehaviour
     
     public void UpdateMapiaCount(int count)
     {
+
         roomData.mapiaCount = count;
+       
         GameManager.instance.mafiaNum = count;
         for (int i = 0; i < mapiaCountButtons.Count; i++)
         {
@@ -71,7 +75,8 @@ public class CreateRoomUI : MonoBehaviour
                 text.color = Color.white;
             }
         }
-    }
+
+            }
 
     public void UpdateMaxPlayerCount(int count)
     {
