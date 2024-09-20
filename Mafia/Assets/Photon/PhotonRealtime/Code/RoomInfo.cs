@@ -37,6 +37,9 @@ namespace Photon.Realtime
     /// </remarks>
     public class RoomInfo
     {
+       
+
+
         /// <summary>Used in lobby, to mark rooms that are no longer listed (for being full, closed or hidden).</summary>
         public bool RemovedFromList;
 
