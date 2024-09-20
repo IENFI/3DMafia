@@ -28,6 +28,9 @@ public class FixWiringTask : MinigameBase
     private LeftWire mSelectedWire;
     [SerializeField]
     private bool active = false;
+    private int index = 0;
+    [SerializeField]
+    private GameObject minigameManager;
 
     public override void ReceiveToken()
     {
@@ -37,6 +40,9 @@ public class FixWiringTask : MinigameBase
 
     public override bool GetActive(){
         return active;
+    }
+    public override MinigameManager GetMinigameManager(){
+        return minigameManager.GetComponent<MinigameManager>();
     }
 
     private void OnEnable()
@@ -157,6 +163,7 @@ public class FixWiringTask : MinigameBase
         minigame.ExitCode = true;
         // 플레이어 움직임 제한하는 코드 추가?
         active = false;
+        GetMinigameManager().SuccessMission(index);
         gameObject.SetActive(false);
         //gameObject.SetActive(false);
     }

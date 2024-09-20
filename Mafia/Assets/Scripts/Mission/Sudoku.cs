@@ -19,6 +19,9 @@ public class Sudoku : MinigameBase
     private Button selectedButton;  // 클릭된 Sudoku 버튼을 저장할 변수
     [SerializeField]
     private bool active = false;
+    private int index = 1;
+    [SerializeField]
+    private GameObject minigameManager;
 
     public override void ReceiveToken()
     {
@@ -28,6 +31,9 @@ public class Sudoku : MinigameBase
 
     public override bool GetActive(){
         return active;
+    }
+    public override MinigameManager GetMinigameManager(){
+        return minigameManager.GetComponent<MinigameManager>();
     }
 
     private int[,] correctAnswers = new int[4, 4]
@@ -239,6 +245,7 @@ public class Sudoku : MinigameBase
             // Debug.Log("게임 성공!");
             minigame.ExitCode = true;
             active = false;
+            GetMinigameManager().SuccessMission(index);
             gameObject.SetActive(false);
             HideRandomCells();
         }
