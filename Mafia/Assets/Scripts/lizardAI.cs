@@ -113,7 +113,7 @@ public class lizardAI : MonoBehaviour
 
         vector = direction;
 
-        vector = vector.normalized * 1 / 6 * moveSpeed;
+        vector = vector.normalized * 1 / 60 * moveSpeed;
 
         characterController.Move(vector);
     }

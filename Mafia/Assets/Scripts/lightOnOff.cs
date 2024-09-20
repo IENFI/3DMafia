@@ -12,10 +12,12 @@ public class lightOnOff : MonoBehaviourPun
     {
         if (photonView.IsMine && Input.GetKeyDown(KeyCode.L))
         {
-            bool isFlashlightOn = flashlight.activeSelf;
+            Light lightComponent = flashlight.GetComponent<Light>();
+
+            bool isFlashlightOn = lightComponent.enabled;
             isFlashlightOn = !isFlashlightOn;
 
-            flashlight.SetActive(isFlashlightOn);
+            lightComponent.enabled = isFlashlightOn;
 
             photonView.RPC("SyncFlashlightState", RpcTarget.All, isFlashlightOn);
         }
@@ -24,6 +26,7 @@ public class lightOnOff : MonoBehaviourPun
     [PunRPC]
     void SyncFlashlightState(bool state)
     {
-        flashlight.SetActive(state);
+        Light lightComponent0 = flashlight.GetComponent<Light>();
+        lightComponent0.enabled = state;
     }
 }

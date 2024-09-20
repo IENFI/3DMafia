@@ -76,7 +76,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   targetTag: Player
-  detectionRadius: 15
+  detectionRadius: 18
   moveSpeed: 3
   animator: {fileID: 4480964971488086645}
   vector: {x: 0, y: 0, z: 0}
@@ -123,7 +123,8 @@ MonoBehaviour:
   Synchronization: 3
   OwnershipTransfer: 0
   observableSearch: 2
-  ObservedComponents: []
+  ObservedComponents:
+  - {fileID: 2827902139529127064}
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0

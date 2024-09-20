@@ -237,18 +237,23 @@ public class Timer : MonoBehaviourPun
 
     public void ControlLizard(bool state)
     {
-        if (!PhotonNetwork.IsMasterClient) return;
         if (state)
         {
-            GameObject objectToDelete = GameObject.Find("Lizard");
-            if(objectToDelete != null)
+            GameObject objectToDelete = GameObject.Find("Lizard(Clone)");
+            if (objectToDelete != null && objectToDelete.GetComponent<PhotonView>() != null)
             {
-                PhotonNetwork.Destroy(objectToDelete);
+                if (objectToDelete.GetComponent<PhotonView>().IsMine)
+                {
+                    PhotonNetwork.Destroy(objectToDelete);
+                }
             }
         }
         else
         {
-            PhotonNetwork.Instantiate("Lizard", new Vector3(15, 5, -20), Quaternion.identity, 0);
+            if (PhotonNetwork.IsMasterClient)
+            {
+                PhotonNetwork.Instantiate("Lizard", new Vector3(15, 5, -20), Quaternion.identity, 0);
+            }
         }
     }
 
