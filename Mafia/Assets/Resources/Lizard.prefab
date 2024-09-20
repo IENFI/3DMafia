@@ -84,6 +84,7 @@ MonoBehaviour:
   triggerMomentum: 5
   idleDuration: 2
   walkDuration: 10
+  trees: []
 --- !u!65 &6911291701575567849
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -103,8 +104,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 3, y: 2, z: 3}
-  m_Center: {x: 0, y: -1.6, z: 0}
+  m_Size: {x: 3, y: 2, z: 6}
+  m_Center: {x: 0, y: -2, z: 1}
 --- !u!114 &-5423022192373522147
 MonoBehaviour:
   m_ObjectHideFlags: 0

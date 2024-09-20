@@ -26,6 +26,8 @@ public class lizardAI : MonoBehaviour
     private float stateTimer;
     private bool isWalking;
 
+    public GameObject[] trees;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -42,7 +44,7 @@ public class lizardAI : MonoBehaviour
         if (!PhotonNetwork.IsMasterClient) return;
 
         GameObject target = DetectPlayer();
-        if (target != null)
+        if (target != null && !IsMafia(target))
         {
             animator.SetBool("startRun", true);
             Chase(target);
@@ -139,6 +141,15 @@ public class lizardAI : MonoBehaviour
     void OnTriggerEnter(Collider other)
     {
         momentum = triggerMomentum;
+        if (other.CompareTag(targetTag))
+        {
+            if (!IsMafia(other.gameObject))
+            {
+                Attack(other.gameObject);
+                animator.SetBool("attack", true);
+                Invoke("RandomSpawn", 2f);
+            }
+        }
     }
 
     void OnTriggerExit(Collider other)
@@ -146,4 +157,54 @@ public class lizardAI : MonoBehaviour
         momentum = initialMomentum;
     }
 
+    bool IsMafia(GameObject obj)
+    {
+        int index = -1;
+        for (int i=0; i<PhotonNetwork.PlayerList.Length;  i++)
+        {
+            if (PhotonNetwork.PlayerList[i].TagObject == obj)
+            {
+                index = i;
+                break;
+            }
+        }
+        if (index == -1) return false;
+        if ((bool)PhotonNetwork.PlayerList[index].CustomProperties["isMafia"])
+        {
+            return true;
+        }
+        else return false;
+    }
+
+    void Attack(GameObject obj)
+    {
+        PlayerController playerCont = obj.GetComponent<PlayerController>();
+        playerCont.EnableControl(false);
+        StartCoroutine(WaitAndRelease(obj));
+    }
+
+    IEnumerator WaitAndRelease(GameObject obj)
+    {
+        yield return new WaitForSeconds(20f);
+        PlayerController playerCont = obj.GetComponent<PlayerController>();
+        playerCont.EnableControl(true);
+    }
+
+    void RandomSpawn()
+    {
+        animator.SetBool("attack", false);
+        trees = GameObject.FindGameObjectsWithTag("Spawn");
+
+        Debug.Log("Spawn");
+        // 하위 오브젝트의 수를 얻음
+        int childCount = trees[0].transform.childCount;
+
+        // 랜덤 정수 추출
+        int randomIndex = Random.Range(0, childCount);
+
+        // 랜덤 정수번째 하위 오브젝트의 트랜스폼을 얻음
+        Transform randomChild = trees[0].transform.GetChild(randomIndex);
+        // 플레이어를 하위 오브젝트의 위치로 이동
+        this.gameObject.transform.position = randomChild.position;
+    }
 }
