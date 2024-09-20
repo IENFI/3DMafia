@@ -36,6 +36,10 @@ public class NetworkManager : MonoBehaviourPunCallbacks // 안현석 똑바로�
     [SerializeField]
     private CreateRoomUI createRoomUI;
 
+    private int selectedMafiaNum;
+
+
+
     #region 방리스트 갱신
     // ◀버튼 -2 , ▶버튼 -1 , 셀 숫자
     public void MyListClick(int num)
@@ -49,28 +53,81 @@ public class NetworkManager : MonoBehaviourPunCallbacks // 안현석 똑바로�
         MyListRenewal();
     }
 
+
+
+
+
+    //void MyListRenewal()
+    //{
+
+
+    //    // 최대페이지
+    //    maxPage = (myList.Count % CellBtn.Length == 0) ? myList.Count / CellBtn.Length : myList.Count / CellBtn.Length + 1;
+
+    //    // 이전, 다음버튼
+    //    PreviousBtn.interactable = (currentPage <= 1) ? false : true;
+    //    NextBtn.interactable = (currentPage >= maxPage) ? false : true;
+
+    //    // 페이지에 맞는 리스트 대입
+    //    multiple = (currentPage - 1) * CellBtn.Length;
+    //    for (int i = 0; i < CellBtn.Length; i++)
+    //    {
+    //        Debug.Log("for문 시작");
+    //        CellBtn[i].interactable = (multiple + i < myList.Count) ? true : false;
+    //        if (myList.Count > 0)
+    //        {
+    //            Debug.Log("if실행");
+    //            CellBtn[i].transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = (multiple + i < myList.Count) ? myList[multiple + i].Name : "";
+    //            CellBtn[i].transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = (multiple + i < myList.Count) ? myList[multiple + i].PlayerCount + "/" + myList[multiple + i].MaxPlayers : "";
+    //            CellBtn[i].transform.GetChild(2).GetComponent<TextMeshProUGUI>().text = (multiple + i < myList.Count) ? "Mafia 수 : " + MafiaCnt : "";
+    //            Debug.Log("UI 갱신됨: " + "Mafia 수 : " + MafiaCnt);
+    //            CellBtn[i].transform.GetChild(3).GetComponent<TextMeshProUGUI>().text = (multiple + i < myList.Count) ? "MaxPlayer 수 : " + myList[multiple + i].MaxPlayers : "";
+    //        }
+    //    }
+    //}
+
     void MyListRenewal()
     {
-        // 최대페이지
+        // 최대페이지 계산
         maxPage = (myList.Count % CellBtn.Length == 0) ? myList.Count / CellBtn.Length : myList.Count / CellBtn.Length + 1;
 
-        // 이전, 다음버튼
-        PreviousBtn.interactable = (currentPage <= 1) ? false : true;
-        NextBtn.interactable = (currentPage >= maxPage) ? false : true;
+        // 이전, 다음 버튼 상태 설정
+        PreviousBtn.interactable = (currentPage <= 1);
+        NextBtn.interactable = (currentPage >= maxPage);
 
         // 페이지에 맞는 리스트 대입
         multiple = (currentPage - 1) * CellBtn.Length;
+
         for (int i = 0; i < CellBtn.Length; i++)
         {
-            CellBtn[i].interactable = (multiple + i < myList.Count) ? true : false;
-            if (myList.Count > 0)
+            // 리스트의 크기를 넘지 않도록 범위 체크
+            if (multiple + i < myList.Count)
             {
-                CellBtn[i].transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = (multiple + i < myList.Count) ? myList[multiple + i].Name : "";
-                CellBtn[i].transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = (multiple + i < myList.Count) ? myList[multiple + i].PlayerCount + "/" + myList[multiple + i].MaxPlayers : "";
+                CellBtn[i].interactable = true;
+                var roomInfo = myList[multiple + i];
 
+                CellBtn[i].transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = roomInfo.Name;
+                CellBtn[i].transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = roomInfo.PlayerCount + "/" + roomInfo.MaxPlayers;
+
+                // 각 방의 MafiaNum을 가져와서 UI에 표시
+                int mafiaNum = 0;
+                if (roomInfo.CustomProperties.ContainsKey("MafiaNum"))
+                {
+                    mafiaNum = (int)roomInfo.CustomProperties["MafiaNum"];
+                }
+                CellBtn[i].transform.GetChild(2).GetComponent<TextMeshProUGUI>().text = "Mafia 수 : " + mafiaNum;
+            }
+            else
+            {
+                // 유효하지 않은 인덱스일 경우 버튼 비활성화 및 텍스트 초기화
+                CellBtn[i].interactable = false;
+                CellBtn[i].transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = "";
+                CellBtn[i].transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = "";
+                CellBtn[i].transform.GetChild(2).GetComponent<TextMeshProUGUI>().text = "";
             }
         }
     }
+
 
     /*public override void OnRoomListUpdate(List<RoomInfo> roomList)
     {
@@ -87,6 +144,49 @@ public class NetworkManager : MonoBehaviourPunCallbacks // 안현석 똑바로�
         }
         MyListRenewal();
     }*/
+
+    //public override void OnRoomListUpdate(List<RoomInfo> roomList)
+    //{
+    //    // Create a new list to store rooms that should be displayed
+    //    List<RoomInfo> roomsToShow = new List<RoomInfo>();
+
+    //    // Iterate through the updated room list
+    //    foreach (RoomInfo room in roomList)
+    //    {
+    //        // Check if the room is removed from the list
+    //        if (room.RemovedFromList)
+    //        {
+    //            // Remove the room from myList if it's in the list
+    //            if (myList.Contains(room))
+    //            {
+    //                myList.Remove(room);
+    //            }
+    //        }
+    //        else
+    //        {
+    //            // Check if the room has started the game
+    //            if (room.CustomProperties.ContainsKey("isGameStarted") && (bool)room.CustomProperties["isGameStarted"])
+    //            {
+    //                // If the game has started, we should not add it to myList
+    //                if (myList.Contains(room))
+    //                {
+    //                    myList.Remove(room);
+    //                }
+    //            }
+    //            else
+    //            {
+    //                // Add the room to myList if it's not already in the list
+    //                if (!myList.Contains(room))
+    //                {
+    //                    myList.Add(room);
+    //                }
+    //            }
+    //        }
+    //    }
+
+    //    // Update the UI to display the updated room list
+    //    MyListRenewal();
+    //}
     public override void OnRoomListUpdate(List<RoomInfo> roomList)
     {
         // Create a new list to store rooms that should be displayed
@@ -244,12 +344,47 @@ public class NetworkManager : MonoBehaviourPunCallbacks // 안현석 똑바로�
         RoomOptions roomOptions = new RoomOptions { MaxPlayers = createRoomUI.roomData.maxPlayerCount };
         PhotonNetwork.CreateRoom(roomName, roomOptions);
     }*/
+
+    public void OnButtonClick(int mafiaNum)
+    {
+        selectedMafiaNum = mafiaNum;
+        // 선택된 옵션에 대해 UI를 업데이트하거나 피드백을 제공할 수 있습니다.
+    }
+    //public void CreateRoom()
+    //{
+
+    //    string roomName = RoomInput.text == "" ? "Room" + Random.Range(0, 100) : RoomInput.text;
+
+    //    //RoomOptions roomOptions = new RoomOptions { MaxPlayers = createRoomUI.roomData.maxPlayerCount };
+    //    //roomOptions.CustomRoomProperties = new ExitGames.Client.Photon.Hashtable() { { "isGameStarted", false } };
+    //    //roomOptions.CustomRoomPropertiesForLobby = new string[] { "isGameStarted" };
+    //    RoomOptions roomOptions = new RoomOptions
+    //    {
+    //        MaxPlayers = createRoomUI.roomData.maxPlayerCount,
+    //        CustomRoomProperties = new ExitGames.Client.Photon.Hashtable()
+    //    {
+    //        { "isGameStarted", false },
+    //        { "MafiaNum", selectedMafiaNum }  // 저장된 MafiaNum을 포함시킵니다.
+    //    },
+    //        CustomRoomPropertiesForLobby = new string[] { "isGameStarted", "MafiaNum" }  // 로비에서 사용할 속성 목록
+    //    };
+    //    PhotonNetwork.CreateRoom(roomName, roomOptions);
+    //}
     public void CreateRoom()
     {
         string roomName = RoomInput.text == "" ? "Room" + Random.Range(0, 100) : RoomInput.text;
-        RoomOptions roomOptions = new RoomOptions { MaxPlayers = createRoomUI.roomData.maxPlayerCount };
-        roomOptions.CustomRoomProperties = new ExitGames.Client.Photon.Hashtable() { { "isGameStarted", false } };
-        roomOptions.CustomRoomPropertiesForLobby = new string[] { "isGameStarted" };
+
+        RoomOptions roomOptions = new RoomOptions
+        {
+            MaxPlayers = createRoomUI.roomData.maxPlayerCount,
+            CustomRoomProperties = new ExitGames.Client.Photon.Hashtable()
+            {
+                { "isGameStarted", false },
+                { "MafiaNum", selectedMafiaNum }  // 저장된 MafiaNum을 포함시킵니다.
+            },
+            CustomRoomPropertiesForLobby = new string[] { "isGameStarted", "MafiaNum" }  // 로비에서 사용할 속성 목록
+        };
+
         PhotonNetwork.CreateRoom(roomName, roomOptions);
     }
 
@@ -261,6 +396,33 @@ public class NetworkManager : MonoBehaviourPunCallbacks // 안현석 똑바로�
 
     public void LeaveRoom() => PhotonNetwork.LeaveRoom();
 
+    //public override void OnJoinedRoom()
+    //{
+    //    DisconnectPanel.SetActive(false);
+    //    LobbyPanel.SetActive(false);
+    //    CreateRoomUI.SetActive(false);
+
+    //    /*
+    //    PhotonNetwork.LoadLevel("Level_1");
+    //    Debug.Log("04. 방 입장 완료");
+    //    */
+
+
+    //    if (PhotonNetwork.IsMasterClient)
+    //    {
+    //        Debug.Log("마스터클라이언트임");
+    //        PhotonNetwork.LoadLevel("Level_0");
+    //        Debug.Log("04. 방 입장 완료");
+
+
+    //    }
+    //    else
+    //    {
+    //        Debug.Log("마스터 클라이언트 아님");
+    //    }
+
+
+    //}
     public override void OnJoinedRoom()
     {
         DisconnectPanel.SetActive(false);
@@ -289,8 +451,29 @@ public class NetworkManager : MonoBehaviourPunCallbacks // 안현석 똑바로�
 
     }
 
-    public override void OnCreateRoomFailed(short returnCode, string message) { RoomInput.text = ""; CreateRoom(); }
+    //public override void OnCreateRoomFailed(short returnCode, string message) { RoomInput.text = ""; CreateRoom(); }
 
-    public override void OnJoinRandomFailed(short returnCode, string message) { RoomInput.text = ""; CreateRoom(); }
+    //public override void OnJoinRandomFailed(short returnCode, string message) { RoomInput.text = ""; CreateRoom(); }
+    public override void OnCreateRoomFailed(short returnCode, string message)
+    {
+        Debug.LogError($"방 생성 실패: {message}. 재시도합니다.");
+        RoomInput.text = "";
+        // 방 생성 실패 시 UI 상태를 명확히 설정
+        CreateRoomUI.SetActive(true);
+        LobbyPanel.SetActive(false);
+        DisconnectPanel.SetActive(false);
+        // 재시도 로직 필요 시 추가
+    }
+
+    public override void OnJoinRandomFailed(short returnCode, string message)
+    {
+        Debug.LogError($"무작위 방 참가 실패: {message}. 방 생성 시도합니다.");
+        RoomInput.text = "";
+        // 무작위 방 참가 실패 시 UI 상태를 명확히 설정
+        CreateRoomUI.SetActive(true);
+        LobbyPanel.SetActive(false);
+        DisconnectPanel.SetActive(false);
+        // 방 생성 로직을 호출하거나 UI 상태를 적절히 설정
+    }
     #endregion
 }
