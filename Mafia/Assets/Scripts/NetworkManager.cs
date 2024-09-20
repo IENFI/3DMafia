@@ -29,6 +29,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks // 안현석 똑바로�
     [Header("ETC")]
     public TextMeshProUGUI StatusText;
     public PhotonView PV;
+    public TextMeshProUGUI RandomError;
 
     List<RoomInfo> myList = new List<RoomInfo>();
     int currentPage = 1, maxPage, multiple;
@@ -37,8 +38,6 @@ public class NetworkManager : MonoBehaviourPunCallbacks // 안현석 똑바로�
     private CreateRoomUI createRoomUI;
 
     private int selectedMafiaNum;
-
-
 
     #region 방리스트 갱신
     // ◀버튼 -2 , ▶버튼 -1 , 셀 숫자
@@ -290,14 +289,6 @@ public class NetworkManager : MonoBehaviourPunCallbacks // 안현석 똑바로�
         myList.Clear();
     }
 
-    public void ShowPlayer()
-    {
-        // 룸에 있는 모든 플레이어의 닉네임 출력
-        foreach (Player player in PhotonNetwork.PlayerList)
-        {
-            Debug.Log("룸 내 플레이어 닉네임: " + player.NickName);
-        }
-    }
     public void Disconnect() => PhotonNetwork.Disconnect();
 
     void OnApplicationQuit()
@@ -316,6 +307,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks // 안현석 똑바로�
         {
             DisconnectPanel.SetActive(true);
             NickNameError.text = "";
+            ConnectBtn.interactable = true;
         }
         else
         {
@@ -389,9 +381,43 @@ public class NetworkManager : MonoBehaviourPunCallbacks // 안현석 똑바로�
     }
 
 
-    public void JoinRandomRoom()
+    public void JoinRandomRoomExcluding(string excludedRoomName)
     {
-        PhotonNetwork.JoinRandomRoom();
+        // myList에서 제외할 방을 제외한 나머지 방을 필터링
+        List<RoomInfo> filteredRooms = new List<RoomInfo>();
+
+        foreach (var room in myList)
+        {
+            if (room.CustomProperties.ContainsKey("isGameStarted"))
+            {
+                if ((bool)room.CustomProperties["isGameStarted"])
+                {
+                    return;
+                }
+                else
+                {
+                    filteredRooms.Add(room);
+                }
+            }
+        }
+
+        if (filteredRooms.Count > 0)
+        {
+            // 필터링된 방에서 랜덤으로 방을 선택하여 참가
+            int randomIndex = Random.Range(0, filteredRooms.Count);
+            PhotonNetwork.JoinRoom(filteredRooms[randomIndex].Name);
+        }
+        else
+        {
+            RandomError.text = "입장할 수 있는 방이 없습니다.";
+            StartCoroutine(HideRandomErrorAfterDelay(3f));
+        }
+
+        IEnumerator HideRandomErrorAfterDelay(float delay)
+        {
+            yield return new WaitForSeconds(delay);
+            RandomError.text = ""; // 메시지 삭제
+        }
     }
 
     public void LeaveRoom() => PhotonNetwork.LeaveRoom();

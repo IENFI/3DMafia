@@ -7,7 +7,6 @@ using TMPro;
 using System.Collections;
 using System.Collections.Generic;
 using Photon.Voice.Unity;
-using UnityEditor.MemoryProfiler;
 
 public class WaitingRoomManager : MonoBehaviourPunCallbacks
 {
