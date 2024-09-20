@@ -217,7 +217,6 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
                 movement.JumpTo();        // 점프 함수 호출
             }
 
-            // Z 버튼을 누르면 Kill
             Scene currentScene = SceneManager.GetActiveScene();
 
             if (currentScene.name == "Level_1")
@@ -242,10 +241,10 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
             }
 
             // Kill 시뮬레이트
-            //if (Input.GetKeyDown(KeyCode.P))
-            //{
-            //    photonView.RPC("Death", RpcTarget.All);
-            //}
+            if (Input.GetKeyDown(KeyCode.P))
+            {
+               photonView.RPC("Death", RpcTarget.All);
+            }
 
             /*// 마우스 오른쪽 버튼을 누르면 무기 공격 (연계)
             if (Input.GetMouseButtonDown(1))

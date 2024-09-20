@@ -29,6 +29,8 @@ public class GhostController : MonoBehaviourPun, IPunObservable
     private GameObject miniMapPoint2; // MiniMapPoint 인스턴스
 
     public bool GhostIsMafia = false;
+    private GameObject GameUIManager;
+
 
     public void InitializeAsGhost()
     {
@@ -64,6 +66,10 @@ public class GhostController : MonoBehaviourPun, IPunObservable
         cameraController = GetComponentInChildren<GhostFPCamera>();
         // 유령은 모든 레이어를 볼 수 있도록 설정
         ghostCamera.cullingMask = ~0;
+
+        GameUIManager = GameObject.Find("GameUiManager");
+        // 유령 킬, 신고 버튼 삭제
+        GameUIManager.GetComponent<SceneInitializer>().OnBecomeGhost();
 
         if (PhotonNetwork.LocalPlayer.CustomProperties.ContainsKey("isMafia") && (bool)PhotonNetwork.LocalPlayer.CustomProperties["isMafia"])
         {
