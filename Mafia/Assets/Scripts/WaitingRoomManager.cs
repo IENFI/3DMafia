@@ -30,6 +30,12 @@ public class WaitingRoomManager : MonoBehaviourPunCallbacks
 
     private bool hasGameStarted = false; // 게임 시작 여부를 추적하는 변수
 
+    private int selectedMafiaNum;
+
+    public GameObject CreateRoomUI;
+    
+    bool check = false;
+
     void Awake()
     {
         // 방장이 혼자 씬을 로딩하면, 나머지 사람들은 자동으로 싱크가 됨
@@ -177,7 +183,7 @@ public class WaitingRoomManager : MonoBehaviourPunCallbacks
             startBtnText.text = "모두 준비해야 합니다";
         }
 
-        
+        UpdateMafiaNum(mafiaNum);
     }
 
     void SetReadyState(bool isReady)
@@ -254,7 +260,6 @@ public class WaitingRoomManager : MonoBehaviourPunCallbacks
         }
     }
 
-
     public void LeaveRoom()
     {
         GameManager.instance = null;
@@ -323,6 +328,46 @@ public class WaitingRoomManager : MonoBehaviourPunCallbacks
     public override void OnJoinedRoom()
     {
         Debug.Log("Joined room.");
+    }
+
+    public void OnButtonClick(int mafiaNum)
+    {
+        selectedMafiaNum = mafiaNum;  // 선택된 MafiaNum 저장
+
+        // 방 속성을 업데이트하는 별도의 메서드 호출
+        UpdateMafiaNum(mafiaNum);
+
+        // 필요 시 UI 업데이트나 피드백 추가
+        Debug.Log("MafiaNum 버튼이 클릭되었습니다: " + mafiaNum);
+    }
+
+    public void UpdateMafiaNum(int mafiaNum)
+    {
+        if (check == false && Input.GetKeyDown(KeyCode.Z) && PhotonNetwork.IsMasterClient)
+        {
+            CreateRoomUI.SetActive(true);
+            check = true;
+        }
+        else if (check == true && Input.GetKeyDown(KeyCode.Z) && PhotonNetwork.IsMasterClient)
+        {
+            CreateRoomUI.SetActive(false);
+            check = false;
+        }
+
+        if (PhotonNetwork.InRoom)
+        {
+            ExitGames.Client.Photon.Hashtable newProperties = new ExitGames.Client.Photon.Hashtable()
+        {
+            { "MafiaNum", mafiaNum }
+        };
+            PhotonNetwork.CurrentRoom.SetCustomProperties(newProperties);
+            Debug.Log("CustomProperties에 설정된 값: " + PhotonNetwork.CurrentRoom.CustomProperties["MafiaNum"]);
+            Debug.Log("MafiaNum이 " + mafiaNum + "로 변경되었습니다.");
+        }
+        else
+        {
+            Debug.Log("방에 입장해 있지 않으므로 MafiaNum이 선택되었을 뿐입니다: " + mafiaNum);
+        }
     }
 }
 
