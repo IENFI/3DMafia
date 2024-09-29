@@ -30,6 +30,8 @@ public class WaitingRoomManager : MonoBehaviourPunCallbacks
 
     private bool hasGameStarted = false; // 게임 시작 여부를 추적하는 변수
 
+    public TMPro.TMP_Text playerCountText;
+
     void Awake()
     {
         // 방장이 혼자 씬을 로딩하면, 나머지 사람들은 자동으로 싱크가 됨
@@ -68,7 +70,12 @@ public class WaitingRoomManager : MonoBehaviourPunCallbacks
 
         InitializeVoiceConnection();
         StartCoroutine(InitialState());
+
+        // Update the player count at the start
+        UpdatePlayerCount();
     }
+
+
     private void InitializeVoiceConnection()
     {
         // 모든 VoiceConnection 인스턴스 가져오기
@@ -156,6 +163,8 @@ public class WaitingRoomManager : MonoBehaviourPunCallbacks
             ClickReadyBtn();
         }
 
+        UpdatePlayerCount(); // Update player count continuously
+
         // 버튼 텍스트 변경
         if (isReady)
         {
@@ -178,6 +187,26 @@ public class WaitingRoomManager : MonoBehaviourPunCallbacks
         }
 
         
+    }
+
+    void UpdatePlayerCount()
+    {
+        if (PhotonNetwork.InRoom)
+        {
+            int playerCount = PhotonNetwork.CurrentRoom.PlayerCount;
+            playerCountText.text = $"Players: {playerCount}"; // Update the TMP_Text UI element
+        }
+    }
+
+    // Handle player entering or leaving the room
+    public override void OnPlayerEnteredRoom(Player newPlayer)
+    {
+        UpdatePlayerCount();
+    }
+
+    public override void OnPlayerLeftRoom(Player otherPlayer)
+    {
+        UpdatePlayerCount();
     }
 
     void SetReadyState(bool isReady)
