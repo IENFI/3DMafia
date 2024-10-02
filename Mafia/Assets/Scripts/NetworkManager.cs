@@ -330,18 +330,6 @@ public class NetworkManager : MonoBehaviourPunCallbacks // 안현석 똑바로�
     #endregion
 
     #region 방
-    /*public void CreateRoom()
-    {
-        string roomName = RoomInput.text == "" ? "Room" + Random.Range(0, 100) : RoomInput.text;
-        RoomOptions roomOptions = new RoomOptions { MaxPlayers = createRoomUI.roomData.maxPlayerCount };
-        PhotonNetwork.CreateRoom(roomName, roomOptions);
-    }*/
-
-    public void OnButtonClick(int mafiaNum)
-    {
-        selectedMafiaNum = mafiaNum;
-        // 선택된 옵션에 대해 UI를 업데이트하거나 피드백을 제공할 수 있습니다.
-    }
     //public void CreateRoom()
     //{
 
@@ -362,6 +350,13 @@ public class NetworkManager : MonoBehaviourPunCallbacks // 안현석 똑바로�
     //    };
     //    PhotonNetwork.CreateRoom(roomName, roomOptions);
     //}
+
+    public void OnButtonClick(int mafiaNum)
+    {
+        selectedMafiaNum = mafiaNum;
+        // 선택된 옵션에 대해 UI를 업데이트하거나 피드백을 제공할 수 있습니다.
+    }
+
     public void CreateRoom()
     {
         string roomName = RoomInput.text == "" ? "Room" + Random.Range(0, 100) : RoomInput.text;
