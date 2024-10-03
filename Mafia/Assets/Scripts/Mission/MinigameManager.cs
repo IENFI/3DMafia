@@ -90,7 +90,6 @@ public class MinigameManager : MonoBehaviour
     }
 
     public void SuccessMission(int index){
-        // 이렇게 하면 안 되는디
         successCheckbox[indexDic[index]].SetActive(true);
     }
 }

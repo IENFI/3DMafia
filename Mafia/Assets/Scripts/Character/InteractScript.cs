@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine;
+using TMPro; 
+using UnityEngine.SceneManagement;
 
 public class InteractScript : MonoBehaviourPun
 {
@@ -22,10 +24,15 @@ public class InteractScript : MonoBehaviourPun
     private Collider lastMerchantCollider;
     private Collider lastReportCollider;
     private Collider lastCustomizeCollider;
+    private Collider lastDoorCollider;
 
     PhotonView votingSystemPhotonView;
 
     private Color originCustomizeObjectColor;
+    // Add variables for the UI text
+    private GameObject toolTipUI;
+    private TextMeshProUGUI stateText;
+    private TextMeshProUGUI keyText;
 
     private void Awake()
     {
@@ -47,8 +54,35 @@ public class InteractScript : MonoBehaviourPun
             }
         }
         reportChance = 1;
-
     }
+
+    private void Start()
+    {
+        Debug.Log("Current active scene: " + SceneManager.GetActiveScene().name);
+        // 씬이 Level_0일 때와 Level_1일 때 다른 초기화
+        if (SceneManager.GetActiveScene().name == "Level_0")
+        {
+            toolTipUI = GameObject.Find("Canvas/ToolTipUI");
+            stateText = GameObject.Find("Canvas/ToolTipUI/StateText").GetComponent<TextMeshProUGUI>();
+            keyText = GameObject.Find("Canvas/ToolTipUI/Image/KeyText").GetComponent<TextMeshProUGUI>();
+            toolTipUI.SetActive(false);
+            Debug.Log("toolTipUi setactive false");
+
+            if (toolTipUI == null)
+                Debug.Log("toolTipUi is Null");
+        }
+        else if (SceneManager.GetActiveScene().name == "Level_1")
+        {
+            // Find the GameUiManager and ToolTipUI elements in your scene
+            toolTipUI = GameObject.Find("GameUiManager/Canvas/ToolTipUI");
+            stateText = GameObject.Find("GameUiManager/Canvas/ToolTipUI/StateText").GetComponent<TextMeshProUGUI>();
+            keyText = GameObject.Find("GameUiManager/Canvas/ToolTipUI/Image/KeyText").GetComponent<TextMeshProUGUI>();
+            toolTipUI.SetActive(false);
+            if (toolTipUI == null)
+                Debug.Log("toolTipUi is Null");
+        }
+    }
+
     void Update()
     {
         if(!photonView.IsMine)
@@ -56,30 +90,48 @@ public class InteractScript : MonoBehaviourPun
             return;
         }
 
-        if (Input.GetKeyDown(KeyCode.E))
+        RaycastHit hit;
+        Debug.DrawRay(transform.position, transform.forward * interactDistance, Color.blue, 0.3f);
+
+        // 문 여는 코드
+        if (Physics.Raycast(transform.position, transform.forward, out hit, interactDistance, layerMask))
         {
-
-            Debug.Log("KeyDown E");
-            RaycastHit hit;
-            Debug.DrawRay(transform.position, transform.forward * interactDistance, Color.blue, 0.3f);
-
-            // 문 여는 코드
-            if (Physics.Raycast(transform.position, transform.forward, out hit, interactDistance, layerMask))
+            if (hit.collider.CompareTag("Door"))
             {
-                if (hit.collider.CompareTag("Door"))
+                PhotonView doorPhotonView = hit.collider.transform.GetComponent<PhotonView>();
+
+                // Activate toolTipUI
+                toolTipUI.SetActive(true);
+
+                // Update StateText and KeyText when interacting with Door
+                stateText.text = "문 열기";
+                keyText.text = "E";
+
+                if (doorPhotonView != null && Input.GetKeyDown(KeyCode.E))
                 {
-                    PhotonView doorPhotonView = hit.collider.transform.GetComponent<PhotonView>();
-                    if (doorPhotonView != null)
-                    {
-                        Debug.Log("Open the Door");
-                        doorPhotonView.RPC("ChangeDoorState", RpcTarget.All);
-                    }
-                    else
-                    {
-                        //Debug.LogError("The Door object does not have a PhotonView component.");
-                    }
+                    Debug.Log("Open the Door");
+                    doorPhotonView.RPC("ChangeDoorState", RpcTarget.All);
+                }
+                else
+                {
+                    //Debug.LogError("The Door object does not have a PhotonView component.");
+                }
+
+                // 현재 충돌체를 lastDoorCollider로 저장
+                lastDoorCollider = hit.collider;
+            }
+            else {
+                if (lastDoorCollider != null){
+                    toolTipUI.SetActive(false);
+                    lastDoorCollider = null;
                 }
             }
+        }
+        else {
+            if (lastDoorCollider != null){
+                    toolTipUI.SetActive(false);
+                    lastDoorCollider = null;
+                }
         }
 
         if (fpCamera != null)
@@ -90,7 +142,6 @@ public class InteractScript : MonoBehaviourPun
 
         if (fpCamera != null)
         {
-            RaycastHit hit;
             if (Physics.Raycast(fpCamera.transform.position, fpCamera.transform.forward, out hit, minigameInteractDistance, layerMask))
             {
                 // 미니게임 코드
@@ -104,14 +155,25 @@ public class InteractScript : MonoBehaviourPun
                     if (minigameScript.GetActive()){
                         // true가 light
                         hit.collider.GetComponent<MinigameInteraction>().ChangeAllChildMaterials(hit.collider.transform, true);
+                        if (! hit.collider.GetComponent<MinigameInteraction>().TaskUI.activeSelf){
+                            
+                            // Activate toolTipUI
+                            toolTipUI.SetActive(true);
+
+                            // Update StateText and KeyText when interacting with Minigame
+                            stateText.text = "미니게임";
+                            keyText.text = "E";
+                        }
                     }
                     if (characterController.isGrounded && Input.GetKeyDown(KeyCode.E) && minigameScript.GetActive())
                     {
                         hit.collider.GetComponent<MinigameInteraction>().TaskUI.SetActive(true);
+                        toolTipUI.SetActive(false);
                     }
                     if (hit.collider.GetComponent<MinigameInteraction>().TaskUI.activeSelf && Input.GetKeyDown(KeyCode.Escape))
                     {
                         hit.collider.GetComponent<MinigameInteraction>().TaskUI.SetActive(false);
+                        toolTipUI.SetActive(false);
                     }
 
                     // 현재 충돌체를 lastMinigameCollider로 저장
@@ -129,6 +191,8 @@ public class InteractScript : MonoBehaviourPun
                         lastMinigameInteraction.ChangeAllChildMaterials(lastMinigameCollider.transform, false);
                         lastMinigameInteraction.TaskUI.SetActive(false);
 
+                        if (toolTipUI != null)
+                            toolTipUI.SetActive(false);
                         // 충돌체 상태 초기화
                         lastMinigameCollider = null;
                     }
@@ -142,6 +206,9 @@ public class InteractScript : MonoBehaviourPun
                     MinigameInteraction lastMinigameInteraction = lastMinigameCollider.GetComponent<MinigameInteraction>();
                     lastMinigameInteraction.ChangeAllChildMaterials(lastMinigameCollider.transform, false);
                     lastMinigameInteraction.TaskUI.SetActive(false);
+
+                    if (toolTipUI != null)
+                        toolTipUI.SetActive(false);
 
                     // 충돌체 상태 초기화
                     lastMinigameCollider = null;
@@ -157,13 +224,24 @@ public class InteractScript : MonoBehaviourPun
                     characterController = GetComponent<CharacterController>();
                     // 모자를 파란색으로 변경
                     hit.collider.GetComponent<ShopInteraction>().ChangeOutlineRenderer(Color.blue);
+
+                    if (! hit.collider.GetComponent<ShopInteraction>().ShopUI.activeSelf){
+                        // Activate toolTipUI
+                        toolTipUI.SetActive(true);
+
+                        // Update StateText and KeyText when interacting with Minigame
+                        stateText.text = "상점";
+                        keyText.text = "E";
+                    }
                     if (characterController.isGrounded && Input.GetKeyDown(KeyCode.E))
                     {
                         hit.collider.GetComponent<ShopInteraction>().ShopUI.SetActive(true);
+                        toolTipUI.SetActive(false);
                     }
                     if (hit.collider.GetComponent<ShopInteraction>().ShopUI.activeSelf && Input.GetKeyDown(KeyCode.Escape))
                     {
                         hit.collider.GetComponent<ShopInteraction>().ShopUI.SetActive(false);
+                        toolTipUI.SetActive(false);
                     }
 
                     // 현재 충돌체를 lastMinigameCollider로 저장
@@ -180,6 +258,7 @@ public class InteractScript : MonoBehaviourPun
                         ShopInteraction lastShopInteraction = lastMerchantCollider.GetComponent<ShopInteraction>();
                         lastShopInteraction.ChangeOutlineRenderer(Color.white);
                         lastShopInteraction.ShopUI.SetActive(false);
+                        toolTipUI.SetActive(false);
 
                         // 충돌체 상태 초기화
                         lastMerchantCollider = null;
@@ -191,6 +270,7 @@ public class InteractScript : MonoBehaviourPun
                 // 레이캐스트가 아무것도 맞추지 않았을 때도 이전에 Merchant와 상호작용하고 있었다면 상태 초기화
                 if (lastMerchantCollider != null)
                 {
+                    toolTipUI.SetActive(false);
                     ShopInteraction lastShopInteraction = lastMerchantCollider.GetComponent<ShopInteraction>();
                     lastShopInteraction.ChangeOutlineRenderer(Color.white);
                     lastShopInteraction.ShopUI.SetActive(false);
@@ -208,8 +288,20 @@ public class InteractScript : MonoBehaviourPun
                     //Debug.Log("Camera is looking at the report.");// 다른 작업 수행
                     characterController = GetComponent<CharacterController>();
                     playerController = GetComponent<PlayerController>();
-                    // 모자를 파란색으로 변경
-                    hit.collider.GetComponent<ReportButtonScript>().ChangeOutlineRenderer(true);
+
+                    if (reportChance == 1){
+                        hit.collider.GetComponent<ReportButtonScript>().ChangeOutlineRenderer(true);
+                        // Activate toolTipUI
+                        toolTipUI.SetActive(true);
+
+                        // Update StateText and KeyText when interacting with Minigame
+                        stateText.text = "긴급 신고";
+                        keyText.text = "R";
+                    }
+
+                    if (reportChance != 0){
+                        hit.collider.GetComponent<ReportButtonScript>().ChangeOutlineRenderer(false);
+                    }
                     if (characterController.isGrounded && Input.GetKeyDown(KeyCode.R) && (reportChance == 1))
                     {
                         if (Time.time - playerController.GetLastReportTime() >= playerController.reportCooldown)
@@ -220,6 +312,7 @@ public class InteractScript : MonoBehaviourPun
                             {
                                 votingSystemPhotonView.RPC("StartVote", RpcTarget.All);
                                 reportChance = 0;
+                                toolTipUI.SetActive(false);
                             }
                         }
                     }
@@ -236,6 +329,7 @@ public class InteractScript : MonoBehaviourPun
                     // 이전에 buttonlastReportButtonScript 상호작용하고 있었다면, 그 충돌체를 업데이트
                     if (lastReportCollider != null)
                     {
+                        toolTipUI.SetActive(false);
                         ReportButtonScript lastReportButtonScript = lastReportCollider.GetComponent<ReportButtonScript>();
                         lastReportButtonScript.ChangeOutlineRenderer(false);
 
@@ -252,12 +346,25 @@ public class InteractScript : MonoBehaviourPun
                     characterController = GetComponent<CharacterController>();
                     originCustomizeObjectColor = hit.collider.GetComponent<CustomizeScript>().originColor;
                     hit.collider.transform.GetComponent<Renderer>().material.color = Color.black;
+                    
+                    if (! hit.collider.GetComponent<CustomizeScript>().CustomizingUI.activeSelf)
+                    {
+                        // Activate toolTipUI
+                        toolTipUI.SetActive(true);
+
+                        // Update StateText and KeyText when interacting with Minigame
+                        stateText.text = "커스터마이징";
+                        keyText.text = "E";
+                    }
+                    
                     if (characterController.isGrounded && Input.GetKeyDown(KeyCode.E))
                     {
+                        toolTipUI.SetActive(false);
                         hit.collider.GetComponent<CustomizeScript>().CustomizingUI.SetActive(true);
                     }
                     if (hit.collider.GetComponent<CustomizeScript>().CustomizingUI.activeSelf && Input.GetKeyDown(KeyCode.Escape))
                     {
+                        toolTipUI.SetActive(false);
                         Debug.Log("1");
 
                         hit.collider.GetComponent<CustomizeScript>().CustomizingUI.SetActive(false);
@@ -278,6 +385,7 @@ public class InteractScript : MonoBehaviourPun
                             Debug.Log("2");
                             lastCustomizeCollider.GetComponent<CustomizeScript>().CustomizingUI.SetActive(false);
                         }
+                        toolTipUI.SetActive(false);
 
                         lastCustomizeCollider = null;
                     }
@@ -288,6 +396,7 @@ public class InteractScript : MonoBehaviourPun
                 // 레이캐스트가 아무것도 맞추지 않았을 때도 이전에 Merchant와 상호작용하고 있었다면 상태 초기화
                 if (lastReportCollider != null)
                 {
+                    toolTipUI.SetActive(false);
                     ReportButtonScript lastReportButtonScript = lastReportCollider.GetComponent<ReportButtonScript>();
                     lastReportButtonScript.ChangeOutlineRenderer(false);
 
@@ -299,6 +408,7 @@ public class InteractScript : MonoBehaviourPun
 
                 if (lastCustomizeCollider != null)
                 {
+                    toolTipUI.SetActive(false);
                     lastCustomizeCollider.transform.GetComponent<Renderer>().material.color = originCustomizeObjectColor;
 
                     if (lastCustomizeCollider.GetComponent<CustomizeScript>().CustomizingUI.activeSelf)
