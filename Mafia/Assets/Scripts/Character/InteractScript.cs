@@ -299,7 +299,7 @@ public class InteractScript : MonoBehaviourPun
                         keyText.text = "R";
                     }
 
-                    if (reportChance != 0){
+                    if (reportChance != 1){
                         hit.collider.GetComponent<ReportButtonScript>().ChangeOutlineRenderer(false);
                     }
                     if (characterController.isGrounded && Input.GetKeyDown(KeyCode.R) && (reportChance == 1))
