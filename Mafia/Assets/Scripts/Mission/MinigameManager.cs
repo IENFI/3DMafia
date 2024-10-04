@@ -8,6 +8,7 @@ public abstract class MinigameBase : MonoBehaviourPun
 {
     public abstract void ReceiveToken();
     public abstract bool GetActive();
+    public abstract void Deactivation();
     public abstract MinigameManager GetMinigameManager();
 }
 
@@ -39,6 +40,20 @@ public class MinigameManager : MonoBehaviour
         }
     }
 
+    private void ResetMinigameUI()
+    {
+        for (int i = 0; i < minigameNameText.Length; i++)
+        {
+            minigameNameText[i].text = ""; // 빈 문자열로 초기화
+        }
+
+        for (int i = 0; i < successCheckbox.Length; i++)
+        {
+            successCheckbox[i].SetActive(false); // 비활성화
+        }
+    }
+
+
     // 페이즈가 변경될 때 호출
     public void AssignRandomMinigame()
     {
@@ -62,6 +77,17 @@ public class MinigameManager : MonoBehaviour
             successCheckbox[i].SetActive(false); // 비활성화
         }
         currentMinigameIndex = 0;
+
+        // UI와 체크박스 초기화
+        ResetMinigameUI();
+
+        // 활성화된 미니게임이 있다면 비활성화
+        if (activeMinigame != null)
+        {
+            if (activeMinigame.GetComponent<MinigameBase>().GetActive())
+                activeMinigame.GetComponent<MinigameBase>().Deactivation();
+            activeMinigame = null;  // 현재 활성화된 미니게임 초기화
+        }
 
         Debug.Log("AssignRandomMinigame 함수 실행");
         // 모든 미니게임을 비활성화

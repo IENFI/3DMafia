@@ -35,37 +35,56 @@ public class ChatManager : MonoBehaviour
             {
                 RoomPanel.SetActive(true);
                 chat_check = true;
+                ChatInput.ActivateInputField();
             }
             else if (Input.GetKeyDown(KeyCode.Escape) && chat_check == true)
             {
                 RoomPanel.SetActive(false);
                 chat_check = false;
             }
+            if (chat_check && Input.GetKeyDown(KeyCode.Return)) // 엔터키로 메시지 전송
+            {
+                Send();
+            }
+
         }
-        else if (currentScene.name == "Level_1")
+        else if (currentScene.name == "Level_1" && VoteUI.activeSelf)
         {
-            if (Input.GetKeyDown(KeyCode.T) && chat_check == false && VoteUI.activeSelf)
+            ChatInput.ActivateInputField();
+            if (Input.GetKeyDown(KeyCode.Return)) // 엔터키로 메시지 전송
             {
-                RoomPanel.SetActive(true);
-                chat_check = true;
-            }
-            else if (Input.GetKeyDown(KeyCode.Escape) && chat_check == true && VoteUI.activeSelf)
-            {
-                RoomPanel.SetActive(false);
-                chat_check = false;
-            }
-            else if (chat_check == true && !VoteUI.activeSelf)
-            {
-                RoomPanel.SetActive(false);
-                chat_check = false;
+                Send();
             }
         }
+        //else if (currentScene.name == "Level_1")
+        //{
+        //    if (Input.GetKeyDown(KeyCode.T) && chat_check == false && VoteUI.activeSelf)
+        //    {
+        //        RoomPanel.SetActive(true);
+        //        chat_check = true;
+        //    }
+        //    else if (Input.GetKeyDown(KeyCode.Escape) && chat_check == true && VoteUI.activeSelf)
+        //    {
+        //        RoomPanel.SetActive(false);
+        //        chat_check = false;
+        //    }
+        //    else if (chat_check == true && !VoteUI.activeSelf)
+        //    {
+        //        RoomPanel.SetActive(false);
+        //        chat_check = false;
+        //    }
+        //}
     }
 
     public void Send()
     {
-        PV.RPC("ChatRPC", RpcTarget.All, PhotonNetwork.NickName + " : " + ChatInput.text);
-        ChatInput.text = "";
+        if (!string.IsNullOrWhiteSpace(ChatInput.text))
+        {
+            PV.RPC("ChatRPC", RpcTarget.All, PhotonNetwork.NickName + " : " + ChatInput.text);
+            ChatInput.text = "";
+        }
+
+        ChatInput.ActivateInputField(); // 메시지 전송 후 포커스 유지
     }
 
     [PunRPC] // RPC는 플레이어가 속해있는 방 모든 인원에게 전달한다
