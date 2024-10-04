@@ -38,6 +38,11 @@ public class FixWiringTask : MinigameBase
         active = true;
     }
 
+    public override void  Deactivation() {
+        active = false;
+    }
+
+
     public override bool GetActive(){
         return active;
     }
