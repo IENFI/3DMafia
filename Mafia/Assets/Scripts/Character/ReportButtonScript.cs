@@ -44,7 +44,6 @@ public class ReportButtonScript : MonoBehaviour
             // 색상을 빨간색으로 변경
             if (objectRenderer != null)
             {
-                Debug.Log("Turn red");
                 objectRenderer.material.color = Color.red;
                 objectLight.enabled = true;
             }
@@ -58,7 +57,6 @@ public class ReportButtonScript : MonoBehaviour
             // 색상을 하얀색으로 변경
             if (objectRenderer != null)
             {
-                Debug.Log("Turn white");
                 objectRenderer.material.color = Color.white;
                 objectLight.enabled = false;
             }

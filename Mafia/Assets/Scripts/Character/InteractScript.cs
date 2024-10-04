@@ -33,6 +33,7 @@ public class InteractScript : MonoBehaviourPun
     private GameObject toolTipUI;
     private TextMeshProUGUI stateText;
     private TextMeshProUGUI keyText;
+    private bool isInitialized = false; // 모든 오브젝트가 null이 아닐 때 true
 
     private void Awake()
     {
@@ -46,7 +47,7 @@ public class InteractScript : MonoBehaviourPun
         cameras = GetComponentsInChildren<Camera>();
         fpCamera = null;
         foreach (Camera cam in cameras)
-        {
+        {   
             if (cam.name == "FPCamera") // FPCamera의 이름이 "FPCamera"라고 가정
             {
                 fpCamera = cam;
@@ -58,33 +59,55 @@ public class InteractScript : MonoBehaviourPun
 
     private void Start()
     {
-        Debug.Log("Current active scene: " + SceneManager.GetActiveScene().name);
-        // 씬이 Level_0일 때와 Level_1일 때 다른 초기화
-        if (SceneManager.GetActiveScene().name == "Level_0")
-        {
-            toolTipUI = GameObject.Find("Canvas/ToolTipUI");
-            stateText = GameObject.Find("Canvas/ToolTipUI/StateText").GetComponent<TextMeshProUGUI>();
-            keyText = GameObject.Find("Canvas/ToolTipUI/Image/KeyText").GetComponent<TextMeshProUGUI>();
-            toolTipUI.SetActive(false);
-            Debug.Log("toolTipUi setactive false");
+        isInitialized = false;
+        // 코루틴을 통해 오브젝트를 계속 찾도록 시도
+        StartCoroutine(FindUIElements());
+    }
 
-            if (toolTipUI == null)
-                Debug.Log("toolTipUi is Null");
-        }
-        else if (SceneManager.GetActiveScene().name == "Level_1")
+    private IEnumerator FindUIElements()
+    {
+        // 씬이 Level_0 또는 Level_1일 때 UI 요소를 찾는 작업을 반복
+        while (!isInitialized)
         {
-            // Find the GameUiManager and ToolTipUI elements in your scene
-            toolTipUI = GameObject.Find("GameUiManager/Canvas/ToolTipUI");
-            stateText = GameObject.Find("GameUiManager/Canvas/ToolTipUI/StateText").GetComponent<TextMeshProUGUI>();
-            keyText = GameObject.Find("GameUiManager/Canvas/ToolTipUI/Image/KeyText").GetComponent<TextMeshProUGUI>();
-            toolTipUI.SetActive(false);
-            if (toolTipUI == null)
-                Debug.Log("toolTipUi is Null");
+            if (SceneManager.GetActiveScene().name == "Level_0")
+            {
+                toolTipUI = GameObject.Find("Canvas/ToolTipUI");
+                stateText = GameObject.Find("Canvas/ToolTipUI/StateText")?.GetComponent<TextMeshProUGUI>();
+                keyText = GameObject.Find("Canvas/ToolTipUI/Image/KeyText")?.GetComponent<TextMeshProUGUI>();
+            }
+            else if (SceneManager.GetActiveScene().name == "Level_1")
+            {
+                toolTipUI = GameObject.Find("GameUiManager/Canvas/ToolTipUI");
+                stateText = GameObject.Find("GameUiManager/Canvas/ToolTipUI/StateText")?.GetComponent<TextMeshProUGUI>();
+                keyText = GameObject.Find("GameUiManager/Canvas/ToolTipUI/Image/KeyText")?.GetComponent<TextMeshProUGUI>();
+            }
+
+            // 모든 오브젝트가 null이 아닌지 확인
+            if (toolTipUI != null && stateText != null && keyText != null)
+            {
+                toolTipUI.SetActive(false); // toolTipUI를 비활성화
+                isInitialized = true; // 초기화 완료 표시
+                Debug.Log("All UI elements found and initialized.");
+            }
+            else
+            {
+                // UI 요소를 찾을 수 없을 경우 계속 시도
+                Debug.Log("UI elements not found, retrying...");
+            }
+
+            yield return new WaitForSeconds(0.5f); // 0.5초 간격으로 다시 시도
         }
     }
 
     void Update()
     {
+
+        // 모든 오브젝트가 null이 아닐 때만 Update 동작
+        if (!isInitialized)
+        {
+            return; // 초기화가 완료되지 않으면 Update 중단
+        }
+
         if(!photonView.IsMine)
         {
             return;
