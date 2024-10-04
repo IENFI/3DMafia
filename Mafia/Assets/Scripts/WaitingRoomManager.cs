@@ -146,7 +146,7 @@ public class WaitingRoomManager : MonoBehaviourPunCallbacks
         if (PhotonNetwork.IsMasterClient)
         {
             // 방에 있는 플레이어 수가 4명 이상이어야 함
-            if (PhotonNetwork.PlayerList.Length >= 4)
+            if (PhotonNetwork.PlayerList.Length >= 0)
             {
                 // 게임이 시작되지 않았을 때만 버튼 상태를 업데이트
                 if (!hasGameStarted)
