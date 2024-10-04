@@ -35,8 +35,6 @@ public class WaitingRoomManager : MonoBehaviourPunCallbacks
 
     public GameObject CreateRoomUI;
 
-    public bool check = false;
-
     void Awake()
     {
         // 방장이 혼자 씬을 로딩하면, 나머지 사람들은 자동으로 싱크가 됨
@@ -192,15 +190,13 @@ public class WaitingRoomManager : MonoBehaviourPunCallbacks
         }
 
         // ESC 누르면 방 설정 변경 UI 띄우기
-        if (check == false && Input.GetKeyDown(KeyCode.Escape) && PhotonNetwork.IsMasterClient)
+        if (!CreateRoomUI.activeSelf && Input.GetKeyDown(KeyCode.Escape) && PhotonNetwork.IsMasterClient && !GameManager.instance.IsAnyUIOpen())
         {
             CreateRoomUI.SetActive(true);
-            check = true;
         }
-        else if (check == true && Input.GetKeyDown(KeyCode.Escape) && PhotonNetwork.IsMasterClient)
+        else if (CreateRoomUI.activeSelf && Input.GetKeyDown(KeyCode.Escape) && PhotonNetwork.IsMasterClient && GameManager.instance.IsAnyUIOpen())
         {
-            CreateRoomUI.SetActive(false);
-            check = false;
+            CreateRoomUI.SetActive(false);            
         }
     }
 

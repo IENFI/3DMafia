@@ -12,6 +12,7 @@ public class GameManager : MonoBehaviour
     public bool isConnected = false;
     public int mafiaNum = 1;
 
+    [SerializeField]
     private bool isAnyUIOpen = false;
     [SerializeField]
     private List<GameObject> uiWindows = new List<GameObject>();
@@ -100,6 +101,7 @@ public class GameManager : MonoBehaviour
 
     public bool IsAnyUIOpen()
     {
+        CheckUIState();
         return isAnyUIOpen;
     }
 
