@@ -44,11 +44,12 @@ public class lizardAI : MonoBehaviour
         if (!PhotonNetwork.IsMasterClient) return;
 
         GameObject target = DetectPlayer();
-        if (target != null && !IsMafia(target))
-        {
-            animator.SetBool("startRun", true);
-            Chase(target);
-        }
+        //if (target != null && !IsMafia(target))
+        //{
+        //animator.SetBool("startRun", true);
+        //Chase(target);
+        //}
+        if (false) { }
         else
         {
             animator.SetBool("startRun", false);
