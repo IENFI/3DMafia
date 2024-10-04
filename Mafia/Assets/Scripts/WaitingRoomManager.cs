@@ -22,7 +22,7 @@ public class WaitingRoomManager : MonoBehaviourPunCallbacks
 
     public TMP_Text readyBtnText;
     public TMP_Text startBtnText;
-    public TextMeshProUGUI ConfirmText;
+    public TMP_Text ConfirmText;
 
     private static VoiceConnection voiceConnection;
     private static bool voiceConnectionInitialized = false;
@@ -31,10 +31,11 @@ public class WaitingRoomManager : MonoBehaviourPunCallbacks
 
     private bool hasGameStarted = false; // 게임 시작 여부를 추적하는 변수
 
+    public TMP_Text playerCountText;
 
     public GameObject CreateRoomUI;
 
-    bool check = false;
+    public bool check = false;
 
     void Awake()
     {
@@ -74,7 +75,12 @@ public class WaitingRoomManager : MonoBehaviourPunCallbacks
 
         InitializeVoiceConnection();
         StartCoroutine(InitialState());
+
+        // Update the player count at the start
+        UpdatePlayerCount();
     }
+
+
     private void InitializeVoiceConnection()
     {
         // 모든 VoiceConnection 인스턴스 가져오기
@@ -145,27 +151,24 @@ public class WaitingRoomManager : MonoBehaviourPunCallbacks
 
         if (PhotonNetwork.IsMasterClient)
         {
-            // 방에 있는 플레이어 수가 4명 이상이어야 함
-            if (PhotonNetwork.PlayerList.Length >= 0)
+            // 게임이 시작되지 않았을 때만 버튼 상태를 업데이트
+            if (!hasGameStarted)
             {
-                // 게임이 시작되지 않았을 때만 버튼 상태를 업데이트
-                if (!hasGameStarted)
-                {
-                    StartBtn.GetComponent<Button>().interactable = gameReady;
-                }
-
-                // F5 키를 눌렀을 때 게임 시작
-                if (Input.GetKeyDown(KeyCode.F5))
-                {
-                    GameStart();
-                }
+                StartBtn.GetComponent<Button>().interactable = gameReady;
             }
-            else
+
+            if (Input.GetKeyDown(KeyCode.F5))
             {
-                // 플레이어 수가 부족할 때 버튼 비활성화
-                StartBtn.GetComponent<Button>().interactable = false;
+                GameStart();
             }
         }
+
+        if (!PhotonNetwork.IsMasterClient && Input.GetKeyDown(KeyCode.F5))
+        {
+            ClickReadyBtn();
+        }
+
+        UpdatePlayerCount(); // Update player count continuously
 
         // 버튼 텍스트 변경
         if (isReady)
@@ -179,13 +182,9 @@ public class WaitingRoomManager : MonoBehaviourPunCallbacks
             ReadyBtn.GetComponent<Image>().color = Color.white;
         }
 
-        if (gameReady && PhotonNetwork.PlayerList.Length >= 4)
+        if (gameReady)
         {
             startBtnText.text = "게임 시작";
-        }
-        else if (gameReady && PhotonNetwork.PlayerList.Length < 4)
-        {
-            startBtnText.text = "최소 인원이 부족합니다.";
         }
         else
         {
@@ -203,6 +202,26 @@ public class WaitingRoomManager : MonoBehaviourPunCallbacks
             CreateRoomUI.SetActive(false);
             check = false;
         }
+    }
+
+    void UpdatePlayerCount()
+    {
+        if (PhotonNetwork.InRoom)
+        {
+            int playerCount = PhotonNetwork.CurrentRoom.PlayerCount;
+            playerCountText.text = $"Players: {playerCount}"; // Update the TMP_Text UI element
+        }
+    }
+
+    // Handle player entering or leaving the room
+    public override void OnPlayerEnteredRoom(Player newPlayer)
+    {
+        UpdatePlayerCount();
+    }
+
+    public override void OnPlayerLeftRoom(Player otherPlayer)
+    {
+        UpdatePlayerCount();
     }
 
     void SetReadyState(bool isReady)
@@ -278,6 +297,8 @@ public class WaitingRoomManager : MonoBehaviourPunCallbacks
 
         }
     }
+
+
     public void LeaveRoom()
     {
         GameManager.instance = null;
@@ -361,9 +382,9 @@ public class WaitingRoomManager : MonoBehaviourPunCallbacks
         if (PhotonNetwork.InRoom)
         {
             ExitGames.Client.Photon.Hashtable newProperties = new ExitGames.Client.Photon.Hashtable()
-            {
-                { "MafiaNum", mafiaNum }
-            };
+        {
+            { "MafiaNum", mafiaNum }
+        };
             PhotonNetwork.CurrentRoom.SetCustomProperties(newProperties);
 
             ConfirmText.text = "적용되었습니다.";
@@ -386,7 +407,6 @@ public class WaitingRoomManager : MonoBehaviourPunCallbacks
             Debug.Log("MafiaNum updated to: " + updatedMafiaNum);
         }
     }
-
 }
 
 public class CustomEventCodes
