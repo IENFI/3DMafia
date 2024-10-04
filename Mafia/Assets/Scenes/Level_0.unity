@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.12731722, g: 0.13414752, b: 0.1210787, a: 1}
+  m_IndirectSpecularColor: {r: 0.12731704, g: 0.13414727, b: 0.121078536, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -22285,6 +22285,7 @@ GameObject:
   - component: {fileID: 3018329620051974840}
   - component: {fileID: 6354323151715013078}
   - component: {fileID: 6289219398341603258}
+  - component: {fileID: 6354323151715013079}
   m_Layer: 5
   m_Name: RoomPanel
   m_TagString: Untagged
@@ -23764,6 +23765,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5594803008868308720}
   m_CullTransparentMesh: 0
+--- !u!114 &6354323151715013079
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5594803008868308720}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cd816eb3429a2b645b84cc8e9c11476a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &6371934911947238555
 GameObject:
   m_ObjectHideFlags: 0
