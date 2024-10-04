@@ -6057,7 +6057,6 @@ MonoBehaviour:
   ghostPrefab: {fileID: 498253721416304272, guid: 5d038d49c0a8549e1a9990876c743077, type: 3}
   corpsePrefab: {fileID: 3432362266963976815, guid: 7cbddf71319934f53a8a06b4edbf7e96, type: 3}
   reportRadius: {fileID: 3377680712331106696}
-  reportCooldown: 5
   nickName: {fileID: 6280200141164834972}
   PV: {fileID: 2872909238564681740}
   objectsToHide:
@@ -7366,7 +7365,7 @@ SphereCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Radius: 0.5
+  m_Radius: 0.25
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &3377680712331106696
 MonoBehaviour:
