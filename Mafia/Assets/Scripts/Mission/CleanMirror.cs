@@ -9,7 +9,8 @@ public class CleanMirror : MinigameBase
     public int numberOfDirtySpots = 4; // 생성할 검은색 영역의 수
     public float cleaningSpeed = 2.0f; // 닦이는 속도
     public float cleaningRadius = 50f; // 닦이는 범위(반경)
-    public Vector2 randomPositionRange = new Vector2(200f, 150f); // 검은색 영역이 나타날 수 있는 범위
+    public Vector2 randomPositionRange = new Vector2(110f, 180f); // 검은색 영역이 나타날 수 있는 범위
+    public float maxAttempts = 10; // 위치를 찾기 위한 최대 시도 횟수
 
     [SerializeField]
     private GameObject minigameManager;
@@ -19,8 +20,6 @@ public class CleanMirror : MinigameBase
     private List<Image> dirtyImages = new List<Image>(); // 생성된 검은색 이미지들
     private List<RectTransform> dirtyImageRects = new List<RectTransform>(); // RectTransform 리스트
 
-    public GameObject CleanMirrorUI;
-
     void Start()
     {
         // 검은색 이미지들 랜덤 위치로 생성
@@ -29,15 +28,62 @@ public class CleanMirror : MinigameBase
             Image newDirtyImage = Instantiate(dirtyImagePrefab, transform); // 프리팹을 복제하여 이미지 생성
             RectTransform rectTransform = newDirtyImage.GetComponent<RectTransform>();
 
-            // 이미지 위치를 랜덤하게 설정
-            rectTransform.anchoredPosition = new Vector2(
-                Random.Range(-randomPositionRange.x, randomPositionRange.x),
-                Random.Range(-randomPositionRange.y, randomPositionRange.y)
-            );
+            // 이미지를 겹치지 않게 배치하기 위한 시도
+            bool validPosition = false;
+            int attempts = 0;
 
-            dirtyImages.Add(newDirtyImage); // 생성된 이미지를 리스트에 추가
-            dirtyImageRects.Add(rectTransform); // RectTransform을 리스트에 추가
+            while (!validPosition && attempts < maxAttempts)
+            {
+                // 이미지 위치를 랜덤하게 설정
+                rectTransform.anchoredPosition = new Vector2(
+                    Random.Range(-randomPositionRange.x, randomPositionRange.x),
+                    Random.Range(-randomPositionRange.y, randomPositionRange.y)
+                );
+
+                validPosition = true;
+
+                // 다른 이미지들과 겹치는지 확인
+                foreach (var otherRect in dirtyImageRects)
+                {
+                    if (IsOverlapping(rectTransform, otherRect))
+                    {
+                        validPosition = false;
+                        break; // 겹친다면 새로운 위치 시도
+                    }
+                }
+
+                attempts++;
+            }
+
+            if (validPosition)
+            {
+                dirtyImages.Add(newDirtyImage); // 생성된 이미지를 리스트에 추가
+                dirtyImageRects.Add(rectTransform); // RectTransform을 리스트에 추가
+            }
+            else
+            {
+                Debug.LogWarning("이미지 배치 실패: 너무 많은 겹침 발생");
+            }
         }
+    }
+
+    // RectTransform끼리 겹치는지 확인
+    bool IsOverlapping(RectTransform rect1, RectTransform rect2)
+    {
+        // World 좌표로 변환된 Rect 계산
+        Rect rect1World = GetWorldRect(rect1);
+        Rect rect2World = GetWorldRect(rect2);
+
+        return rect1World.Overlaps(rect2World);
+    }
+
+    // RectTransform의 World 좌표에서의 Rect를 반환
+    Rect GetWorldRect(RectTransform rt)
+    {
+        Vector3[] corners = new Vector3[4];
+        rt.GetWorldCorners(corners);
+        Vector2 size = new Vector2(rt.rect.width, rt.rect.height);
+        return new Rect(corners[0], size);
     }
 
     public override void ReceiveToken()
