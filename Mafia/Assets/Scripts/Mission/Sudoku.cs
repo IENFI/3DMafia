@@ -66,6 +66,15 @@ public class Sudoku : MinigameBase
     [SerializeField]
     private MinigameInteraction minigame;
 
+    private void OnEnable()
+    {
+        buttons = ConvertListTo2DArray(buttonList, 4, 4);
+        // 버튼 초기화 및 랜덤 빈칸 만들기
+        InitializeButtons();
+        HideRandomCells();
+        SetKeypadButtonsInteractable(false);
+        AnswerButton.interactable = false;
+    }
 
     // List<Button>을 Button[4, 4]로 변환하는 메서드
     private Button[,] ConvertListTo2DArray(List<Button> buttonList, int rows, int cols)
@@ -88,7 +97,7 @@ public class Sudoku : MinigameBase
 
         return grid;
     }
-    void Start()
+    /*void Start()
     {
         buttons = ConvertListTo2DArray(buttonList, 4, 4);
         // 버튼 초기화 및 랜덤 빈칸 만들기
@@ -96,7 +105,7 @@ public class Sudoku : MinigameBase
         HideRandomCells();
         SetKeypadButtonsInteractable(false);
         AnswerButton.interactable = false;
-    }
+    }*/
 
     // 버튼을 초기화하고 각 버튼에 숫자를 설정
     void InitializeButtons()

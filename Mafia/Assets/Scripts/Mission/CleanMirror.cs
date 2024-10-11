@@ -23,9 +23,17 @@ public class CleanMirror : MinigameBase
     private List<Image> dirtyImages = new List<Image>(); // 생성된 검은색 이미지들
     private List<RectTransform> dirtyImageRects = new List<RectTransform>(); // RectTransform 리스트
 
-    void Start()
+    private void OnEnable()
     {
-        // 검은색 이미지들 랜덤 위치로 생성
+        // 기존에 생성된 이미지들을 모두 삭제
+        foreach (var dirtyImage in dirtyImages)
+        {
+            Destroy(dirtyImage.gameObject); // 기존 이미지를 삭제
+        }
+        dirtyImages.Clear();
+        dirtyImageRects.Clear();
+
+        // 검은색 이미지들 랜덤 위치로 다시 생성
         for (int i = 0; i < numberOfDirtySpots; i++)
         {
             Image newDirtyImage = Instantiate(dirtyImagePrefab, transform); // 프리팹을 복제하여 이미지 생성
@@ -58,15 +66,8 @@ public class CleanMirror : MinigameBase
                 attempts++;
             }
 
-            if (validPosition)
-            {
-                dirtyImages.Add(newDirtyImage); // 생성된 이미지를 리스트에 추가
-                dirtyImageRects.Add(rectTransform); // RectTransform을 리스트에 추가
-            }
-            else
-            {
-                Debug.LogWarning("이미지 배치 실패: 너무 많은 겹침 발생");
-            }
+            dirtyImages.Add(newDirtyImage); // 리스트에 새로 추가
+            dirtyImageRects.Add(rectTransform); // RectTransform 리스트에 추가
         }
     }
 
