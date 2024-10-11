@@ -96,24 +96,32 @@ public class MinigameManager : MonoBehaviour
         //     minigame.SetActive(false);
         // }
 
-        // 랜덤으로 미니게임 선택 (현재 한 개만 선택)
-        int randomIndex = Random.Range(0, minigames.Length);
-        // 현재 미니게임 인덱스 설정
-        indexDic.Add(randomIndex, currentMinigameIndex);
-        // UI에 미니게임 이름 설정
-        minigameNameText[currentMinigameIndex].text = minigamesNameList[randomIndex];
+        for (int i=0; i<3; i++){
+            // 랜덤으로 미니게임 선택 (현재 한 개만 선택)
+            int randomIndex = Random.Range(0, minigames.Length);
+            // 중복된 키가 있는지 확인
+            while (indexDic.ContainsKey(randomIndex))
+            {
+                // 반복문을 안 쓰고 고르는 방법이 없을까...
+                randomIndex = Random.Range(0, minigames.Length); // 중복될 경우 다시 랜덤 선택
+            }
+            // 현재 미니게임 인덱스 설정
+            indexDic.Add(randomIndex, currentMinigameIndex);
+            // UI에 미니게임 이름 설정
+            minigameNameText[currentMinigameIndex].text = minigamesNameList[randomIndex];
 
-        currentMinigameIndex ++;
+            currentMinigameIndex ++;
 
-        activeMinigame = minigames[randomIndex];
-        activeMarker = minigameMarkers[randomIndex];
+            activeMinigame = minigames[randomIndex];
+            activeMarker = minigameMarkers[randomIndex];
 
-        // 선택된 미니게임과 마커 활성화
-        //activeMinigame.SetActive(true);
-        activeMarker.SetActive(true);
+            // 선택된 미니게임과 마커 활성화
+            //activeMinigame.SetActive(true);
+            activeMarker.SetActive(true);
 
-        // 선택된 미니게임에 토큰 전달
-        SendTokenToMinigame();
+            // 선택된 미니게임에 토큰 전달
+            SendTokenToMinigame();
+        }
     }
 
     // 선택된 미니게임에 토큰 전달

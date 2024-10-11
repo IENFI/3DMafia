@@ -16,6 +16,9 @@ public class CleanMirror : MinigameBase
     private GameObject minigameManager;
     [SerializeField]
     private bool active = false;
+    private int index = 2;
+    [SerializeField]
+    private MinigameInteraction minigame;
 
     private List<Image> dirtyImages = new List<Image>(); // 생성된 검은색 이미지들
     private List<RectTransform> dirtyImageRects = new List<RectTransform>(); // RectTransform 리스트
@@ -147,6 +150,7 @@ public class CleanMirror : MinigameBase
     // 모든 검은색 이미지가 닦였는지 확인
     void CheckIfAllClean()
     {
+        // 찰나의 드래그 문제로 돈이 더 벌릴 가능성 존재. 완료하면 0.1초 뒤에 들어오게 해도 될 듯
         foreach (var dirtyImage in dirtyImages)
         {
             if (dirtyImage.gameObject.activeSelf)
@@ -157,6 +161,9 @@ public class CleanMirror : MinigameBase
 
         // 모든 검은색 이미지가 닦였다면 게임 종료
         Debug.Log("거울 닦기 미니게임이 종료되었습니다.");
+        minigame.ExitCode = true;
         active = false;
+        GetMinigameManager().SuccessMission(index);
+        gameObject.SetActive(false);
     }
 }
