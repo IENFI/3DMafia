@@ -19,7 +19,7 @@ public class MinigameManager : MonoBehaviour
     [SerializeField] private GameObject[] shopPoints;  // 미니맵에 표시할 상인의 위치들을 담을 배열
     private bool areShopPointsActive = false;  // 샵 포인트들의 활성화 상태
     private GameObject activeMarker;  // 활성화된 마커
-    private string[] minigamesNameList = {"전등 회로 맞추기", "어려운 수학 문제 풀기"};
+    private string[] minigamesNameList = {"전등 회로 맞추기", "어려운 수학 문제 풀기", "거울 닦기"};
     private GameObject activeMinigame;  // 활성화된 미니게임
     public TextMeshProUGUI[] minigameNameText; // UI에 표시될 미니게임 이름
     public GameObject[] successCheckbox;       // 성공 시 활성화할 체크박스
