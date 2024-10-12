@@ -40,8 +40,6 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
     private bool isDead = false;
 
     public PlayerReportRadius reportRadius; // ReportRadius 스크립트 참조
-    public float reportCooldown = 5f; // 신고 쿨타임
-    private float lastReportTime;
 
     public TextMeshProUGUI nickName;
     public PhotonView PV;
@@ -81,16 +79,6 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
         z_ = Input.GetAxis("Vertical");
     }
 
-    public float GetLastReportTime()
-    {
-        return lastReportTime;
-    }
-
-    public void SetLastReportTime(float reportTime)
-    {
-        lastReportTime = reportTime;
-    }
-
     void Start()
     {
         movement = GetComponent<Movement>();
@@ -107,8 +95,6 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
             return;
         }
         gameObject.layer = playerLayer;
-
-        lastReportTime = Time.time;
 
         nickName.text = PV.Owner.NickName;
         if (PhotonNetwork.LocalPlayer.CustomProperties.ContainsKey("isMafia") && (bool)PhotonNetwork.LocalPlayer.CustomProperties["isMafia"])
@@ -233,10 +219,7 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
 
                 if (Input.GetKeyDown(KeyCode.R) && reportRadius.IsCorpseInRange())
                 {
-                    if (Time.time - lastReportTime >= reportCooldown)
-                    {
-                        ReportCorpse();
-                    }
+                    ReportCorpse();
                 }
             }
 
@@ -358,7 +341,6 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
     private void ReportCorpse()
     {
         Debug.Log("Corpse reported!");
-        lastReportTime = Time.time;
         PhotonView votingSystemPhotonView = FindObjectOfType<VotingSystem>().GetComponent<PhotonView>();
         if (votingSystemPhotonView != null)
         {

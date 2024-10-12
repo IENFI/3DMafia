@@ -67,10 +67,15 @@ public class GhostController : MonoBehaviourPun, IPunObservable
         // 유령은 모든 레이어를 볼 수 있도록 설정
         ghostCamera.cullingMask = ~0;
 
-        GameUIManager = GameObject.Find("GameUiManager");
-        // 유령 킬, 신고 버튼 삭제
-        GameUIManager.GetComponent<SceneInitializer>().OnBecomeGhost();
+        if (photonView.IsMine)
+        {
+            GameUIManager = GameObject.Find("GameUiManager");
+            // 유령 킬, 신고 버튼 삭제
 
+            GameUIManager.transform.Find("Canvas/KillImage").gameObject.SetActive(false);
+            GameUIManager.transform.Find("Canvas/ReportImage").gameObject.SetActive(false);
+        }
+        
         if (PhotonNetwork.LocalPlayer.CustomProperties.ContainsKey("isMafia") && (bool)PhotonNetwork.LocalPlayer.CustomProperties["isMafia"])
         {
             GhostIsMafia = true;

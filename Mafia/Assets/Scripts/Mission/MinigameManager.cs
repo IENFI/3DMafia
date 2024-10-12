@@ -19,7 +19,7 @@ public class MinigameManager : MonoBehaviour
     [SerializeField] private GameObject[] shopPoints;  // 미니맵에 표시할 상인의 위치들을 담을 배열
     private bool areShopPointsActive = false;  // 샵 포인트들의 활성화 상태
     private GameObject activeMarker;  // 활성화된 마커
-    private string[] minigamesNameList = {"전등 회로 맞추기", "어려운 수학 문제 풀기"};
+    private string[] minigamesNameList = {"전등 회로 맞추기", "어려운 수학 문제 풀기", "거울 닦기"};
     private GameObject activeMinigame;  // 활성화된 미니게임
     public TextMeshProUGUI[] minigameNameText; // UI에 표시될 미니게임 이름
     public GameObject[] successCheckbox;       // 성공 시 활성화할 체크박스
@@ -96,24 +96,32 @@ public class MinigameManager : MonoBehaviour
         //     minigame.SetActive(false);
         // }
 
-        // 랜덤으로 미니게임 선택 (현재 한 개만 선택)
-        int randomIndex = Random.Range(0, minigames.Length);
-        // 현재 미니게임 인덱스 설정
-        indexDic.Add(randomIndex, currentMinigameIndex);
-        // UI에 미니게임 이름 설정
-        minigameNameText[currentMinigameIndex].text = minigamesNameList[randomIndex];
+        for (int i=0; i<3; i++){
+            // 랜덤으로 미니게임 선택 (현재 한 개만 선택)
+            int randomIndex = Random.Range(0, minigames.Length);
+            // 중복된 키가 있는지 확인
+            while (indexDic.ContainsKey(randomIndex))
+            {
+                // 반복문을 안 쓰고 고르는 방법이 없을까...
+                randomIndex = Random.Range(0, minigames.Length); // 중복될 경우 다시 랜덤 선택
+            }
+            // 현재 미니게임 인덱스 설정
+            indexDic.Add(randomIndex, currentMinigameIndex);
+            // UI에 미니게임 이름 설정
+            minigameNameText[currentMinigameIndex].text = minigamesNameList[randomIndex];
 
-        currentMinigameIndex ++;
+            currentMinigameIndex ++;
 
-        activeMinigame = minigames[randomIndex];
-        activeMarker = minigameMarkers[randomIndex];
+            activeMinigame = minigames[randomIndex];
+            activeMarker = minigameMarkers[randomIndex];
 
-        // 선택된 미니게임과 마커 활성화
-        //activeMinigame.SetActive(true);
-        activeMarker.SetActive(true);
+            // 선택된 미니게임과 마커 활성화
+            //activeMinigame.SetActive(true);
+            activeMarker.SetActive(true);
 
-        // 선택된 미니게임에 토큰 전달
-        SendTokenToMinigame();
+            // 선택된 미니게임에 토큰 전달
+            SendTokenToMinigame();
+        }
     }
 
     // 선택된 미니게임에 토큰 전달

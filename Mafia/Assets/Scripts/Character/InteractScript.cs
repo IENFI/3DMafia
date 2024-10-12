@@ -287,18 +287,14 @@ public class InteractScript : MonoBehaviourPun
                     }
                     if (characterController.isGrounded && Input.GetKeyDown(KeyCode.R) && (reportChance == 1))
                     {
-                        if (Time.time - playerController.GetLastReportTime() >= playerController.reportCooldown)
+                        votingSystemPhotonView = FindObjectOfType<VotingSystem>().GetComponent<PhotonView>();
+                        if (votingSystemPhotonView != null)
                         {
-                            playerController.SetLastReportTime(Time.time);
-                            votingSystemPhotonView = FindObjectOfType<VotingSystem>().GetComponent<PhotonView>();
-                            if (votingSystemPhotonView != null)
-                            {
-                                votingSystemPhotonView.RPC("StartVote", RpcTarget.All);
-                                reportChance = 0;
-                                toolTipUI.SetActive(false);
-                            }
+                            votingSystemPhotonView.RPC("StartVote", RpcTarget.All);
+                            reportChance = 0;
+                            toolTipUI.SetActive(false);
                         }
-                    }
+                }
 
                     // 현재 충돌체를 lastMinigameCollider로 저장
                     lastReportCollider = hit.collider;

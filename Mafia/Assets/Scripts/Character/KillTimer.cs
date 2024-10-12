@@ -18,6 +18,8 @@ public class KillTimer : MonoBehaviour
 
     void Start()
     {
+        // tooltip = transform.Find("Image").gameObject; 
+        // -> 이렇게 해도 될 것 같은디.
         tooltip = GameObject.FindWithTag("tooltip");
         StartCoroutine(InitializePlayerController());
     }

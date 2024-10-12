@@ -12,10 +12,6 @@ public class SceneInitializer : MonoBehaviourPunCallbacks
     public GameObject LoadingImage; // 로딩 이미지를 설정합니다.
     public CanvasGroup CitizenUI; // CitizenUI의 CanvasGroup을 설정합니다.
     public CanvasGroup MafiaUI; // MafiaUI의 CanvasGroup을 설정합니다.
-    [SerializeField]
-    private GameObject killButton;
-    [SerializeField]
-    private GameObject reportButton;
 
     public override void OnEnable()
     {
@@ -203,13 +199,4 @@ public class SceneInitializer : MonoBehaviourPunCallbacks
         PhotonNetwork.NetworkingClient.EventReceived -= OnEvent;
     }
 
-    public void OnBecomeGhost(){
-        // 유령 킬, 신고 버튼 삭제
-        if (killButton == null || reportButton == null)
-        {
-            Debug.LogError("KillImage or ReportImage not found in the scene!");
-        }
-        killButton.SetActive(false);
-        reportButton.SetActive(false);
-    }
 }

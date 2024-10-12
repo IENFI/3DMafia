@@ -161,6 +161,41 @@ public class WaitingRoomManager : MonoBehaviourPunCallbacks
             }
         }
 
+        /*if (PhotonNetwork.IsMasterClient)
+        {
+            // 최소 4명의 플레이어가 있는지 확인
+            if (PhotonNetwork.PlayerList.Length >= 4)
+            {
+                // 게임이 시작되지 않았을 때만 버튼 상태를 업데이트
+                if (!hasGameStarted)
+                {
+                    StartBtn.GetComponent<Button>().interactable = gameReady;
+                }
+
+                // F5 키를 눌렀을 때 게임 시작
+                if (Input.GetKeyDown(KeyCode.F5))
+                {
+                    GameStart();
+                }
+
+                // 게임 준비가 완료되었을 때 텍스트 변경
+                if (gameReady)
+                {
+                    startBtnText.text = "게임 시작";
+                }
+                else
+                {
+                    startBtnText.text = "모두 준비해야 합니다";
+                }
+            }
+            else
+            {
+                // 플레이어 수가 4명 미만일 경우 버튼 비활성화 및 텍스트 변경
+                StartBtn.GetComponent<Button>().interactable = false;
+                startBtnText.text = "최소 4명이 있어야 합니다.";
+            }
+        }*/
+
         if (!PhotonNetwork.IsMasterClient && Input.GetKeyDown(KeyCode.F5))
         {
             ClickReadyBtn();
