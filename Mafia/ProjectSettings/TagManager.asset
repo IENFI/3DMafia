@@ -20,6 +20,7 @@ TagManager:
   - Minigame
   - Report
   - Customize
+  - BookMinigame
   layers:
   - Default
   - TransparentFX
