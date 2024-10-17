@@ -21,6 +21,7 @@ TagManager:
   - Report
   - Customize
   - BookMinigame
+  - Body
   layers:
   - Default
   - TransparentFX
@@ -33,7 +34,7 @@ TagManager:
   - 1Floor
   - 2Floor
   - object
-  - 
+  - wall
   - 
   - 
   - 
