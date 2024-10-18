@@ -5,20 +5,12 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
-public class BookSortingGame : MinigameBase
+public class BookSortingGame : MonoBehaviour
 {
-    [SerializeField] private GameObject[] bookObjects; // ï¿½Ì¸ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½ Ã¥ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½
+    [SerializeField] private GameObject[] bookObjects; // ¹Ì¸® ¹èÄ¡µÈ Ã¥ ¿ÀºêÁ§Æ®µé
     [SerializeField] private float successMessageDuration = 2f;
     [SerializeField] private TMP_Text successMessageText;
     [SerializeField] public GameObject BookMinigameUI;
-    [SerializeField]
-    private GameObject minigameManager;
-
-    [SerializeField]
-    private MinigameInteraction minigame;
-    private int index = 4;
-    private bool active = false;
-
 
     private List<Book> activeBooks = new List<Book>();
     private int bookCount;
@@ -29,16 +21,9 @@ public class BookSortingGame : MinigameBase
     private int dragStartIndex;
     private Coroutine successMessageCoroutine;
 
+    // ÃÊ±âÈ­ ¹× °ÔÀÓ ½ÃÀÛ/Á¾·á °ü·Ã ÇÔ¼öµé
 
-    private void OnEnable()
-    {
-        InitializeBookPositions();
-        InitializeGame();
-    }
-
-    // ï¿½Ê±ï¿½È­ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½/ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ô¼ï¿½ï¿½ï¿½
-
-    // Ã¥ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï°ï¿½ Book ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ß°ï¿½
+    // Ã¥µéÀÇ ¿ø·¡ À§Ä¡¸¦ ÀúÀåÇÏ°í Book ÄÄÆ÷³ÍÆ® Ãß°¡
     private void InitializeBookPositions()
     {
         originalPositions = new Vector2[bookObjects.Length];
@@ -63,28 +48,28 @@ public class BookSortingGame : MinigameBase
         }
     }
 
-    // UI ï¿½ï¿½ï¿½ (ï¿½ï¿½ï¿½ï¿½/ï¿½İ±ï¿½)
+    // UI Åä±Û (¿­±â/´İ±â)
     public void ToggleBookSortingUI()
     {
         if (BookMinigameUI.activeSelf)
         {
             CloseGame();
         }
-        //else
-        //{
-        //    OpenGame();
-        //}
+        else
+        {
+            OpenGame();
+        }
     }
 
-    // ï¿½ï¿½ï¿½ï¿½ UI ï¿½ï¿½ï¿½ï¿½ ï¿½Ê±ï¿½È­
-    //private void OpenGame()
-    //{
-    //    BookMinigameUI.SetActive(true);
-    //    InitializeBookPositions();
-    //    InitializeGame();
-    //}
+    // °ÔÀÓ UI ¿­°í ÃÊ±âÈ­
+    private void OpenGame()
+    {
+        BookMinigameUI.SetActive(true);
+        InitializeBookPositions();
+        InitializeGame();
+    }
 
-    // ï¿½ï¿½ï¿½ï¿½ ï¿½Ê±ï¿½È­: Ã¥ ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½ Ã¥ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½, Ã¥ È°ï¿½ï¿½È­
+    // °ÔÀÓ ÃÊ±âÈ­: Ã¥ ¸®¼Â, ·£´ı Ã¥ ¼ö ¼³Á¤, Ã¥ È°¼ºÈ­
     private void InitializeGame()
     {
         ResetBooks();
@@ -93,7 +78,7 @@ public class BookSortingGame : MinigameBase
         CheckInitialPlacements();
     }
 
-    // ï¿½ï¿½ï¿½ Ã¥ ï¿½ï¿½ï¿½ï¿½ ï¿½Ê±ï¿½È­
+    // ¸ğµç Ã¥ »óÅÂ ÃÊ±âÈ­
     private void ResetBooks()
     {
         for (int i = 0; i < bookObjects.Length; i++)
@@ -113,7 +98,7 @@ public class BookSortingGame : MinigameBase
         activeBooks.Clear();
     }
 
-    // ï¿½ï¿½ï¿½ï¿½ï¿½Ï°ï¿½ Ã¥ È°ï¿½ï¿½È­ ï¿½ï¿½ ï¿½Ê±ï¿½È­
+    // ·£´ıÇÏ°Ô Ã¥ È°¼ºÈ­ ¹× ÃÊ±âÈ­
     private void ActivateBooks()
     {
         List<int> numbers = Enumerable.Range(1, bookCount).ToList();
@@ -138,27 +123,8 @@ public class BookSortingGame : MinigameBase
             }
         }
     }
-    public override void ReceiveToken()
-    {
-        Debug.Log("ì±… ì •ë¦¬ ë¯¸ë‹ˆê²Œì„ì´ ì‹œì‘ë˜ì—ˆìŠµë‹ˆë‹¤.");
-        active = true;
-    }
 
-    public override void Deactivation()
-    {
-        active = false;
-    }
-
-    public override bool GetActive()
-    {
-        return active;
-    }
-
-    public override MinigameManager GetMinigameManager()
-    {
-        return minigameManager.GetComponent<MinigameManager>();
-    }
-    // ï¿½Ê±ï¿½ ï¿½ï¿½Ä¡ ï¿½ï¿½ ï¿½Ì¹ï¿½ ï¿½Ã¹Ù¸ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½Ö´ï¿½ Ã¥ Ã¼Å©
+    // ÃÊ±â ¹èÄ¡ ½Ã ÀÌ¹Ì ¿Ã¹Ù¸¥ À§Ä¡¿¡ ÀÖ´Â Ã¥ Ã¼Å©
     private void CheckInitialPlacements()
     {
         foreach (var book in activeBooks)
@@ -171,7 +137,7 @@ public class BookSortingGame : MinigameBase
         }
     }
 
-    // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ê±ï¿½È­
+    // °ÔÀÓ Á¾·á ¹× ÃÊ±âÈ­
     private void CloseGame()
     {
         if (successMessageCoroutine != null)
@@ -180,17 +146,13 @@ public class BookSortingGame : MinigameBase
             successMessageCoroutine = null;
             successMessageText.gameObject.SetActive(false);
         }
-        //BookMinigameUI.SetActive(false);
+        BookMinigameUI.SetActive(false);
         ResetBooks();
-        minigame.ExitCode = true;
-        active = false;
-        GetMinigameManager().SuccessMission(index);
-        this.gameObject.SetActive(false);
     }
 
-    // ï¿½ï¿½ï¿½ï¿½ ï¿½Ã·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ô¼ï¿½ï¿½ï¿½
+    // °ÔÀÓ ÇÃ·¹ÀÌ °ü·Ã ÇÔ¼öµé
 
-    // ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ó¸ï¿½ï¿½ï¿½ ï¿½Ô·ï¿½ Ã¼Å©
+    // ¸Å ÇÁ·¹ÀÓ¸¶´Ù ÀÔ·Â Ã¼Å©
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.Escape) && BookMinigameUI.activeSelf)
@@ -214,7 +176,7 @@ public class BookSortingGame : MinigameBase
         }
     }
 
-    // Ã¥ ï¿½ï¿½ï¿½ï¿½ ï¿½Ãµï¿½
+    // Ã¥ Áı±â ½Ãµµ
     private void TryPickUpBook()
     {
         Vector2 clickPosition;
@@ -241,7 +203,7 @@ public class BookSortingGame : MinigameBase
         }
     }
 
-    // Ã¥ ï¿½å·¡ï¿½ï¿½
+    // Ã¥ µå·¡±×
     private void DragBook()
     {
         Vector2 localPoint;
@@ -249,7 +211,7 @@ public class BookSortingGame : MinigameBase
         currentBook.GetComponent<RectTransform>().anchoredPosition = localPoint + dragOffset;
     }
 
-    // Ã¥ ï¿½ï¿½ï¿½ï¿½ ï¿½Ãµï¿½
+    // Ã¥ ³õ±â ½Ãµµ
     private void TryDropBook()
     {
         if (currentBook != null)
@@ -258,11 +220,11 @@ public class BookSortingGame : MinigameBase
 
             if (nearestIndex != -1)
             {
-                if (nearestIndex == currentBook.Number - 1)  // Ã¥ï¿½ï¿½ ï¿½Ã¹Ù¸ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½ï¿½
+                if (nearestIndex == currentBook.Number - 1)  // Ã¥ÀÇ ¿Ã¹Ù¸¥ À§Ä¡ÀÎ °æ¿ì
                 {
                     PlaceBookCorrectly(currentBook, nearestIndex, dragStartIndex);
                 }
-                else  // ï¿½Ã¹Ù¸ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½Æ´ï¿½ ï¿½ï¿½ï¿½
+                else  // ¿Ã¹Ù¸¥ À§Ä¡°¡ ¾Æ´Ñ °æ¿ì
                 {
                     currentBook.ResetToInitialPosition();
                 }
@@ -277,22 +239,22 @@ public class BookSortingGame : MinigameBase
         }
     }
 
-    // Ã¥ï¿½ï¿½ ï¿½Ã¹Ù¸ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½Ä¡
+    // Ã¥À» ¿Ã¹Ù¸¥ À§Ä¡¿¡ ¹èÄ¡
     private void PlaceBookCorrectly(Book book, int correctIndex, int startIndex)
     {
         Book bookAtCorrectIndex = bookObjects[correctIndex]?.GetComponent<Book>();
 
-        // ï¿½ï¿½ï¿½ï¿½ Ã¥ï¿½ï¿½ ï¿½Ã¹Ù¸ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½Ìµï¿½
+        // ÇöÀç Ã¥À» ¿Ã¹Ù¸¥ À§Ä¡·Î ÀÌµ¿
         book.GetComponent<RectTransform>().anchoredPosition = originalPositions[correctIndex];
         book.UpdateInitialPosition(originalPositions[correctIndex]);
         book.IsPlaced = true;
 
-        // bookObjects ï¿½è¿­ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®
+        // bookObjects ¹è¿­ ¾÷µ¥ÀÌÆ®
         bookObjects[startIndex] = null;
         bookObjects[correctIndex] = book.gameObject;
         book.transform.SetSiblingIndex(correctIndex);
 
-        // ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½ Ã¥ ï¿½Ìµï¿½ (ï¿½Ö¾ï¿½ï¿½Ù¸ï¿½)
+        // ¿ø·¡ ÀÖ´ø Ã¥ ÀÌµ¿ (ÀÖ¾ú´Ù¸é)
         if (bookAtCorrectIndex != null)
         {
             bookAtCorrectIndex.GetComponent<RectTransform>().anchoredPosition = originalPositions[startIndex];
@@ -305,7 +267,7 @@ public class BookSortingGame : MinigameBase
         CheckForCompletion();
     }
 
-    // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ Ã¥ ï¿½ï¿½ï¿½ï¿½ Ã£ï¿½ï¿½
+    // °¡Àå °¡±î¿î Ã¥ ½½·Ô Ã£±â
     private int FindNearestBookSlot(Vector2 position)
     {
         return originalPositions
@@ -314,7 +276,7 @@ public class BookSortingGame : MinigameBase
             .First().Index;
     }
 
-    // ï¿½ï¿½ï¿½ Ã¥ï¿½ï¿½ ï¿½Ã¹Ù¸ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½Ö´ï¿½ï¿½ï¿½ È®ï¿½ï¿½
+    // ¸ğµç Ã¥ÀÌ ¿Ã¹Ù¸¥ À§Ä¡¿¡ ÀÖ´ÂÁö È®ÀÎ
     private void CheckForCompletion()
     {
         if (activeBooks.TrueForAll(book => book.IsPlaced))
@@ -327,10 +289,10 @@ public class BookSortingGame : MinigameBase
         }
     }
 
-    // ï¿½ï¿½ï¿½ï¿½ ï¿½Ş½ï¿½ï¿½ï¿½ Ç¥ï¿½ï¿½
+    // ¼º°ø ¸Ş½ÃÁö Ç¥½Ã
     private IEnumerator ShowSuccessMessage()
     {
-        successMessageText.text = "ï¿½ï¿½ï¿½ï¿½!";
+        successMessageText.text = "¼º°ø!";
         successMessageText.gameObject.SetActive(true);
         yield return new WaitForSeconds(successMessageDuration);
         successMessageText.gameObject.SetActive(false);
