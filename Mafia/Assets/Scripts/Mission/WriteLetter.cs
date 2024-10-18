@@ -19,9 +19,18 @@ public class WriteLetter : MinigameBase
 
     private int currentLetterIndex = 0; // 현재 칠할 글자의 인덱스
 
-    void Start()
+    // UI가 활성화될 때마다 초기화
+    private void OnEnable()
     {
+        // 글자 상태 초기화
         letterCompleted = new bool[letters.Length];
+        currentLetterIndex = 0;
+
+        // 글자 색상 초기화 (다시 회색으로 설정)
+        foreach (var letter in letters)
+        {
+            letter.color = Color.gray; // 초기 색상으로 설정 (원하는 기본 색상)
+        }
     }
 
     void Update()
@@ -50,6 +59,12 @@ public class WriteLetter : MinigameBase
         if (AllLettersCompleted())
         {
             CloseUI(); // UI를 닫는 함수 호출
+        }
+
+        // ESC를 누르면 UI 닫기
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            CloseUI();
         }
     }
 
