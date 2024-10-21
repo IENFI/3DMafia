@@ -248,7 +248,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks // 안현석 똑바로�
     void Update()
     {
         StatusText.text = PhotonNetwork.NetworkClientState.ToString();
-        LobbyInfoText.text = "전체: " + PhotonNetwork.CountOfPlayers + ",     로비: " + (PhotonNetwork.CountOfPlayers - PhotonNetwork.CountOfPlayersInRooms);
+        LobbyInfoText.text = "전체: " + PhotonNetwork.CountOfPlayers + "      로비: " + (PhotonNetwork.CountOfPlayers - PhotonNetwork.CountOfPlayersInRooms);
     }
 
     public void Connect()
@@ -256,7 +256,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks // 안현석 똑바로�
         PhotonNetwork.NickName = NickNameInput.text;
         if (string.IsNullOrEmpty(PhotonNetwork.NickName))
         {
-            NickNameError.text = "닉네임을 입력하시오.";
+            NickNameError.text = "닉네임을 입력하세요.";
             return;
         }
         else if (DBInteraction.Login(PhotonNetwork.NickName))
