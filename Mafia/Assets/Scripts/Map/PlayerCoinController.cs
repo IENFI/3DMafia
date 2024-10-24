@@ -30,13 +30,13 @@ public class PlayerCoinController : MonoBehaviourPunCallbacks, IPunObservable
 
     void Update()
     {
-        /*if (photonView.IsMine || !PhotonNetwork.IsConnected)
+        if (photonView.IsMine || !PhotonNetwork.IsConnected)
         {
             if (Input.GetKeyDown(KeyCode.Y))
             {
                 GetCoin(60);
             }
-        }*/
+        }
     }
 
     public void GetCoin(int amount)

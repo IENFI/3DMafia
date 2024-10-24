@@ -200,50 +200,44 @@ public class InteractScript : MonoBehaviourPun
 
             if (Physics.Raycast(fpCamera.transform.position, fpCamera.transform.forward, out hit, merchantInteractDistance, layerMask))
             {
-                // 상점 코드
                 if (hit.collider.CompareTag("ShopNPC"))
                 {
-                    //Debug.Log("Camera is looking at the merchant.");// 다른 작업 수행
                     characterController = GetComponent<CharacterController>();
+                    ShopInteraction shopInteraction = hit.collider.GetComponent<ShopInteraction>();
+
                     // 모자를 파란색으로 변경
-                    hit.collider.GetComponent<ShopInteraction>().ChangeOutlineRenderer(Color.blue);
+                    shopInteraction.ChangeOutlineRenderer(Color.blue);
 
-                    if (! hit.collider.GetComponent<ShopInteraction>().ShopUI.activeSelf){
-                        // Activate toolTipUI
+                    if (!shopInteraction.ShopUI.activeSelf)
+                    {
                         toolTipUI.SetActive(true);
-
-                        // Update StateText and KeyText when interacting with Minigame
                         stateText.text = "상점";
                         keyText.text = "E";
                     }
+
                     if (characterController.isGrounded && Input.GetKeyDown(KeyCode.E))
                     {
-                        hit.collider.GetComponent<ShopInteraction>().ShopUI.SetActive(true);
+                        shopInteraction.SetShopUIActive(true, photonView.IsMine);
                         toolTipUI.SetActive(false);
                     }
-                    if (hit.collider.GetComponent<ShopInteraction>().ShopUI.activeSelf && Input.GetKeyDown(KeyCode.Escape))
+                    if (shopInteraction.ShopUI.activeSelf && Input.GetKeyDown(KeyCode.Escape))
                     {
-                        hit.collider.GetComponent<ShopInteraction>().ShopUI.SetActive(false);
+                        shopInteraction.SetShopUIActive(false, photonView.IsMine);
                         toolTipUI.SetActive(false);
                     }
 
-                    // 현재 충돌체를 lastMinigameCollider로 저장
                     lastMerchantCollider = hit.collider;
-
                 }
                 else
                 {
-                    //Debug.Log("Camera is not looking at the target object.");
                     characterController = null;
-                    // 이전에 Merchant와 상호작용하고 있었다면, 그 충돌체를 업데이트
                     if (lastMerchantCollider != null)
                     {
                         ShopInteraction lastShopInteraction = lastMerchantCollider.GetComponent<ShopInteraction>();
                         lastShopInteraction.ChangeOutlineRenderer(Color.white);
-                        lastShopInteraction.ShopUI.SetActive(false);
+                        lastShopInteraction.SetShopUIActive(false, photonView.IsMine);
                         toolTipUI.SetActive(false);
 
-                        // 충돌체 상태 초기화
                         lastMerchantCollider = null;
                     }
                 }
@@ -400,6 +394,6 @@ public class InteractScript : MonoBehaviourPun
             }
 
         }
-
+        
     }
 }

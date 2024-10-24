@@ -5,10 +5,9 @@ using System.Collections.Generic;
 
 public class XRayVisionItem : MonoBehaviour
 {
-    public float duration = 5f;
+    public float duration = 10f;
     public Color xrayColor = Color.red;
     public float xrayIntensity = 0.5f;
-    public Button activationButton;
     public int minimumPlayerCount = 2;
     public float searchInterval = 0.5f;
     public string xrayShaderName = "Custom/XRayShader";
@@ -38,15 +37,6 @@ public class XRayVisionItem : MonoBehaviour
             yield return new WaitForSeconds(searchInterval);
         }
 
-        if (activationButton != null)
-        {
-            activationButton.onClick.AddListener(OnActivationButtonClick);
-            Debug.Log("XRayVisionItem: Activation button listener added");
-        }
-        else
-        {
-            Debug.LogError("XRayVisionItem: Activation button is not assigned!");
-        }
     }
 
     void InitializeXRayEffects(GameObject[] players)
@@ -76,18 +66,7 @@ public class XRayVisionItem : MonoBehaviour
         Debug.Log($"XRayVisionItem: Created {playerXRays.Count} player X-ray effects");
     }
 
-    void OnActivationButtonClick()
-    {
-        Debug.Log("XRayVisionItem: Activation button clicked");
-        if (!isActive)
-        {
-            StartCoroutine(ActivateXRayVision());
-        }
-        else
-        {
-            DeactivateXRayVision();
-        }
-    }
+
 
     IEnumerator ActivateXRayVision()
     {

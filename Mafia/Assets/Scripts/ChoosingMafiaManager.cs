@@ -47,11 +47,11 @@ public class ChoosingMafiaManager : MonoBehaviourPunCallbacks
         {
             if (isMafia)
             {
-                mafiaText.text = "Mafia";
+                mafiaText.text = "¸¶ÇÇ¾Æ";
             }
             else
             {
-                mafiaText.text = "Citizen";
+                mafiaText.text = "½Ã¹Î";
             }
         }
 

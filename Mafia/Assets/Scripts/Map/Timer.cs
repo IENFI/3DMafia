@@ -47,7 +47,7 @@ public class Timer : MonoBehaviourPun
 
     public void StartTimer()
     {
-        /*if (!isDaytime)
+        if (!isDaytime)
         {
             ActivateRandomMerchants();
             Night.enabled = true;
@@ -58,7 +58,7 @@ public class Timer : MonoBehaviourPun
             DeactivateAllMerchants();
             Night.enabled = false;
             Day.enabled = true;
-        }*/
+        }
         timerCoroutine = StartCoroutine(TimerCoroutine());  // 타이머 코루틴 시작
         // 밤으로 전환될 때만 상인 활성화
     }
@@ -123,7 +123,7 @@ public class Timer : MonoBehaviourPun
             // 페이즈가 바뀔 때 마다 미니게임 할당시키기
             minigameManager.AssignRandomMinigame();
 
-            /*// 밤으로 전환될 때만 상인 활성화
+            // 밤으로 전환될 때만 상인 활성화
             if (!isDaytime)
             {
                 ActivateRandomMerchants();
@@ -136,7 +136,7 @@ public class Timer : MonoBehaviourPun
                 Night.enabled = false;
                 Day.enabled = true;
 
-            }*/
+            }
 
             // 반짝임 코루틴 멈춤
             if (blinkCoroutine != null)

@@ -330,7 +330,7 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
 
     public void ChangeMoveSpeed()
     {
-        playerMoveSpeedUnit *= 5;
+        playerMoveSpeedUnit *= 2;
     }
 
     public void OriginMoveSpeed()
