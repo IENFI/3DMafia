@@ -251,7 +251,18 @@ public class WaitingRoomManager : MonoBehaviourPunCallbacks
         if (PhotonNetwork.InRoom)
         {
             int playerCount = PhotonNetwork.CurrentRoom.PlayerCount;
-            playerCountText.text = $"인원수: {playerCount}"; // Update the TMP_Text UI element
+            int maxPlayers = PhotonNetwork.CurrentRoom.MaxPlayers;
+            int mafiaCount = 0;
+
+            // 방의 CustomProperties에서 마피아 수 가져오기
+            if (PhotonNetwork.CurrentRoom.CustomProperties.ContainsKey("MafiaNum"))
+            {
+                mafiaCount = (int)PhotonNetwork.CurrentRoom.CustomProperties["MafiaNum"];
+            }
+
+            // Rich Text를 사용하여 마피아 수를 빨간색으로 표시
+            string playerCountText = $"인원수: {playerCount} / {maxPlayers} <color=red>({mafiaCount})</color>";
+            this.playerCountText.text = playerCountText;
         }
     }
 
@@ -442,12 +453,8 @@ public class WaitingRoomManager : MonoBehaviourPunCallbacks
 
     public override void OnRoomPropertiesUpdate(ExitGames.Client.Photon.Hashtable propertiesThatChanged)
     {
-        // MafiaNum이 업데이트되었는지 확인
-        if (propertiesThatChanged.ContainsKey("MafiaNum"))
-        {
-            int updatedMafiaNum = (int)propertiesThatChanged["MafiaNum"];
-            Debug.Log("MafiaNum updated to: " + updatedMafiaNum);
-        }
+        base.OnRoomPropertiesUpdate(propertiesThatChanged);
+        UpdatePlayerCount();
     }
 }
 

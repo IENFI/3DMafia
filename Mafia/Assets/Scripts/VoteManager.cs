@@ -53,6 +53,7 @@ public class VoteManager : MonoBehaviourPunCallbacks
     private Dictionary<int, TMP_Text> btnTexts;
     private Dictionary<int, Button> btns;
 
+    private Timer gameTimer;
     // VoteManager   Ȱ  ȭ Ǹ  Start      Ϸ                ϴٰ                θ    Ȱ  ȭ.
 
     public bool isMeetingActivated = true;
@@ -116,6 +117,11 @@ public class VoteManager : MonoBehaviourPunCallbacks
             { 9, btnText9 }
         };
 
+        gameTimer = FindObjectOfType<Timer>();
+        if (gameTimer != null && PhotonNetwork.IsMasterClient) // 마스터 클라이언트만 RPC 호출
+        {
+            gameTimer.photonView.RPC("PauseTimer", RpcTarget.All);
+        }
 
         Initialize();
         VoteUI.SetActive(true);
@@ -433,21 +439,7 @@ public class VoteManager : MonoBehaviourPunCallbacks
                     break;
                 }
             }
-/*
-            if (PhotonNetwork.LocalPlayer == PhotonNetwork.PlayerList[LivingMan])
-            {
-                // 타이머를 0으로 설정하고 다시 시작
-                if (timer != null)
-                {
-                    timer.photonView.RPC("RPC_PauseTimer", RpcTarget.All);
-                    timer.photonView.RPC("RPC_StartTimer", RpcTarget.All);
-                }
-                else
-                {
-                    Debug.LogError("GameTimer 태그를 가진 타이머 오브젝트를 찾을 수 없습니다.");
-                }
-            }
-*/
+
 
         }
 
@@ -480,12 +472,19 @@ public class VoteManager : MonoBehaviourPunCallbacks
         if (uiToActivate1 != null)
         {
             yield return StartCoroutine(FadeCanvasGroup(uiToActivate1, 0, 1, 3)); // 페이드 인을 3초 동안 수행
-
             yield return new WaitForSeconds(2); // 2초 대기
             VoteUI.SetActive(false);
+
+            // 모든 클라이언트에게 시체 제거 RPC 호출
             GameObject playerObject = PhotonNetwork.LocalPlayer.TagObject as GameObject;
             PhotonView playerPhotonView = playerObject.GetComponent<PhotonView>();
             playerPhotonView.RPC("DisableAllCorpses", RpcTarget.All);
+
+            // 마스터 클라이언트만 타이머 재시작 RPC 호출
+            if (PhotonNetwork.IsMasterClient && gameTimer != null)
+            {
+                gameTimer.photonView.RPC("ForceRestartTimer", RpcTarget.All);
+            }
 
             yield return StartCoroutine(FadeCanvasGroup(uiToActivate1, 1, 0, 1)); // 페이드 아웃을 1초 동안 수행
             uiToActivate1.gameObject.SetActive(false);

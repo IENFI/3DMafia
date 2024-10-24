@@ -114,7 +114,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks // 안현석 똑바로�
                 {
                     mafiaNum = (int)roomInfo.CustomProperties["MafiaNum"];
                 }
-                CellBtn[i].transform.GetChild(2).GetComponent<TextMeshProUGUI>().text = "Mafia 수 : " + mafiaNum;
+                CellBtn[i].transform.GetChild(2).GetComponent<TextMeshProUGUI>().text = "마피아 수 : " + mafiaNum;
             }
             else
             {

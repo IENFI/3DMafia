@@ -17,6 +17,7 @@ public class Timer : MonoBehaviourPun
     private bool isBlinking;
     private fillAmountController fillController;
     public GameObject ShopUI; // 상점 UI
+    private bool isPaused = false; // 타이머 일시정지 상태 체크
 
     [Header("Phase Image}")]
     public Image Night; // 밤 이미지
@@ -40,7 +41,7 @@ public class Timer : MonoBehaviourPun
         if (minigameManager == null)
         {
             Debug.LogError("MinigameManager가 씬에 없습니다. 참조를 확인하세요.");
-        } 
+        }
         // 게임이 시작할 때 미니게임 할당시키기
         minigameManager.AssignRandomMinigame();
     }
@@ -74,7 +75,7 @@ public class Timer : MonoBehaviourPun
                 fillController.totalTime = curTime;
                 Start_count++;
             }
-            else 
+            else
             {
                 curTime = time;
                 fillController.totalTime = curTime;
@@ -83,7 +84,7 @@ public class Timer : MonoBehaviourPun
             PhotonView playerPhotonView = playerObject.GetComponent<PhotonView>();
 
             playerPhotonView.RPC("Spawn", PhotonNetwork.LocalPlayer);
-        
+
             playerPhotonView.RPC("DisableAllCorpses", RpcTarget.All);
 
             isBlinking = false;
@@ -97,6 +98,12 @@ public class Timer : MonoBehaviourPun
 
             while (curTime > 0)
             {
+                if (isPaused) // 일시정지 체크
+                {
+                    yield return null;
+                    continue;
+                }
+
                 curTime -= Time.deltaTime;
                 int minute = (int)curTime / 60;
                 int second = (int)curTime % 60;
@@ -196,15 +203,48 @@ public class Timer : MonoBehaviourPun
         }
     }
 
-    // Start is called before the first frame update
-    void Start()
+    // 타이머 일시정지를 위한 RPC
+    [PunRPC]
+    public void PauseTimer()
     {
-        // 필요한 경우 Start에서 초기화할 수 있습니다.
+        if (timerCoroutine != null)
+        {
+            StopCoroutine(timerCoroutine);
+            timerCoroutine = null;
+        }
+        isPaused = true;
     }
 
-    // Update is called once per frame
-    void Update()
+    // 타이머 강제 재시작을 위한 RPC
+    [PunRPC]
+    public void ForceRestartTimer()
     {
+        if (timerCoroutine != null)
+        {
+            StopCoroutine(timerCoroutine);
+        }
+        isPaused = false;
 
+        directionalLight.enabled = !directionalLight.enabled;
+        isDaytime = !isDaytime;
+        minigameManager.AssignRandomMinigame();
+        if (!isDaytime)
+        {
+            ActivateRandomMerchants();
+            Night.enabled = true;
+            Day.enabled = false;
+        }
+        else
+        {
+            DeactivateAllMerchants();
+            Night.enabled = false;
+            Day.enabled = true;
+        }
+        // fillAmount 초기화
+        if (fillController != null)
+        {
+            fillController.ResetFillAmount();
+        }
+        timerCoroutine = StartCoroutine(TimerCoroutine());
     }
 }
