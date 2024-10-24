@@ -25,6 +25,7 @@ public class InteractScript : MonoBehaviourPun
     private Collider lastReportCollider;
     private Collider lastCustomizeCollider;
     private Collider lastDoorCollider;
+    AudioSource audioSource;
 
     PhotonView votingSystemPhotonView;
 
@@ -50,7 +51,7 @@ public class InteractScript : MonoBehaviourPun
         cameras = GetComponentsInChildren<Camera>();
         fpCamera = null;
         foreach (Camera cam in cameras)
-        {   
+        {
             if (cam.name == "FPCamera") // FPCamera의 이름이 "FPCamera"라고 가정
             {
                 fpCamera = cam;
@@ -58,12 +59,17 @@ public class InteractScript : MonoBehaviourPun
             }
         }
         reportChance = 1;
-        if(!photonView.IsMine)
+        if (!photonView.IsMine)
         {
             toolTipUI.SetActive(false);
             return;
         }
 
+    }
+
+    private void Start()
+    {
+        audioSource = GetComponent<AudioSource>();
     }
 
     void Update()
@@ -284,6 +290,7 @@ public class InteractScript : MonoBehaviourPun
                         votingSystemPhotonView = FindObjectOfType<VotingSystem>().GetComponent<PhotonView>();
                         if (votingSystemPhotonView != null)
                         {
+                            audioSource.Play();
                             votingSystemPhotonView.RPC("StartVote", RpcTarget.All);
                             reportChance = 0;
                             toolTipUI.SetActive(false);

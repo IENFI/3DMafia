@@ -66,7 +66,18 @@ public class XRayVisionItem : MonoBehaviour
         Debug.Log($"XRayVisionItem: Created {playerXRays.Count} player X-ray effects");
     }
 
-
+    void OnActivationButtonClick()
+    {
+        Debug.Log("XRayVisionItem: Activation button clicked");
+        if (!isActive)
+        {
+            StartCoroutine(ActivateXRayVision());
+        }
+        else
+        {
+            DeactivateXRayVision();
+        }
+    }
 
     IEnumerator ActivateXRayVision()
     {

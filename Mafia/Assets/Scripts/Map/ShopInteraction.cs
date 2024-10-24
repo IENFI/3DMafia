@@ -15,7 +15,7 @@ public class ShopInteraction : MonoBehaviourPunCallbacks
     private GameObject Player;
     [SerializeField]
     private float increasedSpeed = 2;
-    private float originalSpeed;
+    private float originalSpeed = 2;
 
     [SerializeField] private Renderer outlineRenderer;
     public GameObject ShopUI;
@@ -39,7 +39,6 @@ public class ShopInteraction : MonoBehaviourPunCallbacks
     public TMP_Text SaveCoinText;
     public int SaveCoin = 0;
 
-    private bool isPlayerInRange = false;
     private PlayerController playerController;
     private CharacterController characterController;
     private List<ShopInteraction> shopInteractions;
@@ -226,7 +225,7 @@ public class ShopInteraction : MonoBehaviourPunCallbacks
                 else
                 {
                     // 처음 활성화되는 경우에만 속도 변경
-                    playerController.ChangeMoveSpeed();
+                    playerController.ChangeMoveSpeed(increasedSpeed);
                 }
 
                 itemImages[1].enabled = true;
@@ -234,7 +233,7 @@ public class ShopInteraction : MonoBehaviourPunCallbacks
 
                 // 새로운 타이머 시작
                 Coroutine newTimer = StartCoroutine(UpdateItemTimer(1, 60.0f, () => {
-                    playerController.OriginMoveSpeed();
+                    playerController.OriginMoveSpeed(originalSpeed);
                 }));
                 activeTimers[1] = newTimer;
 

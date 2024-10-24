@@ -30,7 +30,8 @@ public class MafiaManager : MonoBehaviourPunCallbacks
 
     private bool isSynced = false;
 
-    private bool gameOver = false;
+    // 테스트시 키고꺼야하는 목록
+    // private bool gameOver = false;
 
     [SerializeField]
     public GameObject DeadImage;

@@ -21,7 +21,7 @@ public class LeftWire : MonoBehaviour
     [SerializeField]
     private RectTransform mWireBody;
 
-    private LeftWire mSelectedWire;
+    //private LeftWire mSelectedWire;
 
     [SerializeField]
     private float offset = 15f;
