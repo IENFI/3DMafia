@@ -10,6 +10,11 @@ public class PanelExpander : MonoBehaviour
     public float collapsedHeight = 100f; // 축소된 높이
     private bool isExpanded = false;
 
+    private void Awake()
+    {
+        // 씬 전환시에도 오브젝트가 삭제되지 않도록 설정
+        DontDestroyOnLoad(gameObject);
+    }
     void Start()
     {
         // 버튼 클릭 이벤트 연결

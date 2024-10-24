@@ -120,7 +120,18 @@ public class WaitingRoomManager : MonoBehaviourPunCallbacks
         // 로딩 UI를 활성화
         LoadingUI.SetActive(true);
 
-        yield return new WaitForSeconds(2); // 4초 대기
+        // TextLoadingAnimation 컴포넌트를 가져옵니다.
+        TextLoadingAnimation loadingAnimation = LoadingUI.GetComponentInChildren<TextLoadingAnimation>();
+        if (loadingAnimation != null)
+        {
+            // 3초 동안 애니메이션을 실행합니다.
+            yield return StartCoroutine(loadingAnimation.AnimateForDuration(3f));
+        }
+        else
+        {
+            // TextLoadingAnimation 컴포넌트가 없는 경우 2초 대기
+            yield return new WaitForSeconds(2f);
+        }
 
         if (PhotonNetwork.IsMasterClient)
         {
@@ -211,7 +222,7 @@ public class WaitingRoomManager : MonoBehaviourPunCallbacks
         }
         else
         {
-            readyBtnText.text = "준비하기";
+            readyBtnText.text = "준비하기(F5)";
             ReadyBtn.GetComponent<Image>().color = Color.white;
         }
 
@@ -231,7 +242,7 @@ public class WaitingRoomManager : MonoBehaviourPunCallbacks
         }
         else if (CreateRoomUI.activeSelf && Input.GetKeyDown(KeyCode.Escape) && PhotonNetwork.IsMasterClient && GameManager.instance.IsAnyUIOpen())
         {
-            CreateRoomUI.SetActive(false);            
+            CreateRoomUI.SetActive(false);
         }
     }
 
@@ -240,7 +251,7 @@ public class WaitingRoomManager : MonoBehaviourPunCallbacks
         if (PhotonNetwork.InRoom)
         {
             int playerCount = PhotonNetwork.CurrentRoom.PlayerCount;
-            playerCountText.text = $"Players: {playerCount}"; // Update the TMP_Text UI element
+            playerCountText.text = $"인원수: {playerCount}"; // Update the TMP_Text UI element
         }
     }
 
@@ -381,7 +392,7 @@ public class WaitingRoomManager : MonoBehaviourPunCallbacks
 
     private IEnumerator FadeOutLoadingUI()
     {
-        float duration = 0.5f; // 페이드 아웃 지속 시간
+        float duration = 2f; // 페이드 아웃 지속 시간
         float elapsedTime = 0f;
 
         while (elapsedTime < duration)
