@@ -14,6 +14,15 @@ public class VoteManager : MonoBehaviourPunCallbacks
     [SerializeField]
     public GameObject mafiaManager;
 
+    [Header("ProfileImage")]
+    public Image[] profileImage;
+
+    [Header("AvatarImage")]
+    public Sprite[] avatarSpriteImages;
+
+    [Header("Die(X)Image")]
+    public Image[] xImage;
+
     [Header("VoteUI")]
     public GameObject VoteUI;
     public Button btn0;
@@ -52,11 +61,12 @@ public class VoteManager : MonoBehaviourPunCallbacks
 
     private Dictionary<int, TMP_Text> btnTexts;
     private Dictionary<int, Button> btns;
+    private Dictionary<string, int> avatarNameToSpriteIndex;
 
     private Timer gameTimer;
     // VoteManager   Ȱ  ȭ Ǹ  Start      Ϸ                ϴٰ                θ    Ȱ  ȭ.
 
-    public bool isMeetingActivated = true;
+    public bool isMeetingActivated = false;
 
     //voteList       client 鿡       .
     private int[] voteList = new int[10]; //10    ִ   ÷  ̾    ,     list  ƴϰ  array  , 0      ʱ ȭ
@@ -67,6 +77,32 @@ public class VoteManager : MonoBehaviourPunCallbacks
     private bool VoteResultBool;
     private int VoteSelectPlayerNum = -1;
 
+    private void Awake()
+    {
+        Debug.Log("[VoteManager] Initializing VoteManager...");
+        try
+        {
+            // 아바타 이름과 스프라이트 인덱스 매핑 초기화
+            avatarNameToSpriteIndex = new Dictionary<string, int>()
+            {
+                { "builder", 0 },
+                { "businessWoman", 1 },
+                { "cashier", 2 },
+                { "chef", 3 },
+                { "fisherman", 4 },
+                { "miner", 5 },
+                { "nurse", 6 },
+                { "police", 7 },
+                { "security", 8 },
+                { "worker", 9 }
+            };
+            Debug.Log("[VoteManager] Avatar name to sprite index mapping initialized successfully");
+        }
+        catch (Exception e)
+        {
+            Debug.LogError($"[VoteManager] Error during initialization: {e.Message}");
+        }
+    }
     // Start is called before the first frame update
     void MeetingStart()
     {
@@ -123,8 +159,32 @@ public class VoteManager : MonoBehaviourPunCallbacks
             gameTimer.photonView.RPC("PauseTimer", RpcTarget.All);
         }
 
+        Debug.Log("[VoteManager] Starting meeting...");
+
+        // 필수 컴포넌트들 검증
+        if (profileImage == null || profileImage.Length == 0)
+        {
+            Debug.LogError("[VoteManager] Profile image array is not assigned!");
+            return;
+        }
+
+        if (avatarSpriteImages == null || avatarSpriteImages.Length == 0)
+        {
+            Debug.LogError("[VoteManager] Avatar sprite images array is not assigned!");
+            return;
+        }
+
+        if (VoteUI == null)
+        {
+            Debug.LogError("[VoteManager] VoteUI is not assigned!");
+            return;
+        }
+
+        // 모든 검증이 통과되면 실행
         Initialize();
+        UpdateProfileImages();
         VoteUI.SetActive(true);
+        Debug.Log("[VoteManager] Meeting started successfully");
 
     }
 
@@ -135,6 +195,97 @@ public class VoteManager : MonoBehaviourPunCallbacks
         VoteUI.SetActive(true);
     }
     */
+
+    private void UpdateProfileImages()
+    {
+        Debug.Log("[VoteManager] Updating profile images...");
+
+        if (profileImage == null)
+        {
+            Debug.LogError("[VoteManager] Profile image array is null!");
+            return;
+        }
+
+        if (avatarSpriteImages == null)
+        {
+            Debug.LogError("[VoteManager] Avatar sprite images array is null!");
+            return;
+        }
+
+        Debug.Log($"[VoteManager] Connected players: {PhotonNetwork.PlayerList.Length}");
+        Debug.Log($"[VoteManager] Profile image slots: {profileImage.Length}");
+        Debug.Log($"[VoteManager] Available avatar sprites: {avatarSpriteImages.Length}");
+
+        try
+        {
+            for (int i = 0; i < PhotonNetwork.PlayerList.Length; i++)
+            {
+                Player player = PhotonNetwork.PlayerList[i];
+                Debug.Log($"[VoteManager] Processing player {i}: {player.NickName}");
+
+                // 플레이어의 현재 아바타 이름 가져오기
+                if (player.CustomProperties.TryGetValue("AvatarName", out object avatarNameObj))
+                {
+                    string avatarName = (string)avatarNameObj;
+                    Debug.Log($"[VoteManager] Player {player.NickName} has avatar: {avatarName}");
+
+                    // 해당 아바타 이름에 맞는 스프라이트 인덱스 찾기
+                    if (avatarNameToSpriteIndex.TryGetValue(avatarName, out int spriteIndex))
+                    {
+                        Debug.Log($"[VoteManager] Found sprite index {spriteIndex} for avatar {avatarName}");
+
+                        // 프로필 이미지 업데이트
+                        if (i < profileImage.Length && spriteIndex < avatarSpriteImages.Length)
+                        {
+                            if (profileImage[i] == null)
+                            {
+                                Debug.LogError($"[VoteManager] Profile image at index {i} is null!");
+                                continue;
+                            }
+
+                            if (avatarSpriteImages[spriteIndex] == null)
+                            {
+                                Debug.LogError($"[VoteManager] Avatar sprite at index {spriteIndex} is null!");
+                                continue;
+                            }
+
+                            profileImage[i].sprite = avatarSpriteImages[spriteIndex];
+                            profileImage[i].gameObject.SetActive(true);
+                            Debug.Log($"[VoteManager] Successfully updated profile image for player {player.NickName}");
+                        }
+                        else
+                        {
+                            Debug.LogError($"[VoteManager] Index out of range - Profile slot: {i}, Sprite index: {spriteIndex}");
+                        }
+                    }
+                    else
+                    {
+                        Debug.LogWarning($"[VoteManager] No sprite index found for avatar name: {avatarName}");
+                    }
+                }
+                else
+                {
+                    Debug.LogWarning($"[VoteManager] No avatar name found for player: {player.NickName}");
+                }
+            }
+
+            // 나머지 프로필 이미지는 비활성화
+            for (int i = PhotonNetwork.PlayerList.Length; i < profileImage.Length; i++)
+            {
+                if (profileImage[i] != null)
+                {
+                    profileImage[i].gameObject.SetActive(false);
+                    Debug.Log($"[VoteManager] Deactivated unused profile slot {i}");
+                }
+            }
+
+            Debug.Log("[VoteManager] Profile image update completed");
+        }
+        catch (Exception e)
+        {
+            Debug.LogError($"[VoteManager] Error during profile image update: {e.Message}\nStack trace: {e.StackTrace}");
+        }
+    }
 
     void Update()
     {
@@ -198,7 +349,10 @@ public class VoteManager : MonoBehaviourPunCallbacks
             if (i < PhotonNetwork.PlayerList.Length)
             {
                 if ((bool)PhotonNetwork.PlayerList[i].CustomProperties["isDead"])
+                {
                     btns[i].GetComponent<Button>().interactable = false;
+                    xImage[i].gameObject.SetActive(true);
+                }
                 else
                     btns[i].GetComponent<Button>().interactable = true;
             }
@@ -229,46 +383,134 @@ public class VoteManager : MonoBehaviourPunCallbacks
     //         ǥ         ¸     ⼭     ȭ
     public override void OnPlayerPropertiesUpdate(Player player, ExitGames.Client.Photon.Hashtable props)
     {
-        // ÷  ̾      ȣ   Ž   ϰ    ǥ     Ʈ    ݿ 
-        foreach (object key in props.Keys)
+        try
         {
-            if (key.ToString().Equals("voted"))
-            {
-                int num;
-                num = (int)player.CustomProperties["voted"];
-                if (num >= 0)
-                {
-                    voteList[num]++;
-                    //  ǥ  Ϸ             ̻    ǥ     
-                    if (PhotonNetwork.LocalPlayer == player)
-                    {
-                        //  ǥ  Ϸ             ̻    ǥ     
-                        for (int i = 0; i < 10; i++)
-                        {
-                            btns[i].GetComponent<Button>().interactable = false;
-                        }
+            base.OnPlayerPropertiesUpdate(player, props);
+            Debug.Log($"[VoteManager] Properties updated for player: {player.NickName}");
 
-                        btn_skip.GetComponent<Button>().interactable = false;
-                    }
-                    SendText(num, voteList[num]);
+            foreach (object key in props.Keys)
+            {
+                Debug.Log($"[VoteManager] Processing property key: {key}");
+
+                // 아바타가 변경되었다면 프로필 이미지 업데이트
+                if (props.ContainsKey("AvatarName"))
+                {
+                    Debug.Log($"[VoteManager] Avatar changed for player {player.NickName}. New avatar: {props["AvatarName"]}");
+                    UpdateProfileImages();
                 }
 
-                if (num == -13)
+                if (key.ToString().Equals("voted"))
                 {
-                    skiped++;
-                    if (PhotonNetwork.LocalPlayer == player)
+                    Debug.Log("[VoteManager] Processing vote...");
+                    int num;
+                    num = (int)player.CustomProperties["voted"];
+                    Debug.Log($"[VoteManager] Vote number: {num} from player: {player.NickName}");
+
+                    if (num >= 0)
                     {
-                        //  ǥ  Ϸ             ̻    ǥ     
-                        for (int i = 0; i < 10; i++)
+                        Debug.Log($"[VoteManager] Valid vote (num >= 0) received for player index: {num}");
+                        voteList[num]++;
+                        Debug.Log($"[VoteManager] Vote count for player {num} is now: {voteList[num]}");
+
+                        if (PhotonNetwork.LocalPlayer == player)
                         {
-                            btns[i].GetComponent<Button>().interactable = false;
+                            Debug.Log("[VoteManager] Local player voted - disabling voting buttons");
+                            for (int i = 0; i < 10; i++)
+                            {
+                                if (btns[i] != null)
+                                {
+                                    Button btn = btns[i].GetComponent<Button>();
+                                    if (btn != null)
+                                    {
+                                        btn.interactable = false;
+                                    }
+                                    else
+                                    {
+                                        Debug.LogError($"[VoteManager] Button component not found on button {i}");
+                                    }
+                                }
+                                else
+                                {
+                                    Debug.LogError($"[VoteManager] Button object is null at index {i}");
+                                }
+                            }
+
+                            if (btn_skip != null)
+                            {
+                                Button skipBtn = btn_skip.GetComponent<Button>();
+                                if (skipBtn != null)
+                                {
+                                    skipBtn.interactable = false;
+                                }
+                                else
+                                {
+                                    Debug.LogError("[VoteManager] Skip button component not found");
+                                }
+                            }
+                            else
+                            {
+                                Debug.LogError("[VoteManager] Skip button object is null");
+                            }
                         }
 
-                        btn_skip.GetComponent<Button>().interactable = false;
+                        SendText(num, voteList[num]);
                     }
-                    SendSkip(skiped);
+
+                    if (num == -13)
+                    {
+                        Debug.Log("[VoteManager] Skip vote received");
+                        skiped++;
+                        Debug.Log($"[VoteManager] Total skips: {skiped}");
+
+                        if (PhotonNetwork.LocalPlayer == player)
+                        {
+                            Debug.Log("[VoteManager] Local player skipped - disabling voting buttons");
+                            for (int i = 0; i < 10; i++)
+                            {
+                                if (btns[i] != null)
+                                {
+                                    Button btn = btns[i].GetComponent<Button>();
+                                    if (btn != null)
+                                    {
+                                        btn.interactable = false;
+                                    }
+                                    else
+                                    {
+                                        Debug.LogError($"[VoteManager] Button component not found on button {i}");
+                                    }
+                                }
+                                else
+                                {
+                                    Debug.LogError($"[VoteManager] Button object is null at index {i}");
+                                }
+                            }
+
+                            if (btn_skip != null)
+                            {
+                                Button skipBtn = btn_skip.GetComponent<Button>();
+                                if (skipBtn != null)
+                                {
+                                    skipBtn.interactable = false;
+                                }
+                                else
+                                {
+                                    Debug.LogError("[VoteManager] Skip button component not found");
+                                }
+                            }
+                            else
+                            {
+                                Debug.LogError("[VoteManager] Skip button object is null");
+                            }
+                        }
+
+                        SendSkip(skiped);
+                    }
                 }
             }
+        }
+        catch (Exception e)
+        {
+            Debug.LogError($"[VoteManager] Error in OnPlayerPropertiesUpdate: {e.Message}\nStack trace: {e.StackTrace}");
         }
     }
 

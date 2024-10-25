@@ -58,7 +58,9 @@ public class AvatarChanger : MonoBehaviourPunCallbacks
     private void Start()
     {
         currentSceneName = SceneManager.GetActiveScene().name;
-        currentAvatarName = PlayerPrefs.GetString("CurrentAvatarName", "builder");
+        // 각 클라이언트별로 고유한 PlayerPrefs 키를 사용
+        string playerPrefKey = $"CurrentAvatarName_{PhotonNetwork.LocalPlayer.ActorNumber}";
+        currentAvatarName = PlayerPrefs.GetString(playerPrefKey, "builder");
 
         if (photonView.IsMine)
         {
@@ -96,6 +98,12 @@ public class AvatarChanger : MonoBehaviourPunCallbacks
 
     private void InitializeAvatar()
     {
+        if (!photonView.IsMine)
+        {
+            Debug.LogWarning("Attempting to initialize avatar on non-owned player");
+            return;
+        }
+
         foreach (var avatar in avatarDict.Values)
         {
             avatar.SetActive(false);
@@ -161,10 +169,12 @@ public class AvatarChanger : MonoBehaviourPunCallbacks
         avatarDict[newAvatarName].SetActive(true);
         currentAvatarName = newAvatarName;
 
-        PlayerPrefs.SetString("CurrentAvatarName", currentAvatarName);
+        // 각 클라이언트별로 고유한 PlayerPrefs 키를 사용
+        string playerPrefKey = $"CurrentAvatarName_{PhotonNetwork.LocalPlayer.ActorNumber}";
+        PlayerPrefs.SetString(playerPrefKey, currentAvatarName);
         PlayerPrefs.Save();
 
-        Debug.Log($"Changed avatar to: {newAvatarName}");
+        Debug.Log($"Changed avatar to: {newAvatarName} for player {PhotonNetwork.LocalPlayer.ActorNumber}");
 
         // Sync with other clients
         Hashtable props = new Hashtable() { { "AvatarName", currentAvatarName } };
