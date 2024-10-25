@@ -5,8 +5,8 @@ using System.Collections;
 public class TextLoadingAnimation : MonoBehaviour
 {
     public TMP_Text loadingText;
-    public float dotInterval = 0.5f; // Á¡ÀÌ Ãß°¡µÇ´Â °£°İ (ÃÊ)
-    private string baseText = "·ÎµùÁß";
+    public float dotInterval = 0.5f; // ì ì´ ì¶”ê°€ë˜ëŠ” ê°„ê²© (ì´ˆ)
+    private string baseText = "ë¡œë”©ì¤‘";
     private int maxDots = 3;
     private Coroutine animationCoroutine;
 
@@ -17,7 +17,7 @@ public class TextLoadingAnimation : MonoBehaviour
             loadingText = GetComponent<TMP_Text>();
             if (loadingText == null)
             {
-                Debug.LogError("TMP_Text ÄÄÆ÷³ÍÆ®¸¦ Ã£À» ¼ö ¾ø½À´Ï´Ù!");
+                Debug.LogError("TMP_Text ì»´í¬ë„ŒíŠ¸ë¥¼ ì°¾ì„ ìˆ˜ ì—†ìŠµë‹ˆë‹¤!");
             }
         }
         loadingText.text = baseText;
@@ -25,7 +25,7 @@ public class TextLoadingAnimation : MonoBehaviour
 
     void Start()
     {
-        // Start¿¡¼­ ¾Ö´Ï¸ŞÀÌ¼ÇÀ» ½ÃÀÛÇÏÁö ¾Ê½À´Ï´Ù. ¿ÜºÎ¿¡¼­ È£ÃâÇÏµµ·Ï º¯°æ
+        // Startì—ì„œ ì• ë‹ˆë©”ì´ì…˜ì„ ì‹œì‘í•˜ì§€ ì•ŠìŠµë‹ˆë‹¤. ì™¸ë¶€ì—ì„œ í˜¸ì¶œí•˜ë„ë¡ ë³€ê²½
     }
 
     private void OnDisable()
@@ -44,7 +44,7 @@ public class TextLoadingAnimation : MonoBehaviour
     {
         if (loadingText == null)
         {
-            Debug.LogError("loadingText°¡ nullÀÔ´Ï´Ù. ¾Ö´Ï¸ŞÀÌ¼ÇÀ» ½ÃÀÛÇÒ ¼ö ¾ø½À´Ï´Ù.");
+            Debug.LogError("loadingTextê°€ nullì…ë‹ˆë‹¤. ì• ë‹ˆë©”ì´ì…˜ì„ ì‹œì‘í•  ìˆ˜ ì—†ìŠµë‹ˆë‹¤.");
             return;
         }
         if (animationCoroutine != null)
@@ -52,7 +52,7 @@ public class TextLoadingAnimation : MonoBehaviour
             StopCoroutine(animationCoroutine);
         }
         animationCoroutine = StartCoroutine(AnimateLoadingText());
-        Debug.Log("¾Ö´Ï¸ŞÀÌ¼Ç ½ÃÀÛµÊ");
+        Debug.Log("ì• ë‹ˆë©”ì´ì…˜ ì‹œì‘ë¨");
     }
 
     public void StopAnimation()
@@ -65,7 +65,7 @@ public class TextLoadingAnimation : MonoBehaviour
         if (loadingText != null)
         {
             loadingText.text = baseText;
-            Debug.Log("¾Ö´Ï¸ŞÀÌ¼Ç ÁßÁöµÊ, ÅØ½ºÆ® ¸®¼Â: " + loadingText.text);
+            Debug.Log("ì• ë‹ˆë©”ì´ì…˜ ì¤‘ì§€ë¨, í…ìŠ¤íŠ¸ ë¦¬ì…‹: " + loadingText.text);
         }
     }
 
@@ -76,7 +76,7 @@ public class TextLoadingAnimation : MonoBehaviour
         {
             string newText = baseText + new string('.', dotCount);
             loadingText.text = newText;
-            Debug.Log("ÅØ½ºÆ® ¾÷µ¥ÀÌÆ®: " + newText);
+            Debug.Log("í…ìŠ¤íŠ¸ ì—…ë°ì´íŠ¸: " + newText);
             dotCount++;
             if (dotCount > maxDots)
             {
