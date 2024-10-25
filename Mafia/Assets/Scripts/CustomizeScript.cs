@@ -63,8 +63,15 @@ public class CustomizeScript : MonoBehaviour
 
     public void CustomizingButton(string avatarName)
     {
-        player.ChangeAvatar(avatarName);
-        UpdateAvatarText(avatarName);
+        if (player != null && player.photonView.IsMine)
+        {
+            player.ChangeAvatar(avatarName);
+            UpdateAvatarText(avatarName);
+        }
+        else
+        {
+            Debug.LogWarning("Cannot change avatar: Player not found or not owned");
+        }
     }
     private void UpdateAvatarText(string avatarName)
         {
