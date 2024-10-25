@@ -6051,7 +6051,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   jumpKeyCode: 32
   cameraTransform: {fileID: 1339282797513025154}
-  cameraController: {fileID: 0}
+  fpCameraController: {fileID: 1040416222683677877}
+  cameraController: {fileID: 871562808728903264}
   FPcamera: {fileID: 1455724720101697617}
   playerMoveSpeedUnit: 1
   killCooldown: 15

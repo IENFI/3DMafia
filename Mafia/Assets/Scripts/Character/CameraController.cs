@@ -43,7 +43,7 @@ public class CameraController : MonoBehaviourPun
         }
     }
 
-    void ShowFPCamera()
+    public void ShowFPCamera()
     {
         FPCamera.rect = new Rect(0, 0, 1, 1);
         TPCamera.rect = new Rect(width, width, height, height);
@@ -51,7 +51,7 @@ public class CameraController : MonoBehaviourPun
         TPCamera.depth = 1;
     }
 
-    void ShowTPCamera()
+    public void ShowTPCamera()
     {
         FPCamera.rect = new Rect(width, width, height, height);
         TPCamera.rect = new Rect(0, 0, 1, 1);

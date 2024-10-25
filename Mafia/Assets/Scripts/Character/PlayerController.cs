@@ -17,7 +17,9 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
     [SerializeField]
     private Transform cameraTransform; // 카메라의 Transform
     [SerializeField]
-    private FPCameraController cameraController;
+    private FPCameraController fpCameraController;
+    [SerializeField]
+    private CameraController cameraController;
     [SerializeField]
     private Camera FPcamera;
     private Movement movement;
@@ -69,10 +71,10 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
         Debug.Log("Player EnableControl() : enable : " + enable);
         canControl = enable;
         if (enable)
-            cameraController.EnableRotation();
+            fpCameraController.EnableRotation();
         else
         {
-            cameraController.DisableRotation();
+            fpCameraController.DisableRotation();
         }
 
         x_ = Input.GetAxis("Horizontal");
@@ -83,7 +85,7 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
     {
         movement = GetComponent<Movement>();
         playerAnimator = GetComponentInChildren<PlayerAnimator>();
-        cameraController = GetComponentInChildren<FPCameraController>();
+        fpCameraController = GetComponentInChildren<FPCameraController>();
         playerAttackCollision = GetComponentInChildren<PlayerAttack>();
         FPcamera.cullingMask &= ~LayerMask.GetMask("Ghost");
 
@@ -246,7 +248,7 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
                 float mouseX = Input.GetAxis("Mouse X");
                 float mouseY = Input.GetAxis("Mouse Y");
 
-                cameraController.RotateTo(mouseX, mouseY); // 카메라 회전 함수 호출
+                fpCameraController.RotateTo(mouseX, mouseY); // 카메라 회전 함수 호출
             }
             UpdateMiniMapPointPosition(); // MiniMapPoint 위치 업데이트
         }
@@ -285,6 +287,9 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
         if (isDead) return;
         isDead = true;
         playerAnimator.Death();
+            // 기존 레이어 저장
+        ShowObjects();
+        cameraController.ShowTPCamera();
         StartCoroutine(HandleDeath());
         ExitGames.Client.Photon.Hashtable props = new ExitGames.Client.Photon.Hashtable
         {
@@ -324,6 +329,8 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
             Debug.LogError("Prefab not found: " + corpseAvatar);
         }
 
+        cameraController.ShowFPCamera();
+        HideObjects();
         // RPC를 통해 모든 클라이언트에서 gameObject를 비활성화합니다.
         photonView.RPC("DisableGameObject", RpcTarget.All);
     }
@@ -376,6 +383,23 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
                 {
                     // 그림자는 보이게 하기
                     renderer.shadowCastingMode = ShadowCastingMode.ShadowsOnly;
+                }
+            }
+        }
+    }
+
+    // 모든 자식 오브젝트의 Renderer를 보이도록 설정하는 함수
+    private void ShowObjects()
+    {
+        foreach (GameObject obj in objectsToHide)
+        {
+            if (obj != null)
+            {
+                Renderer[] renderers = GetAllRenderersIncludingInactive(obj);
+                foreach (Renderer renderer in renderers)
+                {
+                    // 그림자와 함께 오브젝트가 보이도록 설정
+                    renderer.shadowCastingMode = ShadowCastingMode.On;
                 }
             }
         }
