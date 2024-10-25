@@ -22,6 +22,12 @@ public class SwipeController : MonoBehaviour, IEndDragHandler
 
     [SerializeField] Button previousBtn, nextBtn;
 
+    AudioSource audioSource;
+
+    public void Start()
+    {
+        audioSource = GetComponent<AudioSource>();
+    }
     public void Awake()
     {
         currentPage = 1;
@@ -38,7 +44,9 @@ public class SwipeController : MonoBehaviour, IEndDragHandler
             currentPage++;
             targetPos += pageStep;
             MovePage();
+
         }
+
     }
 
     public void OnEndDrag(PointerEventData eventData)
@@ -73,6 +81,7 @@ public class SwipeController : MonoBehaviour, IEndDragHandler
 
     void MovePage()
     {
+        audioSource.Play();
         levelPagesRect.LeanMoveLocal(targetPos, tweenTime).setEase(tweenType);
         UpdateBar();
         UpdateArrowButton() ;
