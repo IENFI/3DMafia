@@ -14,12 +14,12 @@ public class AvatarCustomizer : MonoBehaviourPunCallbacks
     private const string AVATAR_PROP_KEY = "AvatarName";
     void Start()
     {
-        // ¾Æ¹ÙÅ¸ ÀÌ¸§°ú ÀÎµ¦½º ¸ÅÇÎ
+        // ï¿½Æ¹ï¿½Å¸ ï¿½Ì¸ï¿½ï¿½ï¿½ ï¿½Îµï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
         for (int i = 0; i < avatarButtons.Length; i++)
         {
             avatarNameToIndex[avatarButtons[i].name] = i;
         }
-        // ÃÊ±â UI ¼³Á¤
+        // ï¿½Ê±ï¿½ UI ï¿½ï¿½ï¿½ï¿½
         UpdateUI();
     }
     public void SelectAvatar(string avatarName)
@@ -40,14 +40,14 @@ public class AvatarCustomizer : MonoBehaviourPunCallbacks
     }
     private void UpdateUI()
     {
-        // ¸ðµç ¹öÆ° ÃÊ±âÈ­
+        // ï¿½ï¿½ï¿½ ï¿½ï¿½Æ° ï¿½Ê±ï¿½È­
         for (int i = 0; i < avatarButtons.Length; i++)
         {
             avatarButtons[i].interactable = true;
             avatarUsernameTexts[i].text = "";
             checkMarks[i].SetActive(false);
         }
-        // °¢ ÇÃ·¹ÀÌ¾îÀÇ ¼±ÅÃ¿¡ µû¶ó UI ¾÷µ¥ÀÌÆ®
+        // ï¿½ï¿½ ï¿½Ã·ï¿½ï¿½Ì¾ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ã¿ï¿½ ï¿½ï¿½ï¿½ï¿½ UI ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®
         foreach (Player player in PhotonNetwork.PlayerList)
         {
             if (player.CustomProperties.TryGetValue(AVATAR_PROP_KEY, out object avatarName))

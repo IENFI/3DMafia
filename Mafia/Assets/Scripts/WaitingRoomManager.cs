@@ -368,6 +368,22 @@ public class WaitingRoomManager : MonoBehaviourPunCallbacks
             Debug.LogError("VoiceConnection is null. Cannot leave the voice room.");
         }
 
+        // 방 고유 ID 가져오기
+        string roomID = PhotonNetwork.CurrentRoom.CustomProperties["RoomID"].ToString();
+        int clientID = PhotonNetwork.LocalPlayer.ActorNumber;
+        
+       // 방에 남아 있는 플레이어가 없는지 확인하고 마지막 플레이어인 경우 방 정보 삭제
+        if (PhotonNetwork.IsMasterClient && PhotonNetwork.CurrentRoom.PlayerCount == 1)
+        {
+            // 데이터베이스에서 방 정보 삭제
+            DBInteraction.RemoveRoomAppearance(roomID);
+            Debug.Log("Room data removed from database as no players are left.");
+        }
+        // 외형 정보 삭제
+        DBInteraction.ResetAppearanceByClientID(roomID, clientID);
+        Debug.Log("Room data removed from database.");
+
+
         // Photon 룸 떠나기
         PhotonNetwork.LeaveRoom();
     }

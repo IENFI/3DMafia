@@ -188,10 +188,13 @@ public class NetworkManager : MonoBehaviourPunCallbacks // 안현석 똑바로�
     //}
     public override void OnRoomListUpdate(List<RoomInfo> roomList)
     {
+        Debug.Log("OnRoomListUpdate 함수 호출");
         // Create a new list to store rooms that should be displayed
         List<RoomInfo> roomsToShow = new List<RoomInfo>();
 
         // Iterate through the updated room list
+        // 1. Photon 서버에서 현재 존재하는 방 목록 가져오기
+        List<string> validRoomIDs = new List<string>();
         foreach (RoomInfo room in roomList)
         {
             // Check if the room is removed from the list
@@ -205,6 +208,12 @@ public class NetworkManager : MonoBehaviourPunCallbacks // 안현석 똑바로�
             }
             else
             {
+                if (room.CustomProperties.ContainsKey("RoomID")){
+                    Debug.Log("RoomID가 존재한다는 if문 진입");
+                    // RoomInfo의 CustomProperties에서 RoomID를 가져옴
+                    string roomID = room.CustomProperties["RoomID"].ToString();
+                    validRoomIDs.Add(roomID);
+                }
                 // Check if the room has started the game
                 if (room.CustomProperties.ContainsKey("isGameStarted") && (bool)room.CustomProperties["isGameStarted"])
                 {
@@ -224,6 +233,27 @@ public class NetworkManager : MonoBehaviourPunCallbacks // 안현석 똑바로�
                 }
             }
         }
+        Debug.Log("RoomID가 있는 룸리스트 : "+validRoomIDs);
+        // 2. 데이터베이스에서 모든 roomID 목록 가져오기
+        DBInteraction.GetAllRoomIDs((dbRoomIDs) =>
+        {
+            // 3. 유효하지 않은 roomID 확인
+            List<string> invalidRoomIDs = new List<string>();
+            foreach (string dbRoomID in dbRoomIDs)
+            {
+                if (!validRoomIDs.Contains(dbRoomID))
+                {
+                    invalidRoomIDs.Add(dbRoomID);
+                }
+            }
+
+            // 4. 유효하지 않은 roomID 삭제
+            foreach (string invalidRoomID in invalidRoomIDs)
+            {
+                DBInteraction.RemoveRoomAppearance(invalidRoomID);
+                Debug.Log($"Removed invalid room from DB: {invalidRoomID}");
+            }
+        });
 
         // Update the UI to display the updated room list
         MyListRenewal();
@@ -360,6 +390,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks // 안현석 똑바로�
     public void CreateRoom()
     {
         string roomName = RoomInput.text == "" ? "Room" + Random.Range(0, 100) : RoomInput.text;
+        string roomID = System.Guid.NewGuid().ToString();  // 고유한 Room ID 생성
 
         RoomOptions roomOptions = new RoomOptions
         {
@@ -367,12 +398,15 @@ public class NetworkManager : MonoBehaviourPunCallbacks // 안현석 똑바로�
             CustomRoomProperties = new ExitGames.Client.Photon.Hashtable()
             {
                 { "isGameStarted", false },
-                { "MafiaNum", selectedMafiaNum }  // 저장된 MafiaNum을 포함시킵니다.
+                { "MafiaNum", selectedMafiaNum }, // 저장된 MafiaNum을 포함시킵니다.
+                { "RoomID", roomID }  // 고유 Room ID를 추가
             },
-            CustomRoomPropertiesForLobby = new string[] { "isGameStarted", "MafiaNum" }  // 로비에서 사용할 속성 목록
+            CustomRoomPropertiesForLobby = new string[] { "isGameStarted", "MafiaNum", "RoomID" }  // 로비에서 사용할 속성 목록
         };
 
         PhotonNetwork.CreateRoom(roomName, roomOptions);
+        // 방 생성 후 DB에 roomID와 초기 외형 데이터 추가
+        DBInteraction.AddRoomAppearance(roomID);
     }
 
 

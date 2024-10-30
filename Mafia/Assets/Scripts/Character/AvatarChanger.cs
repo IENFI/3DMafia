@@ -18,13 +18,14 @@ public class AvatarChanger : MonoBehaviourPunCallbacks
     public GameObject police;
     public GameObject security;
     public GameObject worker;
+    public GameObject naked;
 
     private Dictionary<string, GameObject> avatarDict = new Dictionary<string, GameObject>();
     private const string targetSceneName = "Level_0";
     private string currentSceneName;
 
     [SerializeField]
-    private string currentAvatarName = "builder";
+    private string currentAvatarName = "start";
 
     Renderer[] Avatar;
 
@@ -45,6 +46,7 @@ public class AvatarChanger : MonoBehaviourPunCallbacks
         avatarDict.Add("police", police);
         avatarDict.Add("security", security);
         avatarDict.Add("worker", worker);
+        avatarDict.Add("naked", naked);
 
         foreach (var avatar in avatarDict)
         {
@@ -60,10 +62,28 @@ public class AvatarChanger : MonoBehaviourPunCallbacks
         currentSceneName = SceneManager.GetActiveScene().name;
         // 각 클라이언트별로 고유한 PlayerPrefs 키를 사용
         string playerPrefKey = $"CurrentAvatarName_{PhotonNetwork.LocalPlayer.ActorNumber}";
-        currentAvatarName = PlayerPrefs.GetString(playerPrefKey, "builder");
+        // currentAvatarName = PlayerPrefs.GetString(playerPrefKey, "builder");
 
         if (photonView.IsMine)
-        {
+            {// 사용하지 않은 외형을 DB에서 무작위로 선택
+            string roomID = PhotonNetwork.CurrentRoom.CustomProperties["RoomID"].ToString();
+            int clientID = PhotonNetwork.LocalPlayer.ActorNumber;
+
+            DBInteraction.GetRandomUnusedAppearance(roomID, (randomUnusedAppearance) =>
+            {
+                if (!string.IsNullOrEmpty(randomUnusedAppearance))
+                {
+                    // 선택된 외형을 적용
+                    ChangeAvatar(randomUnusedAppearance);
+
+                    // 해당 외형을 DB에 현재 클라이언트 ID로 업데이트
+                    DBInteraction.SetAppearanceClientID(roomID, randomUnusedAppearance, clientID);
+                }
+                else
+                {
+                    Debug.LogWarning("No available unused appearance found.");
+                }
+            });
             InitializeAvatar();
         }
         else
@@ -115,10 +135,14 @@ public class AvatarChanger : MonoBehaviourPunCallbacks
         }
         else
         {
-            Debug.LogError($"Invalid avatar name: {currentAvatarName}. Defaulting to builder.");
-            avatarDict["builder"].SetActive(true);
-            currentAvatarName = "builder";
+            Debug.LogError($"Invalid avatar name: {currentAvatarName}. xDefaulting to builderx.");
+            // avatarDict["builder"].SetActive(true);
+            // currentAvatarName = "builder";
         }
+
+        string roomID = PhotonNetwork.CurrentRoom.CustomProperties["RoomID"].ToString();
+        int clientID = PhotonNetwork.LocalPlayer.ActorNumber;
+        DBInteraction.SetAppearanceClientID(roomID, currentAvatarName, clientID);
 
         // Sync with other clients
         Hashtable props = new Hashtable() { { "AvatarName", currentAvatarName } };
@@ -153,6 +177,9 @@ public class AvatarChanger : MonoBehaviourPunCallbacks
 
     public void ChangeAvatar(string newAvatarName)
     {
+        string roomID = PhotonNetwork.CurrentRoom.CustomProperties["RoomID"].ToString();
+        int clientID = PhotonNetwork.LocalPlayer.ActorNumber;
+
         if (!photonView.IsMine)
         {
             Debug.LogWarning("Attempt to change avatar on non-owned player");
@@ -164,8 +191,10 @@ public class AvatarChanger : MonoBehaviourPunCallbacks
             Debug.LogError($"Invalid avatar name: {newAvatarName}");
             return;
         }
-
-        avatarDict[currentAvatarName].SetActive(false);
+        if (currentAvatarName != "start"){
+            avatarDict[currentAvatarName].SetActive(false);
+            DBInteraction.ResetAppearanceByCharacterType(roomID, currentAvatarName);
+        }
         avatarDict[newAvatarName].SetActive(true);
         currentAvatarName = newAvatarName;
 
@@ -173,6 +202,9 @@ public class AvatarChanger : MonoBehaviourPunCallbacks
         string playerPrefKey = $"CurrentAvatarName_{PhotonNetwork.LocalPlayer.ActorNumber}";
         PlayerPrefs.SetString(playerPrefKey, currentAvatarName);
         PlayerPrefs.Save();
+
+
+        DBInteraction.SetAppearanceClientID(roomID, newAvatarName, clientID);
 
         Debug.Log($"Changed avatar to: {newAvatarName} for player {PhotonNetwork.LocalPlayer.ActorNumber}");
 
@@ -210,5 +242,23 @@ public class AvatarChanger : MonoBehaviourPunCallbacks
 
         // 방에 입장할 때 모든 플레이어의 아바타 상태를 요청
         photonView.RPC("RequestAvatarState", RpcTarget.All);
+
+        
+    }
+
+    public override void OnPlayerLeftRoom(Player otherPlayer)
+    {
+        if (PhotonNetwork.IsMasterClient)
+        {
+            string roomID = PhotonNetwork.CurrentRoom.CustomProperties["RoomID"].ToString();
+            List<int> activeClientIDs = new List<int>();
+
+            foreach (Player player in PhotonNetwork.PlayerList)
+            {
+                activeClientIDs.Add(player.ActorNumber);
+            }
+
+            DBInteraction.ResetUnusedAppearances(roomID, activeClientIDs);
+        }
     }
 }

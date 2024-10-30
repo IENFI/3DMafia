@@ -26,7 +26,7 @@ public class XRayVisionItem : MonoBehaviour
         while (true)
         {
             GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
-            Debug.Log($"XRayVisionItem: Found {players.Length} players with 'Player' tag");
+            // Debug.Log($"XRayVisionItem: Found {players.Length} players with 'Player' tag");
 
             if (players.Length >= minimumPlayerCount)
             {

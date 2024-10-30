@@ -4841,6 +4841,37 @@ SkinnedMeshRenderer:
     m_Center: {x: -0.006009519, y: 0.9204822, z: -0.054320157}
     m_Extent: {x: 0.31196517, y: 0.24289423, z: 0.32618704}
   m_DirtyAABB: 0
+--- !u!1 &5843399802620953762
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8150112388215024541}
+  m_Layer: 6
+  m_Name: Naked
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!4 &8150112388215024541
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5843399802620953762}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 8918576884657039380}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &5973275841756439224
 GameObject:
   m_ObjectHideFlags: 0
@@ -6224,7 +6255,8 @@ MonoBehaviour:
   police: {fileID: 5523418195150318153}
   security: {fileID: 4823476751447069315}
   worker: {fileID: 2544270101047102985}
-  currentAvatarName: builder
+  naked: {fileID: 5843399802620953762}
+  currentAvatarName: start
 --- !u!82 &8832396538167572935
 AudioSource:
   m_ObjectHideFlags: 0
@@ -6533,6 +6565,7 @@ Transform:
   - {fileID: 2164162285709851266}
   - {fileID: 208928295407526851}
   - {fileID: 1647657440434639809}
+  - {fileID: 8150112388215024541}
   m_Father: {fileID: 537603180055623818}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &7016948022208629765
