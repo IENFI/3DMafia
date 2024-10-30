@@ -23,6 +23,7 @@ TagManager:
   - BookMinigame
   - Body
   - Mission
+  - Ghost
   layers:
   - Default
   - TransparentFX

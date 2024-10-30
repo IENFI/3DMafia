@@ -6,6 +6,7 @@ public class ReportButtonScript : MonoBehaviour
 {
     // 오브젝트의 Renderer 컴포넌트 참조
     private Renderer objectRenderer;
+    private Material originalMaterial; // 원래 Material을 저장할 변수
     [SerializeField]
     private Material meterial;
     private Light objectLight;
@@ -19,7 +20,7 @@ public class ReportButtonScript : MonoBehaviour
         // 색상을 하얀색으로 변경
         if (objectRenderer != null)
         {
-            objectRenderer.material.color = Color.white;
+            originalMaterial = objectRenderer.material; // 초기 Material을 저장
         }
         else
         {
@@ -44,7 +45,7 @@ public class ReportButtonScript : MonoBehaviour
             // 색상을 빨간색으로 변경
             if (objectRenderer != null)
             {
-                objectRenderer.material.color = Color.red;
+                objectRenderer.material = meterial;
                 objectLight.enabled = true;
             }
             else
@@ -57,7 +58,7 @@ public class ReportButtonScript : MonoBehaviour
             // 색상을 하얀색으로 변경
             if (objectRenderer != null)
             {
-                objectRenderer.material.color = Color.white;
+                objectRenderer.material = originalMaterial;
                 objectLight.enabled = false;
             }
             else

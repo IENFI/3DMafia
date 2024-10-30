@@ -1,4 +1,5 @@
 using Photon.Pun;
+using Photon.Pun.UtilityScripts;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -31,9 +32,19 @@ public class Timer : MonoBehaviourPun
 
     public MinigameManager minigameManager;
 
+    public Material daySkybox;
+    public Material nightSkybox;
+
+    public string ghostTag;
+    GameObject[] GhostList;
+    [SerializeField] 
+    private GameObject reportObject;
+    private Light reportLight;
+
     private void Awake()
     {
         directionalLight = GameObject.Find("Directional Light").GetComponent<Light>();
+        reportLight = reportObject.GetComponent<Light>();
         fillController = FindObjectOfType<fillAmountController>(); // fillAmountController 찾기
         fillController.totalTime = time;
         Debug.Log("Timer Awake: directionalLight and fillController initialized.");
@@ -123,12 +134,20 @@ public class Timer : MonoBehaviourPun
             Debug.Log("시간 종료");
             curTime = 0;
             // 자연광 전환
-            directionalLight.enabled = !directionalLight.enabled;
+            // directionalLight.enabled = !directionalLight.enabled;
 
             // 낮/밤 상태 전환
             isDaytime = !isDaytime;
             // 페이즈가 바뀔 때 마다 미니게임 할당시키기
             minigameManager.AssignRandomMinigame();
+
+            ToggleAllLights(isDaytime); //turn on or off all the lights
+
+            ChangeSkybox(isDaytime); //change the material of skybox!
+
+            SetFarValue(isDaytime); //set far value of player camera
+
+            SwitchOnFewLights(isDaytime);
 
             // 밤으로 전환될 때만 상인 활성화
             if (!isDaytime)
@@ -247,4 +266,70 @@ public class Timer : MonoBehaviourPun
         }
         timerCoroutine = StartCoroutine(TimerCoroutine());
     }
+
+    public void ToggleAllLights(bool state)
+    {
+        Light[] allLights = FindObjectsOfType<Light>();
+
+        foreach (Light light in allLights)
+        {
+            light.enabled = state;
+        }
+    }
+
+    public void ChangeSkybox(bool state)
+    {
+        if (state)
+        {
+            RenderSettings.skybox = daySkybox;
+        }
+        else
+        {
+            RenderSettings.skybox = nightSkybox;
+        }
+    }
+
+    public void SetFarValue(bool state)
+    {
+        Camera playerCamera;
+        playerCamera = Camera.main;
+
+        if (state)
+        {
+            playerCamera.farClipPlane = 1000f;
+        }
+        else
+        {
+            playerCamera.farClipPlane = 25f;
+        }
+    }
+    
+    public void SwitchOnFewLights(bool state)
+    {
+        if (state){
+            reportLight.enabled = true;
+        }
+        if ((bool)PhotonNetwork.LocalPlayer.CustomProperties["isDead"])
+        {
+            ghostTag = "Ghost";
+            GhostList = GameObject.FindGameObjectsWithTag(ghostTag);
+
+            foreach (GameObject ghost in GhostList)
+            {
+                Transform FPCamera = ghost.transform.Find("FPCamera");
+                Transform PointLight = FPCamera.transform.Find("PointLight");
+                Light pointLight = PointLight.GetComponent<Light>();
+                pointLight.enabled = true;
+            }
+        }
+        else
+        {
+            GameObject Player = PhotonNetwork.LocalPlayer.TagObject as GameObject;
+            Transform FPCamera = Player.transform.Find("FPCamera");
+            Transform PointLight = FPCamera.transform.Find("PointLight");
+            Light pointLight = PointLight.GetComponent<Light>();
+            pointLight.enabled = !state;
+        }
+    }
+
 }
