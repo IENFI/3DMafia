@@ -79,6 +79,9 @@ public class CustomizeScript : MonoBehaviour
             {
                 switch (avatarName)
                 {
+                    case "naked":
+                        currentAvatarText.text = "기본";
+                        break;
                     case "builder":
                         currentAvatarText.text = "건축가";
                         break;

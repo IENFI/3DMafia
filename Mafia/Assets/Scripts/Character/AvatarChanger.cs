@@ -36,6 +36,7 @@ public class AvatarChanger : MonoBehaviourPunCallbacks
 
     private void Awake()
     {
+        avatarDict.Add("naked", naked); 
         avatarDict.Add("builder", builder);
         avatarDict.Add("businessWoman", business_woman);
         avatarDict.Add("cashier", cashier);
@@ -46,7 +47,6 @@ public class AvatarChanger : MonoBehaviourPunCallbacks
         avatarDict.Add("police", police);
         avatarDict.Add("security", security);
         avatarDict.Add("worker", worker);
-        avatarDict.Add("naked", naked);
 
         foreach (var avatar in avatarDict)
         {
@@ -64,7 +64,7 @@ public class AvatarChanger : MonoBehaviourPunCallbacks
         string playerPrefKey = $"CurrentAvatarName_{PhotonNetwork.LocalPlayer.ActorNumber}";
         // currentAvatarName = PlayerPrefs.GetString(playerPrefKey, "builder");
 
-        if (photonView.IsMine)
+        /*if (photonView.IsMine)
             {// 사용하지 않은 외형을 DB에서 무작위로 선택
             string roomID = PhotonNetwork.CurrentRoom.CustomProperties["RoomID"].ToString();
             int clientID = PhotonNetwork.LocalPlayer.ActorNumber;
@@ -90,10 +90,41 @@ public class AvatarChanger : MonoBehaviourPunCallbacks
         {
             // 다른 플레이어의 아바타 상태를 요청
             photonView.RPC("RequestAvatarState", RpcTarget.All);
+        }*/
+
+        if (photonView.IsMine)
+        {
+            string roomID = PhotonNetwork.CurrentRoom.CustomProperties["RoomID"].ToString();
+            int clientID = PhotonNetwork.LocalPlayer.ActorNumber;
+
+            // Level_0에서만 랜덤 아바타 할당
+            if (currentSceneName == "Level_0")
+            {
+                DBInteraction.GetRandomUnusedAppearance(roomID, (randomUnusedAppearance) =>
+                {
+                    if (!string.IsNullOrEmpty(randomUnusedAppearance))
+                    {
+                        ChangeAvatar(randomUnusedAppearance);
+                        DBInteraction.SetAppearanceClientID(roomID, randomUnusedAppearance, clientID);
+                    }
+                });
+            }
+            else if (currentSceneName == "Level_1")
+            {
+                // Level_1에서는 이전 씬의 아바타 상태를 복원
+                RestoreAvatarState(roomID, clientID);
+            }
+
+            InitializeAvatar();
+        }
+        else
+        {
+            photonView.RPC("RequestAvatarState", RpcTarget.All);
         }
 
         SceneManager.sceneLoaded += OnSceneLoaded;
         Avatar = GetComponent<PlayerController>().GetAllRenderersIncludingInactive(avatarParent);
+
     }
 
     void OnDestroy()
@@ -260,5 +291,36 @@ public class AvatarChanger : MonoBehaviourPunCallbacks
 
             DBInteraction.ResetUnusedAppearances(roomID, activeClientIDs);
         }
+    }
+
+    private void RestoreAvatarState(string roomID, int clientID)
+    {
+        // 현재 클라이언트의 아바타 상태를 DB에서 조회
+        string query = $@"
+            SELECT 
+                CASE 
+                    WHEN builder = {clientID} THEN 'builder'
+                    WHEN businessWoman = {clientID} THEN 'businessWoman'
+                    WHEN cashier = {clientID} THEN 'cashier'
+                    WHEN chef = {clientID} THEN 'chef'
+                    WHEN fisherman = {clientID} THEN 'fisherman'
+                    WHEN miner = {clientID} THEN 'miner'
+                    WHEN nurse = {clientID} THEN 'nurse'
+                    WHEN police = {clientID} THEN 'police'
+                    WHEN security = {clientID} THEN 'security'
+                    WHEN worker = {clientID} THEN 'worker'
+                    WHEN naked = {clientID} THEN 'naked'
+                END as avatarType
+            FROM customize 
+            WHERE roomID = '{roomID}'";
+
+        AWSDBManager.ReadData(query, (reader) =>
+        {
+            if (reader.Read() && !reader.IsDBNull(0))
+            {
+                string savedAvatarType = reader.GetString(0);
+                ChangeAvatar(savedAvatarType);
+            }
+        });
     }
 }
