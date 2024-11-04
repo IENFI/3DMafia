@@ -100,14 +100,14 @@ public class AvatarChanger : MonoBehaviourPunCallbacks
             // Level_0에서만 랜덤 아바타 할당
             if (currentSceneName == "Level_0")
             {
-                DBInteraction.GetRandomUnusedAppearance(roomID, (randomUnusedAppearance) =>
+                /*DBInteraction.GetRandomUnusedAppearance(roomID, (randomUnusedAppearance) =>
                 {
                     if (!string.IsNullOrEmpty(randomUnusedAppearance))
                     {
                         ChangeAvatar(randomUnusedAppearance);
                         DBInteraction.SetAppearanceClientID(roomID, randomUnusedAppearance, clientID);
                     }
-                });
+                });*/
             }
             else if (currentSceneName == "Level_1")
             {
@@ -173,7 +173,7 @@ public class AvatarChanger : MonoBehaviourPunCallbacks
 
         string roomID = PhotonNetwork.CurrentRoom.CustomProperties["RoomID"].ToString();
         int clientID = PhotonNetwork.LocalPlayer.ActorNumber;
-        DBInteraction.SetAppearanceClientID(roomID, currentAvatarName, clientID);
+        // DBInteraction.SetAppearanceClientID(roomID, currentAvatarName, clientID);
 
         // Sync with other clients
         Hashtable props = new Hashtable() { { "AvatarName", currentAvatarName } };
