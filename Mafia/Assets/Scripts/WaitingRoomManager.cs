@@ -28,6 +28,7 @@ public class WaitingRoomManager : MonoBehaviourPunCallbacks
     private static bool voiceConnectionInitialized = false;
 
     public int mafiaNum = 1;
+    public int maxPlayerNum = 10;
 
     private bool hasGameStarted = false; // 게임 시작 여부를 추적하는 변수
 
@@ -55,11 +56,13 @@ public class WaitingRoomManager : MonoBehaviourPunCallbacks
         }
         if (PhotonNetwork.IsMasterClient)
         {
+            PhotonNetwork.CurrentRoom.IsOpen = true;
             mafiaNum = GameManager.instance.mafiaNum;
+            maxPlayerNum = GameManager.instance.maxPlayerNum;
 
             ExitGames.Client.Photon.Hashtable prop = new ExitGames.Client.Photon.Hashtable
             {
-            { "MafiaNum", mafiaNum }
+            { "MafiaNum", mafiaNum }, { "MaxPlayerNum", maxPlayerNum }
             };
             PhotonNetwork.CurrentRoom.SetCustomProperties(prop);
         }
@@ -165,6 +168,15 @@ public class WaitingRoomManager : MonoBehaviourPunCallbacks
             {
                 StartBtn.GetComponent<Button>().interactable = gameReady;
             }
+            
+            if(PhotonNetwork.PlayerList.Length >= (int)PhotonNetwork.CurrentRoom.CustomProperties["MaxPlayerNum"])
+            {
+                PhotonNetwork.CurrentRoom.IsOpen = false;
+            }
+            else
+            {
+                PhotonNetwork.CurrentRoom.IsOpen = true;
+            }
 
             if (Input.GetKeyDown(KeyCode.F5))
             {
@@ -260,6 +272,8 @@ public class WaitingRoomManager : MonoBehaviourPunCallbacks
                 mafiaCount = (int)PhotonNetwork.CurrentRoom.CustomProperties["MafiaNum"];
             }
 
+            maxPlayers = (int)PhotonNetwork.CurrentRoom.CustomProperties["MaxPlayerNum"];
+
             // Rich Text를 사용하여 마피아 수를 빨간색으로 표시
             string playerCountText = $"인원수: {playerCount} / {maxPlayers} <color=red>({mafiaCount})</color>";
             this.playerCountText.text = playerCountText;
@@ -269,6 +283,17 @@ public class WaitingRoomManager : MonoBehaviourPunCallbacks
     // Handle player entering or leaving the room
     public override void OnPlayerEnteredRoom(Player newPlayer)
     {
+        int criterion = 0;
+        criterion = (int)PhotonNetwork.CurrentRoom.CustomProperties["MaxPlayerNum"];
+        if (PhotonNetwork.PlayerList.Length > criterion)
+        {
+            if (PhotonNetwork.IsMasterClient)
+            {
+                PhotonNetwork.CloseConnection(newPlayer);
+            }
+            Debug.Log($"{newPlayer.NickName} has been kicked!");
+        }
+
         UpdatePlayerCount();
     }
 
@@ -339,6 +364,8 @@ public class WaitingRoomManager : MonoBehaviourPunCallbacks
             // StartBtn 비활성화
             StartBtn.GetComponent<Button>().interactable = false;
             hasGameStarted = true; // 게임 시작 상태로 설정
+
+            PhotonNetwork.CurrentRoom.IsOpen = false;
 
             PhotonNetwork.DestroyAll();
             PhotonNetwork.LoadLevel("Level_1");
@@ -446,13 +473,19 @@ public class WaitingRoomManager : MonoBehaviourPunCallbacks
         Debug.Log("MafiaNum 버튼이 클릭되었습니다: " + mafiaNum);
     }
 
+    public void OnButtonClickMaxPlayer(int selectedMaxPlayerNum)
+    {
+        maxPlayerNum = selectedMaxPlayerNum;
+    }
+
     public void UpdateMafiaNum()
     {
+        //this code also updates the max player setting
         if (PhotonNetwork.InRoom)
         {
             ExitGames.Client.Photon.Hashtable newProperties = new ExitGames.Client.Photon.Hashtable()
         {
-            { "MafiaNum", mafiaNum }
+            { "MafiaNum", mafiaNum }, { "MaxPlayerNum",  maxPlayerNum }
         };
             PhotonNetwork.CurrentRoom.SetCustomProperties(newProperties);
 
@@ -471,6 +504,33 @@ public class WaitingRoomManager : MonoBehaviourPunCallbacks
     {
         base.OnRoomPropertiesUpdate(propertiesThatChanged);
         UpdatePlayerCount();
+        if (propertiesThatChanged.ContainsKey("MaxPlayerNum"))
+        {
+            KickPlayers();
+        }
+    }
+
+    public void KickPlayers()
+    {
+        int criterion = 0;
+        criterion = (int)PhotonNetwork.CurrentRoom.CustomProperties["MaxPlayerNum"];
+
+        if (PhotonNetwork.PlayerList.Length > criterion)
+        {
+            int myIndex = -1;
+            for (int i = 0; i < PhotonNetwork.PlayerList.Length; i++)
+            {
+                if (PhotonNetwork.PlayerList[i] == PhotonNetwork.LocalPlayer)
+                {
+                    myIndex = i; break;
+                }
+                //Debug.Log($"{PhotonNetwork.PlayerList[i].NickName} has been kicked!");
+            }
+            if (myIndex >= criterion)
+            {
+                LeaveRoom();
+            }
+        }
     }
 }
 

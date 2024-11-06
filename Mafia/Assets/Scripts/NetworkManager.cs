@@ -37,7 +37,8 @@ public class NetworkManager : MonoBehaviourPunCallbacks // 안현석 똑바로�
     [SerializeField]
     private CreateRoomUI createRoomUI;
 
-    private int selectedMafiaNum;
+    private int selectedMafiaNum = 1;
+    public int selectedMaxPlayerNum = 10;
 
     #region 방리스트 갱신
     // ◀버튼 -2 , ▶버튼 -1 , 셀 숫자
@@ -106,7 +107,13 @@ public class NetworkManager : MonoBehaviourPunCallbacks // 안현석 똑바로�
                 var roomInfo = myList[multiple + i];
 
                 CellBtn[i].transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = roomInfo.Name;
-                CellBtn[i].transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = roomInfo.PlayerCount + "/" + roomInfo.MaxPlayers;
+
+                int maxPlayerNum = 0;
+                if (roomInfo.CustomProperties.ContainsKey("MaxPlayerNum"))
+                {
+                    maxPlayerNum = (int)roomInfo.CustomProperties["MaxPlayerNum"];
+                }
+                CellBtn[i].transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = roomInfo.PlayerCount + "/" + maxPlayerNum;
 
                 // 각 방의 MafiaNum을 가져와서 UI에 표시
                 int mafiaNum = 0;
@@ -115,6 +122,15 @@ public class NetworkManager : MonoBehaviourPunCallbacks // 안현석 똑바로�
                     mafiaNum = (int)roomInfo.CustomProperties["MafiaNum"];
                 }
                 CellBtn[i].transform.GetChild(2).GetComponent<TextMeshProUGUI>().text = "마피아 수 : " + mafiaNum;
+
+                if (roomInfo.IsOpen)
+                {
+                    CellBtn[i].interactable = true;
+                }
+                else
+                {
+                    CellBtn[i].interactable = false;
+                }
             }
             else
             {
@@ -279,6 +295,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks // 안현석 똑바로�
     {
         StatusText.text = PhotonNetwork.NetworkClientState.ToString();
         LobbyInfoText.text = "전체: " + PhotonNetwork.CountOfPlayers + "      로비: " + (PhotonNetwork.CountOfPlayers - PhotonNetwork.CountOfPlayersInRooms);
+        MyListRenewal();
     }
 
     public void Connect()
@@ -387,6 +404,11 @@ public class NetworkManager : MonoBehaviourPunCallbacks // 안현석 똑바로�
         // 선택된 옵션에 대해 UI를 업데이트하거나 피드백을 제공할 수 있습니다.
     }
 
+    public void OnButtonClickMaxPlayer(int maxPlayerNum)
+    {
+        selectedMaxPlayerNum = maxPlayerNum;
+    }
+
     public void CreateRoom()
     {
         string roomName = RoomInput.text == "" ? "Room" + Random.Range(0, 100) : RoomInput.text;
@@ -394,14 +416,16 @@ public class NetworkManager : MonoBehaviourPunCallbacks // 안현석 똑바로�
 
         RoomOptions roomOptions = new RoomOptions
         {
-            MaxPlayers = createRoomUI.roomData.maxPlayerCount,
+            //MaxPlayers = createRoomUI.roomData.maxPlayerCount,
+            MaxPlayers = 12,
             CustomRoomProperties = new ExitGames.Client.Photon.Hashtable()
             {
                 { "isGameStarted", false },
                 { "MafiaNum", selectedMafiaNum }, // 저장된 MafiaNum을 포함시킵니다.
+                { "MaxPlayerNum", selectedMaxPlayerNum },
                 { "RoomID", roomID }  // 고유 Room ID를 추가
             },
-            CustomRoomPropertiesForLobby = new string[] { "isGameStarted", "MafiaNum", "RoomID" }  // 로비에서 사용할 속성 목록
+            CustomRoomPropertiesForLobby = new string[] { "isGameStarted", "MafiaNum", "MaxPlayerNum", "RoomID" }  // 로비에서 사용할 속성 목록
         };
 
         PhotonNetwork.CreateRoom(roomName, roomOptions);
@@ -530,5 +554,21 @@ public class NetworkManager : MonoBehaviourPunCallbacks // 안현석 똑바로�
         DisconnectPanel.SetActive(false);
         // 방 생성 로직을 호출하거나 UI 상태를 적절히 설정
     }
+
+    public void Refresh()
+    {
+        StartCoroutine(WaitForDisconnectionAndConnect());
+    }
+
+    private IEnumerator WaitForDisconnectionAndConnect()
+    {
+        Disconnect();
+        while (PhotonNetwork.IsConnected)
+        {
+            yield return null;
+        }
+        Connect();
+    }
+
     #endregion
 }

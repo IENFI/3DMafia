@@ -10,7 +10,10 @@ public class GameManager : MonoBehaviour
     public static GameManager instance = null;
     public GameObject playerPrefab;
     public bool isConnected = false;
+    
+    //save initial room settings
     public int mafiaNum = 1;
+    public int maxPlayerNum = 10; //initialize
 
     [SerializeField]
     private bool isAnyUIOpen = false;

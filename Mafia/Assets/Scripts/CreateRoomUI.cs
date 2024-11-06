@@ -81,6 +81,8 @@ public class CreateRoomUI : MonoBehaviour
     public void UpdateMaxPlayerCount(int count)
     {
         roomData.maxPlayerCount = count;
+
+        GameManager.instance.maxPlayerNum = count;
         for (int i = 0; i < maxPlayerCountButtons.Count; i++)
         {
             if ( i == count -4)
