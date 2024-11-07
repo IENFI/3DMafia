@@ -43,6 +43,7 @@ public class ShopInteraction : MonoBehaviourPunCallbacks
     private CharacterController characterController;
     private List<ShopInteraction> shopInteractions;
     private XRayVisionItem xRayVisionItem;
+    private DeathAnnounce deathAnnounceItem;
     // 아이템 활성화 상태를 추적하는 리스트
     private List<(int originalIndex, GameObject imageObj)> activeItems = new List<(int, GameObject)>();
     // 현재 실행 중인 타이머 코루틴을 저장할 Dictionary 추가
@@ -71,13 +72,14 @@ public class ShopInteraction : MonoBehaviourPunCallbacks
         }
 
         // 버튼 이벤트 설정
-        if (itemButtons.Length >= 5)  // 5개 버튼 확인
+        if (itemButtons.Length >= 6)  // 6개 버튼 확인
         {
             itemButtons[0].onClick.AddListener(BuyDoubleCoin);
             itemButtons[1].onClick.AddListener(BuySpeedUp);
             itemButtons[2].onClick.AddListener(BuyXRayVision);  // X-Ray 비전 구매 함수 연결
             itemButtons[3].onClick.AddListener(SaveMoney);
             itemButtons[4].onClick.AddListener(DeleteMoney);
+            itemButtons[5].onClick.AddListener(BuyDeathAnnounce);
         }
 
         StartCoroutine(FindLocalPlayerCoinController());
@@ -159,6 +161,50 @@ public class ShopInteraction : MonoBehaviourPunCallbacks
         }
     }
 
+    public void BuyDeathAnnounce()
+    {
+        if (player != null && isInteracting && CanPurchaseItem(5)) // 인덱스를 5로 변경
+        {
+            int itemCost = 100;
+            if (player.coin >= itemCost)
+            {
+                if (deathAnnounceItem == null)
+                {
+                    deathAnnounceItem = GetComponent<DeathAnnounce>();
+                    if (deathAnnounceItem == null)
+                    {
+                        deathAnnounceItem = gameObject.AddComponent<DeathAnnounce>();
+                    }
+                }
+
+                player.coin -= itemCost;
+                player.UpdateCoinUI();
+
+                if (activeTimers.ContainsKey(3))
+                {
+                    StopCoroutine(activeTimers[3]);
+                    activeTimers.Remove(3);
+                    deathAnnounceItem.DeactivateDeathAnnounce();
+                }
+
+                itemImages[3].enabled = true;
+                ShowError("사망 알림 활성화!");
+
+                deathAnnounceItem.OnActivationButtonClick();
+
+                Coroutine newTimer = StartCoroutine(UpdateItemTimer(3, deathAnnounceItem.duration, () => {
+                    deathAnnounceItem.DeactivateDeathAnnounce();
+                }));
+                activeTimers[3] = newTimer;
+
+                UpdatePurchaseTime(3);
+            }
+            else
+            {
+                ShowError("코인이 부족합니다!");
+            }
+        }
+    }
 
     private IEnumerator DeactivateXRayAfterDelay(float delay)
     {

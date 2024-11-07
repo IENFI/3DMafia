@@ -24,6 +24,7 @@ TagManager:
   - Body
   - Mission
   - Ghost
+  - DeathAnnounce
   layers:
   - Default
   - TransparentFX
