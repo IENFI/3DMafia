@@ -255,6 +255,20 @@ public class Timer : MonoBehaviourPun
             Night.enabled = false;
             Day.enabled = true;
         }
+
+        ToggleAllLights(isDaytime); //turn on or off all the lights
+
+        ChangeSkybox(isDaytime); //change the material of skybox!
+
+        SetFarValue(isDaytime); //set far value of player camera
+
+        SwitchOnFewLights(isDaytime);
+        // 반짝임 코루틴 멈춤
+        if (blinkCoroutine != null)
+        {
+            StopCoroutine(blinkCoroutine);
+            text.color = Color.black;  // 텍스트 색상 초기화
+        }
         // fillAmount 초기화
         if (fillController != null)
         {

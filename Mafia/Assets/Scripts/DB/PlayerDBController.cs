@@ -31,7 +31,7 @@ public class PlayerDBController : MonoBehaviour
 
     private void UpdateLastActiveTime()
     {
-        Debug.Log("UpdateLastActiveTime");
+        //Debug.Log("UpdateLastActiveTime");
 
         string query = $"UPDATE player SET last_active = NOW() WHERE name = ('{playerName}')";
         AWSDBManager.ExecuteQuery(query);
@@ -39,7 +39,7 @@ public class PlayerDBController : MonoBehaviour
 
     public void DeleteInactivePlayers()
     {
-        Debug.Log("DeleteInactivePlayers");
+        //Debug.Log("DeleteInactivePlayers");
         string query = "DELETE FROM player WHERE last_active IS NULL OR last_active < NOW() - INTERVAL 1 MINUTE";
         AWSDBManager.ExecuteQuery(query);
     }

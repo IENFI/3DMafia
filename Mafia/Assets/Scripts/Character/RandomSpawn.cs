@@ -63,6 +63,21 @@ public class RandomSpawn : MonoBehaviourPunCallbacks
     void Spawn()
     {
         if (!photonView.IsMine) return;
+
+        // 고스트 상태 체크
+        if ((bool)PhotonNetwork.LocalPlayer.CustomProperties["isDead"])
+        {
+            //Debug.Log($"[{gameObject.name}] Ghost player - skipping spawn");
+            return;
+        }
+
+        // 게임오브젝트가 비활성화 상태인지 체크
+        if (!gameObject.activeInHierarchy)
+        {
+            //Debug.Log($"[{gameObject.name}] Inactive player - skipping spawn");
+            return;
+        }
+
         StartCoroutine(SpawnCoroutine());
     }
 

@@ -41,7 +41,7 @@ public class AWSDBManager : MonoBehaviour
                     connection.Open();
                     MySqlCommand cmd = new MySqlCommand(query, connection);
                     cmd.ExecuteNonQuery();
-                    Debug.Log("Query executed successfully");
+                    //Debug.Log("Query executed successfully");
                 }
                 catch (Exception ex)
                 {
