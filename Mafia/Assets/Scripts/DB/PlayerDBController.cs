@@ -21,13 +21,13 @@ public class PlayerDBController : MonoBehaviour
         DeleteInactivePlayers();
     }
 
-/*    private void Start()
+    private void Start()
     {
         // 50초마다 UpdateLastActiveTime 메서드를 호출
         InvokeRepeating("UpdateLastActiveTime", 0f, 50f);
         // 1분마다 DeleteInactivePlayers 메서드를 호출
         InvokeRepeating("DeleteInactivePlayers", 0f, 60f);
-    }*/
+    }
 
     private void UpdateLastActiveTime()
     {
