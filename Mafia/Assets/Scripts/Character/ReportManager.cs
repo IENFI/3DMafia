@@ -22,29 +22,29 @@ public class ReportManager : MonoBehaviour
         yield return new WaitForSeconds(1); // 1초 대기 (로딩 시간을 고려하여)
 
         while (playerController == null)
-    {
-        // 씬 내의 모든 PlayerController를 찾고, 그 중 로컬 플레이어의 PhotonView를 가진 것만 선택
-        foreach (var pcc in FindObjectsOfType<PlayerController>())
         {
-            if (pcc.photonView.IsMine)
+            // 씬 내의 모든 PlayerController를 찾고, 그 중 로컬 플레이어의 PhotonView를 가진 것만 선택
+            foreach (var pcc in FindObjectsOfType<PlayerController>())
             {
-                playerController = pcc;
-                break;
+                if (pcc.photonView.IsMine)
+                {
+                    playerController = pcc;
+                    break;
+                }
+            }
+
+            if (playerController == null)
+            {
+                Debug.LogWarning("로컬 플레이어의 PlayerController를 찾고 있습니다...");
+                yield return new WaitForSeconds(1); // 1초 대기 후 다시 시도
             }
         }
-
-        if (playerController == null)
-        {
-            // Debug.LogWarning("로컬 플레이어의 PlayerController를 찾고 있습니다...");
-            yield return new WaitForSeconds(1); // 1초 대기 후 다시 시도
-        }
-    }
     }
 
     void Update()
     {
         if (playerController == null){
-            // nDebug.Log("playerController가 null입니다.");
+            Debug.Log("playerController가 null입니다.");
             return;
         }
 
