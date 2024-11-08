@@ -25,7 +25,6 @@ public class Sudoku : MinigameBase
 
     public override void ReceiveToken()
     {
-        Debug.Log("Sudoku 미니게임이 시작되었습니다.");
         active = true;
     }
 

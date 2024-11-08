@@ -345,7 +345,7 @@ public class InteractScript : MonoBehaviourPun
                     if (hit.collider.GetComponent<CustomizeScript>().CustomizingUI.activeSelf && Input.GetKeyDown(KeyCode.Escape))
                     {
                         toolTipUI.SetActive(false);
-                        Debug.Log("1");
+                        //Debug.Log("1");
 
                         hit.collider.GetComponent<CustomizeScript>().CustomizingUI.SetActive(false);
                     }

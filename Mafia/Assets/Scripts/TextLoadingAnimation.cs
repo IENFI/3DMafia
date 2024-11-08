@@ -52,7 +52,7 @@ public class TextLoadingAnimation : MonoBehaviour
             StopCoroutine(animationCoroutine);
         }
         animationCoroutine = StartCoroutine(AnimateLoadingText());
-        Debug.Log("애니메이션 시작됨");
+        //Debug.Log("애니메이션 시작됨");
     }
 
     public void StopAnimation()
@@ -65,7 +65,7 @@ public class TextLoadingAnimation : MonoBehaviour
         if (loadingText != null)
         {
             loadingText.text = baseText;
-            Debug.Log("애니메이션 중지됨, 텍스트 리셋: " + loadingText.text);
+            //Debug.Log("애니메이션 중지됨, 텍스트 리셋: " + loadingText.text);
         }
     }
 
@@ -76,7 +76,7 @@ public class TextLoadingAnimation : MonoBehaviour
         {
             string newText = baseText + new string('.', dotCount);
             loadingText.text = newText;
-            Debug.Log("텍스트 업데이트: " + newText);
+            //Debug.Log("텍스트 업데이트: " + newText);
             dotCount++;
             if (dotCount > maxDots)
             {

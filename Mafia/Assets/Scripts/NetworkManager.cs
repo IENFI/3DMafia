@@ -188,7 +188,6 @@ public class NetworkManager : MonoBehaviourPunCallbacks // 안현석 똑바로�
     //}
     public override void OnRoomListUpdate(List<RoomInfo> roomList)
     {
-        Debug.Log("OnRoomListUpdate 함수 호출");
         // Create a new list to store rooms that should be displayed
         List<RoomInfo> roomsToShow = new List<RoomInfo>();
 
@@ -209,7 +208,6 @@ public class NetworkManager : MonoBehaviourPunCallbacks // 안현석 똑바로�
             else
             {
                 if (room.CustomProperties.ContainsKey("RoomID")){
-                    Debug.Log("RoomID가 존재한다는 if문 진입");
                     // RoomInfo의 CustomProperties에서 RoomID를 가져옴
                     string roomID = room.CustomProperties["RoomID"].ToString();
                     validRoomIDs.Add(roomID);
@@ -233,7 +231,6 @@ public class NetworkManager : MonoBehaviourPunCallbacks // 안현석 똑바로�
                 }
             }
         }
-        Debug.Log("RoomID가 있는 룸리스트 : "+validRoomIDs);
         /*// 2. 데이터베이스에서 모든 roomID 목록 가져오기
         DBInteraction.GetAllRoomIDs((dbRoomIDs) =>
         {
@@ -494,7 +491,6 @@ public class NetworkManager : MonoBehaviourPunCallbacks // 안현석 똑바로�
 
         if (PhotonNetwork.IsMasterClient)
         {
-            Debug.Log("마스터클라이언트임");
             PhotonNetwork.LoadLevel("Level_0");
             Debug.Log("04. 방 입장 완료");
 

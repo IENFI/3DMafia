@@ -443,7 +443,7 @@ public class WaitingRoomManager : MonoBehaviourPunCallbacks
         mafiaNum = selectedMafiaNum;  // 선택된 MafiaNum 저장
 
         // 필요 시 UI 업데이트나 피드백 추가
-        Debug.Log("MafiaNum 버튼이 클릭되었습니다: " + mafiaNum);
+        //Debug.Log("MafiaNum 버튼이 클릭되었습니다: " + mafiaNum);
     }
 
     public void UpdateMafiaNum()

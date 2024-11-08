@@ -75,7 +75,6 @@ public class WriteLetter : MinigameBase
 
     public override void ReceiveToken()
     {
-        Debug.Log("편지 쓰기 미니게임이 시작되었습니다.");
         active = true;
     }
 

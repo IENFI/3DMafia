@@ -40,7 +40,7 @@ public class SceneInitializer : MonoBehaviourPunCallbacks
     private void InitializeScene()
     {
         // 로그 추가로 객체 찾기 확인
-        Debug.Log("Initializing Scene...");
+        // Debug.Log("Initializing Scene...");
 
         // 모든 플레이어의 프리팹을 찾습니다.
         GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
