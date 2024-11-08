@@ -90,7 +90,6 @@ public class MinigameManager : MonoBehaviour
             activeMinigame = null;  // 현재 활성화된 미니게임 초기화
         }
 
-        Debug.Log("AssignRandomMinigame 함수 실행");
         // 모든 미니게임을 비활성화
         // foreach (GameObject minigame in minigames)
         // {

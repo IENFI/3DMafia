@@ -35,7 +35,7 @@ public class ReportManager : MonoBehaviour
 
         if (playerController == null)
         {
-            Debug.LogWarning("로컬 플레이어의 PlayerController를 찾고 있습니다...");
+            // Debug.LogWarning("로컬 플레이어의 PlayerController를 찾고 있습니다...");
             yield return new WaitForSeconds(1); // 1초 대기 후 다시 시도
         }
     }
@@ -44,7 +44,7 @@ public class ReportManager : MonoBehaviour
     void Update()
     {
         if (playerController == null){
-            Debug.Log("playerController가 null입니다.");
+            // nDebug.Log("playerController가 null입니다.");
             return;
         }
 

@@ -85,16 +85,17 @@ public class VoteManager : MonoBehaviourPunCallbacks
             // 아바타 이름과 스프라이트 인덱스 매핑 초기화
             avatarNameToSpriteIndex = new Dictionary<string, int>()
             {
-                { "builder", 0 },
-                { "businessWoman", 1 },
-                { "cashier", 2 },
-                { "chef", 3 },
-                { "fisherman", 4 },
-                { "miner", 5 },
-                { "nurse", 6 },
-                { "police", 7 },
-                { "security", 8 },
-                { "worker", 9 }
+                { "naked", 0 },
+                { "builder", 1 },
+                { "businessWoman", 2 },
+                { "cashier", 3 },
+                { "chef", 4 },
+                { "fisherman", 5 },
+                { "miner", 6 },
+                { "nurse", 7 },
+                { "police", 8 },
+                { "security", 9 },
+                { "worker", 10 }
             };
             Debug.Log("[VoteManager] Avatar name to sprite index mapping initialized successfully");
         }
@@ -198,92 +199,82 @@ public class VoteManager : MonoBehaviourPunCallbacks
 
     private void UpdateProfileImages()
     {
-        Debug.Log("[VoteManager] Updating profile images...");
+        Debug.Log("[VoteManager] 프로필 이미지 업데이트 시작...");
 
-        if (profileImage == null)
+        // 배열 유효성 검사
+        if (profileImage == null || avatarSpriteImages == null)
         {
-            Debug.LogError("[VoteManager] Profile image array is null!");
+            Debug.LogError("[VoteManager] 프로필 이미지 또는 아바타 스프라이트 배열이 null입니다!");
             return;
         }
-
-        if (avatarSpriteImages == null)
-        {
-            Debug.LogError("[VoteManager] Avatar sprite images array is null!");
-            return;
-        }
-
-        Debug.Log($"[VoteManager] Connected players: {PhotonNetwork.PlayerList.Length}");
-        Debug.Log($"[VoteManager] Profile image slots: {profileImage.Length}");
-        Debug.Log($"[VoteManager] Available avatar sprites: {avatarSpriteImages.Length}");
 
         try
         {
-            for (int i = 0; i < PhotonNetwork.PlayerList.Length; i++)
+            // 플레이어 수와 프로필 이미지 슬롯 수 중 작은 값까지만 반복
+            for (int i = 0; i < PhotonNetwork.PlayerList.Length && i < profileImage.Length; i++)
             {
                 Player player = PhotonNetwork.PlayerList[i];
-                Debug.Log($"[VoteManager] Processing player {i}: {player.NickName}");
+                Debug.Log($"[VoteManager] 플레이어 {i} 처리 중: {player.NickName}");
 
-                // 플레이어의 현재 아바타 이름 가져오기
-                if (player.CustomProperties.TryGetValue("AvatarName", out object avatarNameObj))
+                // 프로필 이미지 슬롯 확인
+                if (profileImage[i] == null)
                 {
-                    string avatarName = (string)avatarNameObj;
-                    Debug.Log($"[VoteManager] Player {player.NickName} has avatar: {avatarName}");
-
-                    // 해당 아바타 이름에 맞는 스프라이트 인덱스 찾기
-                    if (avatarNameToSpriteIndex.TryGetValue(avatarName, out int spriteIndex))
-                    {
-                        Debug.Log($"[VoteManager] Found sprite index {spriteIndex} for avatar {avatarName}");
-
-                        // 프로필 이미지 업데이트
-                        if (i < profileImage.Length && spriteIndex < avatarSpriteImages.Length)
-                        {
-                            if (profileImage[i] == null)
-                            {
-                                Debug.LogError($"[VoteManager] Profile image at index {i} is null!");
-                                continue;
-                            }
-
-                            if (avatarSpriteImages[spriteIndex] == null)
-                            {
-                                Debug.LogError($"[VoteManager] Avatar sprite at index {spriteIndex} is null!");
-                                continue;
-                            }
-
-                            profileImage[i].sprite = avatarSpriteImages[spriteIndex];
-                            profileImage[i].gameObject.SetActive(true);
-                            Debug.Log($"[VoteManager] Successfully updated profile image for player {player.NickName}");
-                        }
-                        else
-                        {
-                            Debug.LogError($"[VoteManager] Index out of range - Profile slot: {i}, Sprite index: {spriteIndex}");
-                        }
-                    }
-                    else
-                    {
-                        Debug.LogWarning($"[VoteManager] No sprite index found for avatar name: {avatarName}");
-                    }
+                    Debug.LogError($"[VoteManager] 인덱스 {i}의 프로필 이미지가 null입니다!");
+                    continue;
                 }
-                else
+
+                // 플레이어의 아바타 이름 가져오기
+                if (!player.CustomProperties.TryGetValue("AvatarName", out object avatarNameObj))
                 {
-                    Debug.LogWarning($"[VoteManager] No avatar name found for player: {player.NickName}");
+                    Debug.LogWarning($"[VoteManager] 플레이어의 아바타 이름을 찾을 수 없습니다: {player.NickName}");
+                    continue;
                 }
+
+                string avatarName = (string)avatarNameObj;
+                Debug.Log($"[VoteManager] 플레이어 {player.NickName}의 아바타: {avatarName}");
+
+                // 아바타에 해당하는 스프라이트 인덱스 가져오기
+                if (!avatarNameToSpriteIndex.TryGetValue(avatarName, out int spriteIndex))
+                {
+                    Debug.LogWarning($"[VoteManager] 아바타 이름에 해당하는 스프라이트 인덱스를 찾을 수 없습니다: {avatarName}");
+                    continue;
+                }
+
+                // 스프라이트 인덱스 범위 확인
+                if (spriteIndex >= avatarSpriteImages.Length)
+                {
+                    Debug.LogError($"[VoteManager] 스프라이트 인덱스 {spriteIndex}가 범위를 벗어났습니다. 사용 가능한 스프라이트 수: {avatarSpriteImages.Length}");
+                    continue;
+                }
+
+                // 해당 인덱스의 스프라이트 유효성 확인
+                if (avatarSpriteImages[spriteIndex] == null)
+                {
+                    Debug.LogError($"[VoteManager] 인덱스 {spriteIndex}의 아바타 스프라이트가 null입니다!");
+                    continue;
+                }
+
+                // 프로필 이미지 업데이트
+                profileImage[i].sprite = avatarSpriteImages[spriteIndex];
+                profileImage[i].gameObject.SetActive(true);
+                Debug.Log($"[VoteManager] 플레이어 {player.NickName}의 프로필 이미지가 성공적으로 업데이트되었습니다");
             }
 
-            // 나머지 프로필 이미지는 비활성화
+            // 사용하지 않는 프로필 슬롯 비활성화
             for (int i = PhotonNetwork.PlayerList.Length; i < profileImage.Length; i++)
             {
                 if (profileImage[i] != null)
                 {
                     profileImage[i].gameObject.SetActive(false);
-                    Debug.Log($"[VoteManager] Deactivated unused profile slot {i}");
+                    Debug.Log($"[VoteManager] 사용하지 않는 프로필 슬롯 {i} 비활성화");
                 }
             }
 
-            Debug.Log("[VoteManager] Profile image update completed");
+            Debug.Log("[VoteManager] 프로필 이미지 업데이트 완료");
         }
         catch (Exception e)
         {
-            Debug.LogError($"[VoteManager] Error during profile image update: {e.Message}\nStack trace: {e.StackTrace}");
+            Debug.LogError($"[VoteManager] 프로필 이미지 업데이트 중 오류 발생: {e.Message}\n스택 트레이스: {e.StackTrace}");
         }
     }
 

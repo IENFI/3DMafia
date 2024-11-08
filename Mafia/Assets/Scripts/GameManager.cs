@@ -26,16 +26,16 @@ public class GameManager : MonoBehaviour
 
     private void Awake()
     {
-        Debug.Log("게임매니저 awake");
+
         if (instance == null)
         {
-            Debug.Log("게임매니저 1");
+
             instance = this;
             DontDestroyOnLoad(this.gameObject); // GameManager 객체 유지 설정
         }
         else if (instance != this)
         {
-            Debug.Log("게임매니저 2");
+
             Destroy(this.gameObject);
         }
 
@@ -69,7 +69,7 @@ public class GameManager : MonoBehaviour
 
     private IEnumerator WaitForConnectionAndCreatePlayer()
     {
-        Debug.Log("게임매니저 WaitForConnectionAndCreatePlayer");
+        //Debug.Log("게임매니저 WaitForConnectionAndCreatePlayer");
         yield return new WaitUntil(() => PhotonNetwork.InRoom);
         CreatePlayer();
     }

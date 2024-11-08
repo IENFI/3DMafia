@@ -92,7 +92,6 @@ public class CleanMirror : MinigameBase
 
     public override void ReceiveToken()
     {
-        Debug.Log("거울 닦기 미니게임이 시작되었습니다.");
         active = true;
     }
 

@@ -56,7 +56,7 @@ public class CustomizeScript : MonoBehaviour
         if (currentAvatarText != null)
         {
             UpdateAvatarText(player.getCurrentAvatarName());
-            Debug.Log("호출되었따 이말이야!");
+            //Debug.Log("호출되었따 이말이야!");
         }
 
     }

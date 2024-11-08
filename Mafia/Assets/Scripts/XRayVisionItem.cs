@@ -17,7 +17,7 @@ public class XRayVisionItem : MonoBehaviour
 
     void Start()
     {
-        Debug.Log("XRayVisionItem: Start method called");
+        //Debug.Log("XRayVisionItem: Start method called");
         StartCoroutine(InitializeWhenPlayersFound());
     }
 

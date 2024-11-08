@@ -21,7 +21,7 @@ public class SettingsUI : MonoBehaviour
 
     private void OnEnable()
     {
-        Debug.Log("Setting UI Enable");
+        //Debug.Log("Setting UI Enable");
         if (!(GameManager.instance == null))
         {
             GameManager.instance.RegisterUIWindow(gameObject);
@@ -36,7 +36,7 @@ public class SettingsUI : MonoBehaviour
 
     private void OnDisable()
     {
-        Debug.Log("Setting UI Disable");
+        //Debug.Log("Setting UI Disable");
         if (!(GameManager.instance == null))
         {
             GameManager.instance.UnregisterUIWindow(gameObject);

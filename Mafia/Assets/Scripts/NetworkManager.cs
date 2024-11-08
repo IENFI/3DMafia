@@ -204,7 +204,6 @@ public class NetworkManager : MonoBehaviourPunCallbacks // 안현석 똑바로�
     //}
     public override void OnRoomListUpdate(List<RoomInfo> roomList)
     {
-        Debug.Log("OnRoomListUpdate 함수 호출");
         // Create a new list to store rooms that should be displayed
         List<RoomInfo> roomsToShow = new List<RoomInfo>();
 
@@ -225,7 +224,6 @@ public class NetworkManager : MonoBehaviourPunCallbacks // 안현석 똑바로�
             else
             {
                 if (room.CustomProperties.ContainsKey("RoomID")){
-                    Debug.Log("RoomID가 존재한다는 if문 진입");
                     // RoomInfo의 CustomProperties에서 RoomID를 가져옴
                     string roomID = room.CustomProperties["RoomID"].ToString();
                     validRoomIDs.Add(roomID);
@@ -249,8 +247,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks // 안현석 똑바로�
                 }
             }
         }
-        Debug.Log("RoomID가 있는 룸리스트 : "+validRoomIDs);
-        // 2. 데이터베이스에서 모든 roomID 목록 가져오기
+        /*// 2. 데이터베이스에서 모든 roomID 목록 가져오기
         DBInteraction.GetAllRoomIDs((dbRoomIDs) =>
         {
             // 3. 유효하지 않은 roomID 확인
@@ -269,7 +266,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks // 안현석 똑바로�
                 DBInteraction.RemoveRoomAppearance(invalidRoomID);
                 Debug.Log($"Removed invalid room from DB: {invalidRoomID}");
             }
-        });
+        });*/
 
         // Update the UI to display the updated room list
         MyListRenewal();
@@ -285,9 +282,9 @@ public class NetworkManager : MonoBehaviourPunCallbacks // 안현석 똑바로�
 
         // 게임 버전 지정
 
-        // 게임을 키면 디비에서 닉네임 정리
+        /*// 게임을 키면 디비에서 닉네임 정리
         PlayerDBController playerDBController = FindObjectOfType<PlayerDBController>();
-        playerDBController.DeleteInactivePlayers();
+        playerDBController.DeleteInactivePlayers();*/
 
     }
 
@@ -306,14 +303,16 @@ public class NetworkManager : MonoBehaviourPunCallbacks // 안현석 똑바로�
             NickNameError.text = "닉네임을 입력하세요.";
             return;
         }
-        else if (DBInteraction.Login(PhotonNetwork.NickName))
+       /* else if (DBInteraction.Login(PhotonNetwork.NickName))
         {
             PhotonNetwork.ConnectUsingSettings();
             ConnectBtn.interactable = false;
-        }
+        }*/
         else
         {
-            NickNameError.text = "이미 사용 중인 닉네임입니다.";
+            PhotonNetwork.ConnectUsingSettings();
+            ConnectBtn.interactable = false;
+            /*NickNameError.text = "이미 사용 중인 닉네임입니다.";*/
             return;
         }
 
@@ -343,12 +342,12 @@ public class NetworkManager : MonoBehaviourPunCallbacks // 안현석 똑바로�
         // 창을 닫을 때 실행할 코드 작성
         Debug.Log("애플리케이션이 종료됩니다.");
         // 예를 들어, 데이터를 저장하거나, 서버에 연결을 종료하는 등의 작업을 수행할 수 있습니다.
-        DBInteraction.DeletePlayer(PhotonNetwork.NickName);
+        // DBInteraction.DeletePlayer(PhotonNetwork.NickName);
     }
 
     public override void OnDisconnected(DisconnectCause cause)
     {
-        DBInteraction.DeletePlayer(PhotonNetwork.NickName);
+        // DBInteraction.DeletePlayer(PhotonNetwork.NickName);
 
         if (DisconnectPanel != null)
         {
@@ -430,7 +429,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks // 안현석 똑바로�
 
         PhotonNetwork.CreateRoom(roomName, roomOptions);
         // 방 생성 후 DB에 roomID와 초기 외형 데이터 추가
-        DBInteraction.AddRoomAppearance(roomID);
+        // DBInteraction.AddRoomAppearance(roomID);
     }
 
 
@@ -516,7 +515,6 @@ public class NetworkManager : MonoBehaviourPunCallbacks // 안현석 똑바로�
 
         if (PhotonNetwork.IsMasterClient)
         {
-            Debug.Log("마스터클라이언트임");
             PhotonNetwork.LoadLevel("Level_0");
             Debug.Log("04. 방 입장 완료");
 

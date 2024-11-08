@@ -47,7 +47,7 @@ public class Timer : MonoBehaviourPun
         reportLight = reportObject.GetComponent<Light>();
         fillController = FindObjectOfType<fillAmountController>(); // fillAmountController 찾기
         fillController.totalTime = time;
-        Debug.Log("Timer Awake: directionalLight and fillController initialized.");
+        //Debug.Log("Timer Awake: directionalLight and fillController initialized.");
         minigameManager = FindObjectOfType<MinigameManager>();
         if (minigameManager == null)
         {
@@ -130,11 +130,7 @@ public class Timer : MonoBehaviourPun
                 yield return null;
             }
 
-            // 타이머가 종료되었을 때
-            Debug.Log("시간 종료");
             curTime = 0;
-            // 자연광 전환
-            // directionalLight.enabled = !directionalLight.enabled;
 
             // 낮/밤 상태 전환
             isDaytime = !isDaytime;

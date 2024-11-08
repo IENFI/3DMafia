@@ -140,7 +140,6 @@ public class BookSortingGame : MinigameBase
     }
     public override void ReceiveToken()
     {
-        Debug.Log("책 정리 미니게임이 시작되었습니다.");
         active = true;
     }
 
