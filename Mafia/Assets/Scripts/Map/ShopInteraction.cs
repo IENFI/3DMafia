@@ -431,6 +431,10 @@ public class ShopInteraction : MonoBehaviourPunCallbacks
                     }
                 }
             }
+            else if (player.coin >= itemCost)
+            {
+                ShowError("0원 밑으로는 줄일 수 없습니다!!");
+            }
             else
             {
                 ShowError("코인이 부족합니다!");

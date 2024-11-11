@@ -75,6 +75,38 @@ public class Sudoku : MinigameBase
         AnswerButton.interactable = false;
     }
 
+    // Update 함수에 키보드 입력 처리 추가
+    void Update()
+    {
+        // ESC로 게임 종료
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            gameObject.SetActive(false);
+        }
+
+        // 키보드 입력 처리
+        if (selectedButton != null)
+        {
+            if (Input.GetKeyDown(KeyCode.Alpha1) || Input.GetKeyDown(KeyCode.Keypad1))
+            {
+                OnKeypadButtonClick(1);
+            }
+            else if (Input.GetKeyDown(KeyCode.Alpha2) || Input.GetKeyDown(KeyCode.Keypad2))
+            {
+                OnKeypadButtonClick(2);
+            }
+            else if (Input.GetKeyDown(KeyCode.Alpha3) || Input.GetKeyDown(KeyCode.Keypad3))
+            {
+                OnKeypadButtonClick(3);
+            }
+            else if (Input.GetKeyDown(KeyCode.Alpha4) || Input.GetKeyDown(KeyCode.Keypad4))
+            {
+                OnKeypadButtonClick(4);
+            }
+        }
+    }
+
+
     // List<Button>을 Button[4, 4]로 변환하는 메서드
     private Button[,] ConvertListTo2DArray(List<Button> buttonList, int rows, int cols)
     {
@@ -125,10 +157,12 @@ public class Sudoku : MinigameBase
         }
     }
 
-    // 랜덤으로 4개의 버튼 텍스트를 빈칸으로 설정
+    // HideRandomCells 함수 수정 (아웃라인 초기화 추가)
     void HideRandomCells()
     {
         emptyCells.Clear();
+        ResetAllOutlines(); // 모든 아웃라인 초기화
+
         int hiddenCount = 0;
         while (hiddenCount < 4)
         {
@@ -138,25 +172,24 @@ public class Sudoku : MinigameBase
             if (!emptyCells.Contains(new Vector2Int(randomRow, randomCol)))
             {
                 buttons[randomRow, randomCol].GetComponentInChildren<TextMeshProUGUI>().text = "";
-                playerAnswers[randomRow, randomCol] = 0; // 빈칸은 0으로 표시
+                playerAnswers[randomRow, randomCol] = 0;
 
-                // 빈칸인 경우 테두리 강조
+                // 빈칸인 경우에만 아웃라인 설정
                 Outline outline = buttons[randomRow, randomCol].GetComponent<Outline>();
                 if (outline != null)
                 {
-                    outline.effectColor = Color.black; // 테두리 색상 설정 (원하는 색상으로 설정 가능)
-                    outline.effectDistance = new Vector2(1, 1); // 테두리 두께 설정
-                    outline.enabled = true; // 테두리 활성화
+                    outline.effectColor = Color.black;
+                    outline.effectDistance = new Vector2(1, 1);
+                    outline.enabled = true;
                 }
 
                 emptyCells.Add(new Vector2Int(randomRow, randomCol));
-                
                 hiddenCount++;
             }
         }
     }
 
-        // 키패드의 모든 버튼을 비활성화하는 방법
+    // 키패드의 모든 버튼을 비활성화하는 방법
     public void SetKeypadButtonsInteractable(bool state)
     {
         foreach (Button button in keyButton)
@@ -282,6 +315,29 @@ public class Sudoku : MinigameBase
         }
         // 모든 빈칸이 채워졌다면 버튼 활성화
         AnswerButton.interactable = true;
+    }
+
+    // OnDisable에서 아웃라인 초기화
+    private void OnDisable()
+    {
+        ResetAllOutlines();
+        SetKeypadButtonsInteractable(false);
+        selectedButton = null;
+    }
+
+    void ResetAllOutlines()
+    {
+        for (int row = 0; row < 4; row++)
+        {
+            for (int col = 0; col < 4; col++)
+            {
+                Outline outline = buttons[row, col].GetComponent<Outline>();
+                if (outline != null)
+                {
+                    outline.enabled = false;
+                }
+            }
+        }
     }
 
 }
