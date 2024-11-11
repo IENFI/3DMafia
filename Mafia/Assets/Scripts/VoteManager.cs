@@ -370,127 +370,82 @@ public class VoteManager : MonoBehaviourPunCallbacks
         SendSkip(skiped);
     }
 
-    // ÷  ̾     °        Ʈ  Ƿ    OnPlayerPropertiesUpdate       ٷ     
-    //         ǥ         ¸     ⼭     ȭ
     public override void OnPlayerPropertiesUpdate(Player player, ExitGames.Client.Photon.Hashtable props)
     {
         try
         {
             base.OnPlayerPropertiesUpdate(player, props);
-            Debug.Log($"[VoteManager] Properties updated for player: {player.NickName}");
+
+            // 플레이어나 props가 null인지 체크
+            if (player == null || props == null)
+            {
+                Debug.LogWarning("[VoteManager] Player or props is null in OnPlayerPropertiesUpdate");
+                return;
+            }
+
+            // btns Dictionary가 초기화되었는지 확인
+            if (btns == null)
+            {
+                Debug.LogWarning("[VoteManager] Buttons dictionary is not initialized");
+                return;
+            }
 
             foreach (object key in props.Keys)
             {
-                Debug.Log($"[VoteManager] Processing property key: {key}");
-
-                // 아바타가 변경되었다면 프로필 이미지 업데이트
-                if (props.ContainsKey("AvatarName"))
-                {
-                    Debug.Log($"[VoteManager] Avatar changed for player {player.NickName}. New avatar: {props["AvatarName"]}");
-                    UpdateProfileImages();
-                }
-
                 if (key.ToString().Equals("voted"))
                 {
-                    Debug.Log("[VoteManager] Processing vote...");
-                    int num;
-                    num = (int)player.CustomProperties["voted"];
-                    Debug.Log($"[VoteManager] Vote number: {num} from player: {player.NickName}");
+                    if (!player.CustomProperties.ContainsKey("voted"))
+                    {
+                        Debug.LogWarning("[VoteManager] Player does not have 'voted' property");
+                        continue;
+                    }
+
+                    int num = (int)player.CustomProperties["voted"];
 
                     if (num >= 0)
                     {
-                        Debug.Log($"[VoteManager] Valid vote (num >= 0) received for player index: {num}");
                         voteList[num]++;
-                        Debug.Log($"[VoteManager] Vote count for player {num} is now: {voteList[num]}");
 
                         if (PhotonNetwork.LocalPlayer == player)
                         {
-                            Debug.Log("[VoteManager] Local player voted - disabling voting buttons");
+                            // 버튼 비활성화 전에 null 체크
                             for (int i = 0; i < 10; i++)
                             {
-                                if (btns[i] != null)
+                                if (btns.ContainsKey(i) && btns[i] != null)
                                 {
-                                    Button btn = btns[i].GetComponent<Button>();
-                                    if (btn != null)
-                                    {
-                                        btn.interactable = false;
-                                    }
-                                    else
-                                    {
-                                        Debug.LogError($"[VoteManager] Button component not found on button {i}");
-                                    }
-                                }
-                                else
-                                {
-                                    Debug.LogError($"[VoteManager] Button object is null at index {i}");
+                                    btns[i].interactable = false;
                                 }
                             }
 
                             if (btn_skip != null)
                             {
-                                Button skipBtn = btn_skip.GetComponent<Button>();
-                                if (skipBtn != null)
-                                {
-                                    skipBtn.interactable = false;
-                                }
-                                else
-                                {
-                                    Debug.LogError("[VoteManager] Skip button component not found");
-                                }
-                            }
-                            else
-                            {
-                                Debug.LogError("[VoteManager] Skip button object is null");
+                                btn_skip.interactable = false;
                             }
                         }
 
-                        SendText(num, voteList[num]);
+                        if (btnTexts != null && btnTexts.ContainsKey(num))
+                        {
+                            SendText(num, voteList[num]);
+                        }
                     }
-
-                    if (num == -13)
+                    else if (num == -13)  // Skip vote
                     {
-                        Debug.Log("[VoteManager] Skip vote received");
                         skiped++;
-                        Debug.Log($"[VoteManager] Total skips: {skiped}");
 
                         if (PhotonNetwork.LocalPlayer == player)
                         {
-                            Debug.Log("[VoteManager] Local player skipped - disabling voting buttons");
+                            // 버튼 비활성화 전에 null 체크
                             for (int i = 0; i < 10; i++)
                             {
-                                if (btns[i] != null)
+                                if (btns.ContainsKey(i) && btns[i] != null)
                                 {
-                                    Button btn = btns[i].GetComponent<Button>();
-                                    if (btn != null)
-                                    {
-                                        btn.interactable = false;
-                                    }
-                                    else
-                                    {
-                                        Debug.LogError($"[VoteManager] Button component not found on button {i}");
-                                    }
-                                }
-                                else
-                                {
-                                    Debug.LogError($"[VoteManager] Button object is null at index {i}");
+                                    btns[i].interactable = false;
                                 }
                             }
 
                             if (btn_skip != null)
                             {
-                                Button skipBtn = btn_skip.GetComponent<Button>();
-                                if (skipBtn != null)
-                                {
-                                    skipBtn.interactable = false;
-                                }
-                                else
-                                {
-                                    Debug.LogError("[VoteManager] Skip button component not found");
-                                }
-                            }
-                            else
-                            {
-                                Debug.LogError("[VoteManager] Skip button object is null");
+                                btn_skip.interactable = false;
                             }
                         }
 

@@ -160,15 +160,16 @@ public class SceneInitializer : MonoBehaviourPunCallbacks
 
         if (uiToActivate != null)
         {
-            // 타이머 시작
+            yield return StartCoroutine(FadeCanvasGroup(uiToActivate, 0, 1, 2)); // 페이드 인을 2초 동안 수행
+            LoadingImage.SetActive(false); // LoadingImage 비활성화
+
+            // LoadingImage 비활성화 직후 타이머 시작
             Timer timer = FindObjectOfType<Timer>();
-            if (timer != null)
+            if (timer != null && PhotonNetwork.IsMasterClient)  // MasterClient 체크 추가
             {
                 timer.StartTimer();
                 Debug.Log("Timer started.");
             }
-            yield return StartCoroutine(FadeCanvasGroup(uiToActivate, 0, 1, 2)); // 페이드 인을 2초 동안 수행
-            LoadingImage.SetActive(false); // LoadingImage 비활성화
 
             yield return new WaitForSeconds(2); // 2초 대기
 
