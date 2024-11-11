@@ -67,6 +67,13 @@ public class KillTimer : MonoBehaviour
     {
         yield return new WaitForSeconds(1);
 
+        // LocalPlayer의 CustomProperties에 "isMafia"가 설정될 때까지 대기
+        while (!PhotonNetwork.LocalPlayer.CustomProperties.ContainsKey("isMafia"))
+        {
+            Debug.LogWarning("Waiting for 'isMafia' property to be set...");
+            yield return new WaitForSeconds(0.5f);
+        }
+
         if ((bool)PhotonNetwork.LocalPlayer.CustomProperties["isMafia"])
         {
             cooldownImage.fillAmount = 1;

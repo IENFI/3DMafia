@@ -13858,7 +13858,8 @@ MonoBehaviour:
   - {fileID: 2638034837284107174}
   - {fileID: 7278217870127790476}
   - {fileID: 3109587056347199189}
-  networkManager: {fileID: 0}
+  networkManager: {fileID: 1680489780}
+  waitingRoomManager: {fileID: 0}
 --- !u!1 &6927758410354119922
 GameObject:
   m_ObjectHideFlags: 0

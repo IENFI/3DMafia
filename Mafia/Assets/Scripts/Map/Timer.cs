@@ -490,7 +490,7 @@ public class Timer : MonoBehaviourPunCallbacks, IPunObservable
     {
         if (Camera.main != null)
         {
-            Camera.main.farClipPlane = state ? 1000f : 25f;
+            Camera.main.farClipPlane = state ? 1000f : 1000f;
         }
     }
 
