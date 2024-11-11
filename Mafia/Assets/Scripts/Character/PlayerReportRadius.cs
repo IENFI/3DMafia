@@ -35,7 +35,7 @@ public class PlayerReportRadius : MonoBehaviour
         if (corpses.Length == 0)
         {
             corpsesInRange = 0; // Corpse가 없으면 0으로 설정
-            Debug.Log("No corpses found in the scene. corpsesInRange set to 0.");
+            // Debug.Log("No corpses found in the scene. corpsesInRange set to 0.");
         }
     }
 

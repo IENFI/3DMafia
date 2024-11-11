@@ -149,6 +149,7 @@ public class AvatarChanger : MonoBehaviourPunCallbacks
 
     private void InitializeAvatar()
     {
+        Debug.Log("InitializeAvatar 실행");
         if (!photonView.IsMine)
         {
             Debug.LogWarning("Attempting to initialize avatar on non-owned player");

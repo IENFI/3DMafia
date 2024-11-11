@@ -10,33 +10,35 @@ public class DeathAnnounce : MonoBehaviour
     private int previousPlayerNum;
 
     public TMP_Text DeathAnnounceText;
-    public float duration = 60f; // ¾ÆÀÌÅÛ Áö¼Ó½Ã°£
+    public float duration = 60f; // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ó½Ã°ï¿½
     private bool isActive = false;
+
+    GameObject deathAnnounceObj;
 
     void Start()
     {
-        // MafiaManager °ÔÀÓ ¿ÀºêÁ§Æ®¿¡¼­ MafiaManager ½ºÅ©¸³Æ®¸¦ Ã£½À´Ï´Ù.
+        // MafiaManager ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ï¿½ï¿½ MafiaManager ï¿½ï¿½Å©ï¿½ï¿½Æ®ï¿½ï¿½ Ã£ï¿½ï¿½ï¿½Ï´ï¿½.
         mafiaManager = GameObject.Find("Manager/MafiaManager").GetComponent<MafiaManager>();
 
-        // DeathAnnounce ÅÂ±×¸¦ °¡Áø ¿ÀºêÁ§Æ®¿¡¼­ TMP_Text ÄÄÆ÷³ÍÆ®¸¦ Ã£¾Æ ÇÒ´ç
-        GameObject deathAnnounceObj = GameObject.FindGameObjectWithTag("DeathAnnounce");
+        // DeathAnnounce ï¿½Â±×¸ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ï¿½ï¿½ TMP_Text ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ Ã£ï¿½ï¿½ ï¿½Ò´ï¿½
+        deathAnnounceObj = GameObject.FindGameObjectWithTag("DeathAnnounce");
         if (deathAnnounceObj != null)
         {
             DeathAnnounceText = deathAnnounceObj.GetComponent<TMP_Text>();
             if (DeathAnnounceText == null)
             {
-                Debug.LogError("DeathAnnounce ÅÂ±×¸¦ °¡Áø ¿ÀºêÁ§Æ®¿¡ TMP_Text ÄÄÆ÷³ÍÆ®°¡ ¾ø½À´Ï´Ù!");
+                Debug.LogError("DeathAnnounce ï¿½Â±×¸ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ TMP_Text ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½!");
             }
         }
         else
         {
-            Debug.LogError("DeathAnnounce ÅÂ±×¸¦ °¡Áø ¿ÀºêÁ§Æ®¸¦ Ã£À» ¼ö ¾ø½À´Ï´Ù!");
+            Debug.LogError("DeathAnnounce ï¿½Â±×¸ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ Ã£ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½!");
         }
-
+        deathAnnounceObj.SetActive(false);
         currentPlayerNum = mafiaManager.remainingMafiaNum + mafiaManager.remainingCitizenNum;
         previousPlayerNum = currentPlayerNum;
 
-        // DeathAnnounceText°¡ nullÀÌ ¾Æ´Ñ °æ¿ì¿¡¸¸ ÃÊ±âÈ­
+        // DeathAnnounceTextï¿½ï¿½ nullï¿½ï¿½ ï¿½Æ´ï¿½ ï¿½ï¿½ì¿¡ï¿½ï¿½ ï¿½Ê±ï¿½È­
         if (DeathAnnounceText != null)
         {
             DeathAnnounceText.text = "";
@@ -57,17 +59,18 @@ public class DeathAnnounce : MonoBehaviour
 
     private void StartMonitoring()
     {
-        InvokeRepeating("CheckDeaths", 0f, 1f); // 1ÃÊ¸¶´Ù Ã¼Å©
+        InvokeRepeating("CheckDeaths", 0f, 1f); // 1ï¿½Ê¸ï¿½ï¿½ï¿½ Ã¼Å©
     }
 
     private void CheckDeaths()
     {
         if (!isActive) return;
+        deathAnnounceObj.SetActive(true);
 
         currentPlayerNum = mafiaManager.remainingMafiaNum + mafiaManager.remainingCitizenNum;
         if (previousPlayerNum - currentPlayerNum >= 1)
         {
-            DeathAnnounceText.text = "´©±º°¡ »ç¸ÁÇÏ¿´½À´Ï´Ù.";
+            DeathAnnounceText.text = "ëˆ„êµ°ê°€ ì‚¬ë§í•˜ì˜€ìŠµë‹ˆë‹¤.";
             Invoke("ClearDeathMessage", 10f);
         }
         previousPlayerNum = currentPlayerNum;
