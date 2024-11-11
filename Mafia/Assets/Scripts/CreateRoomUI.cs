@@ -17,6 +17,7 @@ public class CreateRoomUI : MonoBehaviour
     public CreateGameRoomData roomData;
 
     public NetworkManager networkManager;
+    public WaitingRoomManager waitingRoomManager;
 
     // Start is called before the first frame update
     void Start()
@@ -55,10 +56,13 @@ public class CreateRoomUI : MonoBehaviour
         if(roomData.maxPlayerCount < limitMaxPlayer)
         {
             UpdateMaxPlayerCount(limitMaxPlayer);
+            waitingRoomManager.maxPlayerNum = limitMaxPlayer;
+
         }
         else
         {
             UpdateMaxPlayerCount(roomData.maxPlayerCount);
+            waitingRoomManager.maxPlayerNum = roomData.maxPlayerCount;
         }
 
         for (int i = 0; i < maxPlayerCountButtons.Count; i++)

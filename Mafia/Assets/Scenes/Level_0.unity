@@ -4952,6 +4952,7 @@ MonoBehaviour:
   ReadyBtn: {fileID: 689482511}
   StartBtn: {fileID: 83721765}
   LoadingUI: {fileID: 1306666780}
+  SettingUI: {fileID: 29812359}
   readyBtnText: {fileID: 775431134}
   startBtnText: {fileID: 480092178}
   ConfirmText: {fileID: 1924211215}
@@ -6443,6 +6444,7 @@ MonoBehaviour:
   - {fileID: 2573665233562012788}
   - {fileID: 7895208721496359725}
   networkManager: {fileID: 0}
+  waitingRoomManager: {fileID: 834706967}
 --- !u!1 &1011071093
 GameObject:
   m_ObjectHideFlags: 0
@@ -17185,7 +17187,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 6279932675127286297}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 834706967}
+        m_TargetAssemblyTypeName: WaitingRoomManager, Assembly-CSharp
+        m_MethodName: UpdateMafiaNum
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &965278633370087294
 GameObject:
   m_ObjectHideFlags: 0
@@ -32893,7 +32907,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 6265577782516973098}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 834706967}
+        m_TargetAssemblyTypeName: WaitingRoomManager, Assembly-CSharp
+        m_MethodName: CloseUI
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!4 &7407456153528089349
 Transform:
   m_ObjectHideFlags: 0

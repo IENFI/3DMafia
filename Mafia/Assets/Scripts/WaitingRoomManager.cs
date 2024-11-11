@@ -15,6 +15,7 @@ public class WaitingRoomManager : MonoBehaviourPunCallbacks
     public Button StartBtn;
 
     public GameObject LoadingUI; // 로딩 화면 UI
+    public GameObject SettingUI;
     private CanvasGroup loadingCanvasGroup; // 로딩 화면의 CanvasGroup
 
     private bool isReady = false;
@@ -476,7 +477,7 @@ public class WaitingRoomManager : MonoBehaviourPunCallbacks
     public void OnButtonClickMaxPlayer(int selectedMaxPlayerNum)
     {
         maxPlayerNum = selectedMaxPlayerNum;
-    }
+    }   
 
     public void UpdateMafiaNum()
     {
@@ -498,6 +499,11 @@ public class WaitingRoomManager : MonoBehaviourPunCallbacks
             yield return new WaitForSeconds(delay);
             ConfirmText.text = ""; // 메시지 삭제
         }
+    }
+
+    public void CloseUI()
+    {
+        SettingUI.SetActive(false);
     }
 
     public override void OnRoomPropertiesUpdate(ExitGames.Client.Photon.Hashtable propertiesThatChanged)
