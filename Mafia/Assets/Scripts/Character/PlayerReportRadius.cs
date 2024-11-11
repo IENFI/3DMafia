@@ -22,7 +22,7 @@ public class PlayerReportRadius : MonoBehaviour
         }
     }
 
-    void Update()
+/*    void Update()
     {
         CheckForCorpses();
     }
@@ -37,7 +37,7 @@ public class PlayerReportRadius : MonoBehaviour
             corpsesInRange = 0; // Corpse가 없으면 0으로 설정
             // Debug.Log("No corpses found in the scene. corpsesInRange set to 0.");
         }
-    }
+    }*/
 
     public void DestoryCorpse()
     {

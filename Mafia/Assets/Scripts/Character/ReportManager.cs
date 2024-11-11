@@ -44,14 +44,14 @@ public class ReportManager : MonoBehaviour
     void Update()
     {
         if (playerController == null){
-            Debug.Log("playerController가 null입니다.");
+            // Debug.Log("playerController가 null입니다.");
             return;
         }
 
         // 시체가 범위 내에 있을 경우 점멸 시작
         if (playerController.reportRadius.IsCorpseInRange())
         {
-            Debug.Log("시체가 범위 내에 있습니다. 점멸을 시작합니다.");
+            // Debug.Log("시체가 범위 내에 있습니다. 점멸을 시작합니다.");
             if (!isFlashing)
             {
                 StartCoroutine(FlashReportImage());

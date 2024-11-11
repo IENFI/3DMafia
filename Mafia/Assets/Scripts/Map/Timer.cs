@@ -164,6 +164,11 @@ public class Timer : MonoBehaviourPunCallbacks, IPunObservable
             SyncPlayerState();
         }
 
+        if (minigameManager != null)
+        {
+            minigameManager.AssignRandomMinigame();
+        }
+
         UpdatePhaseVisuals();
         timerCoroutine = StartCoroutine(TimerCoroutine());
     }

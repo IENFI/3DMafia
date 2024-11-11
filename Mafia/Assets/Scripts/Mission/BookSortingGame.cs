@@ -7,8 +7,8 @@ using System.Linq;
 
 public class BookSortingGame : MinigameBase
 {
-    [SerializeField] private GameObject[] bookObjects; // �̸� ��ġ�� å ������Ʈ��
-    [SerializeField] private float successMessageDuration = 2f;
+    [SerializeField] private GameObject[] bookObjects; // Pre-placed book objects
+    [SerializeField] private float successMessageDuration = 0.5f;
     [SerializeField] private TMP_Text successMessageText;
     [SerializeField] public GameObject BookMinigameUI;
     [SerializeField]
@@ -36,9 +36,9 @@ public class BookSortingGame : MinigameBase
         InitializeGame();
     }
 
-    // �ʱ�ȭ �� ���� ����/���� ���� �Լ���
+    // Initialization and game opening/closing functions
 
-    // å���� ���� ��ġ�� �����ϰ� Book ������Ʈ �߰�
+    // Store original positions of books and add Book components
     private void InitializeBookPositions()
     {
         originalPositions = new Vector2[bookObjects.Length];
@@ -63,28 +63,16 @@ public class BookSortingGame : MinigameBase
         }
     }
 
-    // UI ��� (����/�ݱ�)
+    // UI Control (Open/Close)
     public void ToggleBookSortingUI()
     {
         if (BookMinigameUI.activeSelf)
         {
             CloseGame();
         }
-        //else
-        //{
-        //    OpenGame();
-        //}
     }
 
-    // ���� UI ���� �ʱ�ȭ
-    //private void OpenGame()
-    //{
-    //    BookMinigameUI.SetActive(true);
-    //    InitializeBookPositions();
-    //    InitializeGame();
-    //}
-
-    // ���� �ʱ�ȭ: å ����, ���� å �� ����, å Ȱ��ȭ
+    // Initialize game: reset books, set active book count, activate books
     private void InitializeGame()
     {
         ResetBooks();
@@ -93,7 +81,7 @@ public class BookSortingGame : MinigameBase
         CheckInitialPlacements();
     }
 
-    // ��� å ���� �ʱ�ȭ
+    // Reset all books to initial state
     private void ResetBooks()
     {
         for (int i = 0; i < bookObjects.Length; i++)
@@ -113,7 +101,7 @@ public class BookSortingGame : MinigameBase
         activeBooks.Clear();
     }
 
-    // �����ϰ� å Ȱ��ȭ �� �ʱ�ȭ
+    // Randomly activate and initialize books
     private void ActivateBooks()
     {
         List<int> numbers = Enumerable.Range(1, bookCount).ToList();
@@ -138,6 +126,7 @@ public class BookSortingGame : MinigameBase
             }
         }
     }
+
     public override void ReceiveToken()
     {
         active = true;
@@ -157,7 +146,8 @@ public class BookSortingGame : MinigameBase
     {
         return minigameManager.GetComponent<MinigameManager>();
     }
-    // �ʱ� ��ġ �� �̹� �ùٸ� ��ġ�� �ִ� å üũ
+
+    // Check if any books are already in correct positions initially
     private void CheckInitialPlacements()
     {
         foreach (var book in activeBooks)
@@ -170,26 +160,37 @@ public class BookSortingGame : MinigameBase
         }
     }
 
-    // ���� ���� �� �ʱ�ȭ
+    // Close game and cleanup
+    // Close game and cleanup
     private void CloseGame()
     {
+        // First, stop and clear any running coroutine
         if (successMessageCoroutine != null)
         {
             StopCoroutine(successMessageCoroutine);
             successMessageCoroutine = null;
-            successMessageText.gameObject.SetActive(false);
         }
-        //BookMinigameUI.SetActive(false);
+
+        // Immediately disable and clear the success message
+        if (successMessageText != null && successMessageText.gameObject != null)
+        {
+            successMessageText.gameObject.SetActive(false);
+            successMessageText.text = "";
+        }
+
+        // Then proceed with game cleanup
         ResetBooks();
         minigame.ExitCode = true;
         active = false;
         GetMinigameManager().SuccessMission(index);
+
+        // Finally disable the game object
         this.gameObject.SetActive(false);
     }
 
-    // ���� �÷��� ���� �Լ���
+    // Main gameplay functions
 
-    // �� �����Ӹ��� �Է� üũ
+    // Check input every frame
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.Escape) && BookMinigameUI.activeSelf)
@@ -213,7 +214,7 @@ public class BookSortingGame : MinigameBase
         }
     }
 
-    // å ���� �õ�
+    // Attempt to pick up a book
     private void TryPickUpBook()
     {
         Vector2 clickPosition;
@@ -240,7 +241,7 @@ public class BookSortingGame : MinigameBase
         }
     }
 
-    // å �巡��
+    // Handle book dragging
     private void DragBook()
     {
         Vector2 localPoint;
@@ -248,7 +249,7 @@ public class BookSortingGame : MinigameBase
         currentBook.GetComponent<RectTransform>().anchoredPosition = localPoint + dragOffset;
     }
 
-    // å ���� �õ�
+    // Attempt to drop a book
     private void TryDropBook()
     {
         if (currentBook != null)
@@ -257,11 +258,11 @@ public class BookSortingGame : MinigameBase
 
             if (nearestIndex != -1)
             {
-                if (nearestIndex == currentBook.Number - 1)  // å�� �ùٸ� ��ġ�� ���
+                if (nearestIndex == currentBook.Number - 1)  // If book is in correct position
                 {
                     PlaceBookCorrectly(currentBook, nearestIndex, dragStartIndex);
                 }
-                else  // �ùٸ� ��ġ�� �ƴ� ���
+                else  // If position is incorrect
                 {
                     currentBook.ResetToInitialPosition();
                 }
@@ -276,22 +277,22 @@ public class BookSortingGame : MinigameBase
         }
     }
 
-    // å�� �ùٸ� ��ġ�� ��ġ
+    // Place book in correct position
     private void PlaceBookCorrectly(Book book, int correctIndex, int startIndex)
     {
         Book bookAtCorrectIndex = bookObjects[correctIndex]?.GetComponent<Book>();
 
-        // ���� å�� �ùٸ� ��ġ�� �̵�
+        // Move current book to correct position
         book.GetComponent<RectTransform>().anchoredPosition = originalPositions[correctIndex];
         book.UpdateInitialPosition(originalPositions[correctIndex]);
         book.IsPlaced = true;
 
-        // bookObjects �迭 ������Ʈ
+        // Update bookObjects array
         bookObjects[startIndex] = null;
         bookObjects[correctIndex] = book.gameObject;
         book.transform.SetSiblingIndex(correctIndex);
 
-        // ���� �ִ� å �̵� (�־��ٸ�)
+        // Move existing book if present
         if (bookAtCorrectIndex != null)
         {
             bookAtCorrectIndex.GetComponent<RectTransform>().anchoredPosition = originalPositions[startIndex];
@@ -304,7 +305,7 @@ public class BookSortingGame : MinigameBase
         CheckForCompletion();
     }
 
-    // ���� ����� å ���� ã��
+    // Find nearest book slot position
     private int FindNearestBookSlot(Vector2 position)
     {
         return originalPositions
@@ -313,7 +314,7 @@ public class BookSortingGame : MinigameBase
             .First().Index;
     }
 
-    // ��� å�� �ùٸ� ��ġ�� �ִ��� Ȯ��
+    // Check if all books are in correct positions
     private void CheckForCompletion()
     {
         if (activeBooks.TrueForAll(book => book.IsPlaced))
@@ -326,14 +327,46 @@ public class BookSortingGame : MinigameBase
         }
     }
 
-    // ���� �޽��� ǥ��
+    // Display success message
     private IEnumerator ShowSuccessMessage()
     {
-        successMessageText.text = "����!";
-        successMessageText.gameObject.SetActive(true);
+        // Clear any previous state
+        if (successMessageText != null && successMessageText.gameObject != null)
+        {
+            successMessageText.text = "Success!";
+            successMessageText.gameObject.SetActive(true);
+        }
+
         yield return new WaitForSeconds(successMessageDuration);
-        successMessageText.gameObject.SetActive(false);
-        successMessageCoroutine = null;
-        CloseGame();
+
+        // Check if the game is still active before proceeding
+        if (this.gameObject.activeSelf)
+        {
+            CloseGame();
+        }
+        else
+        {
+            // If game is already closing/closed, ensure message is cleaned up
+            if (successMessageText != null && successMessageText.gameObject != null)
+            {
+                successMessageText.gameObject.SetActive(false);
+                successMessageText.text = "";
+            }
+        }
+    }
+    // OnDisable to ensure cleanup when the game object is disabled
+    private void OnDisable()
+    {
+        if (successMessageCoroutine != null)
+        {
+            StopCoroutine(successMessageCoroutine);
+            successMessageCoroutine = null;
+        }
+
+        if (successMessageText != null && successMessageText.gameObject != null)
+        {
+            successMessageText.gameObject.SetActive(false);
+            successMessageText.text = "";
+        }
     }
 }

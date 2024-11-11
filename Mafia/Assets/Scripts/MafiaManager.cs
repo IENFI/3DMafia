@@ -31,7 +31,7 @@ public class MafiaManager : MonoBehaviourPunCallbacks
     private bool isSynced = false;
 
     // 테스트시 키고꺼야하는 목록
-    private bool gameOver = false;
+    //private bool gameOver = false;
 
     [SerializeField]
     public GameObject DeadImage;
@@ -80,7 +80,7 @@ public class MafiaManager : MonoBehaviourPunCallbacks
 
         
         // 테스트시 키고 끌 목록
-        {
+       /* {
             if (remainingMafiaNum == 0 || shopIn.SaveCoin >= 1000)
             {
                 CitizenWin.SetActive(true);
@@ -110,7 +110,7 @@ public class MafiaManager : MonoBehaviourPunCallbacks
             {
                 MafiaWin.SetActive(false);
             }
-        }
+        }*/
         
 
         if (Input.GetKeyDown(KeyCode.Tab))
