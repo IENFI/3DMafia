@@ -7,6 +7,11 @@ using static UnityEngine.Rendering.DebugUI;
 public class OpenSetting : MonoBehaviour
 {
     public GameObject settingsPanel; // 설정 패널 (비활성화 상태로 시작)
+
+    void Start()
+    {
+        settingsPanel.SetActive(false);
+    }
     
     void Update()
     {
@@ -20,14 +25,13 @@ public class OpenSetting : MonoBehaviour
 
     void ToggleSettingsPanel()
     {
+        Debug.Log("OpenSetting.cs : ToggleSettingsPanel.activeSelf : " + settingsPanel.activeSelf);
         // 패널의 활성화 상태를 토글
-        settingsPanel.SetActive(!settingsPanel.activeSelf);
-    }
-
-    public void TogglePanel()
-    {
-        // 패널이 현재 활성화되어 있는지 확인한 후, 반대로 설정
-        bool isActive = settingsPanel.activeSelf;
-        settingsPanel.SetActive(!isActive);
+        if (settingsPanel.activeSelf){
+            settingsPanel.SetActive(false);
+        }
+        else {
+            settingsPanel.SetActive(true);
+        }
     }
 }

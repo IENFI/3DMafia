@@ -135,6 +135,7 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
     // 매 프레임마다 호출되는 Update 함수
     void Update()
     {
+        // Debug.Log("canControl : " + canControl);
         if (!photonView.IsMine)
         {
             transform.position = Vector3.Lerp(transform.position, networkPosition, Time.deltaTime * smoothing);
@@ -147,7 +148,15 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
         {
             if (isDead) return;
 
-            if (GameManager.instance != null && GameManager.instance.IsAnyUIOpen())
+            if (GameManager.instance != null && GameManager.instance.IsAnyUIOpen() && !GameManager.instance.CheckRoomPanel() && !canControl)
+            {
+                movement.PauseMovement();
+            }
+            else if (GameManager.instance.CheckRoomPanel() && canControl)
+            {
+                movement.ResumeMovement();
+            }
+            else if (GameManager.instance.CheckRoomPanel() && !canControl)
             {
                 movement.PauseMovement();
             }
@@ -171,7 +180,7 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
             {
                 playerAnimator.OnMovement(x * offset, z * offset);
             }
-            else
+            else if(!GameManager.instance.CheckRoomPanel())
             {
                 // 플레이어가 제어 불가능할 때의 파라미터 값을 부드럽게 0으로 줄이기
                 x_ = Mathf.Lerp(x_, 0f, Time.deltaTime * 5f);
@@ -199,7 +208,7 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
             transform.rotation = Quaternion.Euler(0, cameraTransform.eulerAngles.y, 0);
 
             // Space키를 누르면 점프
-            if (Input.GetKeyDown(jumpKeyCode))
+            if (Input.GetKeyDown(jumpKeyCode) && canControl)
             {
                 //playerAnimator.OnJump();    // 애니메이션 파라미터 설정 (onJump)
                 movement.JumpTo();        // 점프 함수 호출
@@ -209,7 +218,7 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
 
             if (currentScene.name == "Level_1")
             {
-                if (Input.GetKeyDown(KeyCode.Z))
+                if (Input.GetKeyDown(KeyCode.Z) && canControl)
                 {
                     if (Time.time - lastKillTime >= killCooldown && (bool)PhotonNetwork.LocalPlayer.CustomProperties["isMafia"])
                     {
@@ -226,7 +235,7 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
             }
 
             // Kill 시뮬레이트
-            if (Input.GetKeyDown(KeyCode.P))
+            if (Input.GetKeyDown(KeyCode.P) && canControl)
             {
                photonView.RPC("Death", RpcTarget.All);
             }

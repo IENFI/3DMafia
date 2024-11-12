@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 using Photon.Realtime;
+using Unity.VisualScripting;
 
 public class GameManager : MonoBehaviour
 {
@@ -66,6 +67,23 @@ public class GameManager : MonoBehaviour
             //playerController.EnableControl(true);
 
     }
+
+    public bool CheckRoomPanel(){
+        return GameObject.Find("Canvas/RoomPanel")? uiWindows.Contains(GameObject.Find("Canvas/RoomPanel")) : false;
+    }
+
+    public bool CheckUiList()
+    {
+        GameObject roomPanel = GameObject.Find("Canvas/RoomPanel");
+
+        // RoomPanel이 uiWindows에 포함되어 있고, 다른 UI 요소도 존재하는지 확인
+        if (roomPanel != null && uiWindows.Contains(roomPanel))
+        {
+            return uiWindows.Count > 1; // RoomPanel 외에 다른 UI가 존재하면 true 반환
+        }
+        return false; // RoomPanel이 없거나, 다른 UI가 없는 경우 false 반환
+    }
+
 
     private IEnumerator WaitForConnectionAndCreatePlayer()
     {
