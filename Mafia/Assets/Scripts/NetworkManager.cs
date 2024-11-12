@@ -92,8 +92,8 @@ public class NetworkManager : MonoBehaviourPunCallbacks // 안현석 똑바로�
         maxPage = (myList.Count % CellBtn.Length == 0) ? myList.Count / CellBtn.Length : myList.Count / CellBtn.Length + 1;
 
         // 이전, 다음 버튼 상태 설정
-        PreviousBtn.interactable = (currentPage <= 1);
-        NextBtn.interactable = (currentPage >= maxPage);
+        PreviousBtn.interactable = (currentPage <= 1)? false : true;
+        NextBtn.interactable = (currentPage >= maxPage)? false : true;
 
         // 페이지에 맞는 리스트 대입
         multiple = (currentPage - 1) * CellBtn.Length;
