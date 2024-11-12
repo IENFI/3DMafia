@@ -3,7 +3,6 @@ using TMPro;
 
 public class SettingsChatUI : MonoBehaviour
 {
-
     private PlayerController playerController;
     public TMP_InputField chatInput; // 텍스트 입력 필드 참조
 
