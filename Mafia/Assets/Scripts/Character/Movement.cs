@@ -36,22 +36,28 @@ public class Movement : MonoBehaviour
 
     private void Update()
     {
-        // 중력 설정. 플레이어가 땅을 밟고 있지 않다면
-        // y축 이동방향에 gravity * Time.deltaTime을 더해준다
+        // 중력 설정. 플레이어가 땅을 밟고 있지 않다면 y축 이동방향에 gravity * Time.deltaTime을 더해준다
+        // 캐릭터가 땅에 있지 않을 경우 중력을 적용하여 Y축 이동을 지속적으로 감소시킴
+        if (!characterController.isGrounded)
+        {
+            moveDirection.y += gravity * Time.deltaTime;
+        }
+        else if (isMovementPaused)
+        {
+            // 땅에 있을 경우 Y축 이동을 0으로 설정하여 중력의 영향을 초기화
+            moveDirection.y = 0;
+        }
+
         if (isMovementPaused)
         {
-            moveDirection = Vector3.zero;
+            // 이동은 멈추고 중력만 적용
+            characterController.Move(new Vector3(0, moveDirection.y, 0) * Time.deltaTime);
         }
         else
         {
-            if (characterController.isGrounded == false)
-            {
-                moveDirection.y += gravity * Time.deltaTime;
-            }
+            // 일반적인 이동 설정
+            characterController.Move(moveDirection * moveSpeed * Time.deltaTime);
         }
-
-        // 이동 설정. CharacterController의 Move() 함수를 이용한 이동
-        characterController.Move(moveDirection * moveSpeed * Time.deltaTime);
     }
 
     public void MoveTo(Vector3 direction)

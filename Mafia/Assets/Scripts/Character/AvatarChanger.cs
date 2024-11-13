@@ -94,12 +94,17 @@ public class AvatarChanger : MonoBehaviourPunCallbacks
 
         if (photonView.IsMine)
         {
-            string roomID = PhotonNetwork.CurrentRoom.CustomProperties["RoomID"].ToString();
-            int clientID = PhotonNetwork.LocalPlayer.ActorNumber;
-
-            // Level_0에서만 랜덤 아바타 할당
-            if (currentSceneName == "Level_0")
+            if (PhotonNetwork.LocalPlayer.CustomProperties.ContainsKey("AvatarName"))
             {
+                string myAvatar = (string)PhotonNetwork.LocalPlayer.CustomProperties["AvatarName"];
+                ChangeAvatar(myAvatar);
+            }
+            else
+            {
+                string roomID = PhotonNetwork.CurrentRoom.CustomProperties["RoomID"].ToString();
+                int clientID = PhotonNetwork.LocalPlayer.ActorNumber;
+
+                // Level_0에서만 랜덤 아바타 할당
                 DBInteraction.GetRandomUnusedAppearance(roomID, (randomUnusedAppearance) =>
                 {
                     if (!string.IsNullOrEmpty(randomUnusedAppearance))
@@ -108,14 +113,17 @@ public class AvatarChanger : MonoBehaviourPunCallbacks
                         DBInteraction.SetAppearanceClientID(roomID, randomUnusedAppearance, clientID);
                     }
                 });
-            }
-            else if (currentSceneName == "Level_1")
-            {
-                // Level_1에서는 이전 씬의 아바타 상태를 복원
-                RestoreAvatarState(roomID, clientID);
-            }
+                
+                /*
+                else if (currentSceneName == "Level_1")
+                {
+                    // Level_1에서는 이전 씬의 아바타 상태를 복원
+                    RestoreAvatarState(roomID, clientID);
+                }
+                */
 
-            InitializeAvatar();
+                InitializeAvatar();
+            }
         }
         else
         {
@@ -187,6 +195,11 @@ public class AvatarChanger : MonoBehaviourPunCallbacks
         {
             string newAvatarName = (string)changedProps["AvatarName"];
             UpdateRemotePlayerAvatar(newAvatarName);
+        }
+        if (changedProps.ContainsKey("AvatarName"))
+        {
+            DuplicateCheck();
+            NameListUpdate();
         }
     }
 
@@ -274,8 +287,6 @@ public class AvatarChanger : MonoBehaviourPunCallbacks
 
         // 방에 입장할 때 모든 플레이어의 아바타 상태를 요청
         photonView.RPC("RequestAvatarState", RpcTarget.All);
-
-        
     }
 
     public override void OnPlayerLeftRoom(Player otherPlayer)
@@ -323,5 +334,101 @@ public class AvatarChanger : MonoBehaviourPunCallbacks
                 ChangeAvatar(savedAvatarType);
             }
         });
+    }
+
+    public void DuplicateCheck()
+    {
+        for (int i = 0; i < PhotonNetwork.PlayerList.Length; i++)
+        {
+            if (!PhotonNetwork.PlayerList[i].CustomProperties.ContainsKey("AvatarName"))
+            {
+                return;
+            }
+        }
+
+        int myIndex = -1;
+        for (int i = 0; i < PhotonNetwork.PlayerList.Length; i++)
+        {
+            if(PhotonNetwork.LocalPlayer == PhotonNetwork.PlayerList[i])
+            {
+                myIndex = i; break;
+            }
+        }
+
+        int targetIndex = -1;
+
+        string myAvatar = (string)PhotonNetwork.LocalPlayer.CustomProperties["AvatarName"];
+        for (int i = 0; i < PhotonNetwork.PlayerList.Length; i++)
+        {
+            if (i != myIndex)
+            {
+                if ((string)PhotonNetwork.PlayerList[i].CustomProperties["AvatarName"] == myAvatar)
+                {
+                    targetIndex = i; break;
+                }
+            }
+        }
+
+        if (targetIndex != -1 && myIndex > targetIndex)
+        {
+            string avatarName = "";
+
+            foreach (var avatar in avatarDict.Keys)
+            {
+                int check = 1;
+                for (int i = 0; i < PhotonNetwork.PlayerList.Length; i++)
+                {
+                    if (avatar == (string)PhotonNetwork.PlayerList[i].CustomProperties["AvatarName"])
+                    {
+                        check = 0; break;
+                    }
+                }
+                if(check == 1)
+                {
+                    avatarName = avatar;
+                    break;
+                }
+            }
+            ChangeAvatar(avatarName);
+        }
+    }
+
+    public void NameListUpdate()
+    {
+        if (!PhotonNetwork.IsMasterClient) return;
+        for (int i = 0; i < PhotonNetwork.PlayerList.Length; i++)
+        {
+            if (!PhotonNetwork.PlayerList[i].CustomProperties.ContainsKey("AvatarName"))
+            {
+                return;
+            }
+        }
+
+        string roomID = PhotonNetwork.CurrentRoom.CustomProperties["RoomID"].ToString();
+
+        string query = $"UPDATE customize SET ";
+
+        foreach (var avatar in avatarDict.Keys)
+        {
+            int check = 1;
+            for (int i = 0; i < PhotonNetwork.PlayerList.Length; i++)
+            {
+                if ((string)PhotonNetwork.PlayerList[i].CustomProperties["AvatarName"] == avatar)
+                {
+                    check = 0;
+                    query += (avatar + " = " + $"{PhotonNetwork.PlayerList[i].ActorNumber}, ");
+                    break;
+                }
+            }
+
+            if (check == 1)
+            {
+                query += (avatar + " = " + $" NULL, ");
+            }
+        }
+        query = query.TrimEnd(',', ' ');
+        query += $" WHERE roomID = '{roomID}'";
+
+        AWSDBManager.ExecuteQuery(query);
     }
 }

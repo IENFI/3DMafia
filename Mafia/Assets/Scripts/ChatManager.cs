@@ -175,14 +175,19 @@ public class ChatManager : MonoBehaviourPunCallbacks
 
     private void HandleChatToggle(KeyCode openKey, KeyCode closeKey)
     {
-        if (Input.GetKeyDown(openKey) && !RoomPanel.activeSelf)
+        if (Input.GetKeyDown(openKey) && !RoomPanel.activeSelf && !GameManager.instance.IsAnyUIOpen())
         {
             RoomPanel.SetActive(true);
             ChatInput.ActivateInputField();
         }
         else if (Input.GetKeyDown(closeKey) && RoomPanel.activeSelf )
         {
+            RoomPanel.GetComponent<SettingsChatUI>().playerController.EnableControl(true);
             RoomPanel.SetActive(false);
+            if (Cursor.lockState == CursorLockMode.None && Cursor.visible){
+                Cursor.lockState = CursorLockMode.Locked;
+                Cursor.visible = false;
+            }
         }
     }
 
