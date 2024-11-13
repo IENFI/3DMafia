@@ -10,35 +10,35 @@ public class DeathAnnounce : MonoBehaviour
     private int previousPlayerNum;
 
     public TMP_Text DeathAnnounceText;
-    public float duration = 60f; // ������ ���ӽð�
+    public float duration = 600f; // 알림의 지속 시간
     private bool isActive = false;
 
     GameObject deathAnnounceObj;
 
     void Start()
     {
-        // MafiaManager ���� ������Ʈ���� MafiaManager ��ũ��Ʈ�� ã���ϴ�.
+        // MafiaManager 오브젝트에서 MafiaManager 스크립트를 찾음
         mafiaManager = GameObject.Find("Manager/MafiaManager").GetComponent<MafiaManager>();
 
-        // DeathAnnounce �±׸� ���� ������Ʈ���� TMP_Text ������Ʈ�� ã�� �Ҵ�
-        deathAnnounceObj = GameObject.FindGameObjectWithTag("DeathAnnounce");
+        // DeathAnnounce 태그가 붙은 오브젝트에서 TMP_Text 컴포넌트를 찾아 할당
+        deathAnnounceObj = GameObject.Find("GameUiManager/Canvas/DeathAnnounceText");
         if (deathAnnounceObj != null)
         {
             DeathAnnounceText = deathAnnounceObj.GetComponent<TMP_Text>();
             if (DeathAnnounceText == null)
             {
-                Debug.LogError("DeathAnnounce �±׸� ���� ������Ʈ�� TMP_Text ������Ʈ�� �����ϴ�!");
+                Debug.LogError("DeathAnnounce 태그가 붙은 오브젝트에 TMP_Text 컴포넌트가 없습니다!");
             }
         }
         else
         {
-            Debug.LogError("DeathAnnounce �±׸� ���� ������Ʈ�� ã�� �� �����ϴ�!");
+            Debug.LogError("DeathAnnounce 태그가 붙은 오브젝트를 찾을 수 없습니다!");
         }
-        deathAnnounceObj.SetActive(false);
+        deathAnnounceObj.SetActive(false); // DeathAnnounce 오브젝트를 비활성화
         currentPlayerNum = mafiaManager.remainingMafiaNum + mafiaManager.remainingCitizenNum;
         previousPlayerNum = currentPlayerNum;
 
-        // DeathAnnounceText�� null�� �ƴ� ��쿡�� �ʱ�ȭ
+        // DeathAnnounceText가 null이 아닐 경우 초기화
         if (DeathAnnounceText != null)
         {
             DeathAnnounceText.text = "";
@@ -59,7 +59,7 @@ public class DeathAnnounce : MonoBehaviour
 
     private void StartMonitoring()
     {
-        InvokeRepeating("CheckDeaths", 0f, 1f); // 1�ʸ��� üũ
+        InvokeRepeating("CheckDeaths", 0f, 1f); // 1초 간격으로 사망 여부 체크
     }
 
     private void CheckDeaths()
@@ -71,7 +71,7 @@ public class DeathAnnounce : MonoBehaviour
         if (previousPlayerNum - currentPlayerNum >= 1)
         {
             DeathAnnounceText.text = "누군가 사망하였습니다.";
-            Invoke("ClearDeathMessage", 10f);
+            Invoke("ClearDeathMessage", 5f); // 10초 후에 메시지를 지움
         }
         previousPlayerNum = currentPlayerNum;
     }
@@ -86,7 +86,7 @@ public class DeathAnnounce : MonoBehaviour
 
     private void OnDisable()
     {
-        CancelInvoke("CheckDeaths");
+        CancelInvoke("CheckDeaths"); // 반복 호출 취소
         DeathAnnounceText.text = "";
     }
 }
