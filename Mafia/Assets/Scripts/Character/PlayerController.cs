@@ -154,6 +154,7 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
 
             StartCoroutine(ConfigureVoiceSetting());
         }
+        GetComponentInChildren<MicrophoneVolumeIndicator>().UpdateMicrophoneUI(recorder.TransmitEnabled);
     }
 
     private IEnumerator ConfigureVoiceSetting(){
@@ -283,6 +284,17 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
                 {
                     ReportCorpse();
                 }
+            }
+
+            if (Input.GetKeyDown(KeyCode.V) && canControl)
+            {
+                // 마이크 상태를 토글합니다.
+                recorder.TransmitEnabled = !recorder.TransmitEnabled;
+
+                GetComponentInChildren<MicrophoneVolumeIndicator>().UpdateMicrophoneUI(recorder.TransmitEnabled);
+                
+                // 마이크가 켜졌는지 꺼졌는지 상태를 로그로 출력
+                Debug.Log("마이크 상태: " + (recorder.TransmitEnabled ? "켜짐" : "꺼짐"));
             }
 
             // Kill 시뮬레이트
