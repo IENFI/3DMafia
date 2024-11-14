@@ -199,7 +199,10 @@ public class ChatManager : MonoBehaviourPunCallbacks
             PhotonNetwork.LocalPlayer.CustomProperties.TryGetValue("AvatarName", out object avatarNameObj);
             string avatarName = (string)avatarNameObj;
 
-            PV.RPC("ChatRPC", RpcTarget.All, PhotonNetwork.NickName, ChatInput.text, avatarName);
+            // 발신자의 유령 상태를 확인하여 전달
+            bool senderIsDead = PhotonNetwork.LocalPlayer.CustomProperties.ContainsKey("isDead") && (bool)PhotonNetwork.LocalPlayer.CustomProperties["isDead"];
+
+            PV.RPC("ChatRPC", RpcTarget.All, PhotonNetwork.NickName, ChatInput.text, avatarName, senderIsDead);
             ChatInput.text = "";
         }
         ChatInput.ActivateInputField();
@@ -207,8 +210,19 @@ public class ChatManager : MonoBehaviourPunCallbacks
 
 
     [PunRPC] // RPC는 플레이어가 속해있는 방 모든 인원에게 전달한다
-    void ChatRPC(string senderName, string msg, string avatarName)
+    void ChatRPC(string senderName, string msg, string avatarName, bool senderIsDead)
     {
+        // 수신자가 유령인지 확인
+        bool receiverIsDead = PhotonNetwork.LocalPlayer.CustomProperties.ContainsKey("isDead") &&
+                            (bool)PhotonNetwork.LocalPlayer.CustomProperties["isDead"];
+
+        // 유령이 보낸 메시지는 유령에게만 보이도록 하고, 플레이어가 보낸 메시지는 모두에게 보이도록 설정
+        if (!(receiverIsDead || !senderIsDead))
+        {
+            // 수신자가 플레이어고, 발신자가 유령이면 메시지를 무시
+            return;
+        }
+
         bool isInput = false;
         for (int i = 0; i < ChatText.Length; i++)
             if (ChatText[i].text == "")

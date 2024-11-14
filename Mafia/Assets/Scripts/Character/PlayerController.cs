@@ -288,6 +288,7 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
             miniMapPoint2.transform.position = transform.position + new Vector3(300f, 0, 0);
         }
     }
+
     [PunRPC]
     void Death()
     {
@@ -305,7 +306,6 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
         { "isDead" , true }
         };
         PhotonNetwork.LocalPlayer.SetCustomProperties(props);
-
     }
 
     [PunRPC]
