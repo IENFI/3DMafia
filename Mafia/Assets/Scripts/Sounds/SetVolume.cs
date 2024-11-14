@@ -7,38 +7,54 @@ using UnityEngine.SceneManagement;
 public class SetVolume : MonoBehaviour
 {
     public AudioMixer mixer;
-    public Slider slider;
-    public TMP_Text volumeText;
 
-    // »õ·Î Ãß°¡ÇÒ º¯¼öµé
-    public Image soundIcon;    // Sound ÀÌ¹ÌÁö
-    public Image muteIcon;     // Mute ÀÌ¹ÌÁö
-    private bool isMuted = false;
+    [Header("ë°°ê²½ìŒì•…")]
+    public Slider bgmSlider;
+    public TMP_Text bgmVolumeText;
+    public Image bgmSoundIcon;
+    public Image bgmMuteIcon;
+    private bool isBgmMuted = false;
+
+    [Header("íš¨ê³¼ìŒ")]
+    public Slider sfxSlider;
+    public TMP_Text sfxVolumeText;
+    public Image sfxSoundIcon;
+    public Image sfxMuteIcon;
+    private bool isSfxMuted = false;
 
     private void Start()
     {
-        // ½½¶óÀÌ´õÀÇ °ªÀÌ º¯°æµÉ ¶§¸¶´Ù SetLevel ¸Ş¼­µå¸¦ È£ÃâÇÕ´Ï´Ù.
-        slider.onValueChanged.AddListener(SetLevel);
+        // BGM ìŠ¬ë¼ì´ë” ì´ë²¤íŠ¸ ì„¤ì •
+        bgmSlider.onValueChanged.AddListener(SetBGMLevel);
 
-        // ¾À ·Îµå ÀÌº¥Æ®¿¡ ´ëÇÑ ¸®½º³Ê¸¦ Ãß°¡ÇÕ´Ï´Ù.
+        // íš¨ê³¼ìŒ ìŠ¬ë¼ì´ë” ì´ë²¤íŠ¸ ì„¤ì •
+        sfxSlider.onValueChanged.AddListener(SetSFXLevel);
+
+        // ì”¬ ë¡œë“œ ì´ë²¤íŠ¸ ë¦¬ìŠ¤ë„ˆ ì¶”ê°€
         SceneManager.sceneLoaded += OnSceneLoaded;
 
-        // ÇöÀç ¾À¿¡ ´ëÇØ ÃÊ±â ¼³Á¤À» ¼öÇàÇÕ´Ï´Ù.
+        // ì´ˆê¸° UI ìƒíƒœ ì—…ë°ì´íŠ¸
         UpdateUIForCurrentScene();
 
-        // ÀÌ¹ÌÁö Å¬¸¯ ÀÌº¥Æ® Ãß°¡
-        if (soundIcon != null)
-            soundIcon.GetComponent<Button>().onClick.AddListener(ToggleMute);
-        if (muteIcon != null)
-            muteIcon.GetComponent<Button>().onClick.AddListener(ToggleMute);
+        // BGM ì•„ì´ì½˜ í´ë¦­ ì´ë²¤íŠ¸ ì¶”ê°€
+        if (bgmSoundIcon != null)
+            bgmSoundIcon.GetComponent<Button>().onClick.AddListener(ToggleBGMMute);
+        if (bgmMuteIcon != null)
+            bgmMuteIcon.GetComponent<Button>().onClick.AddListener(ToggleBGMMute);
 
-        // ÃÊ±â ÀÌ¹ÌÁö »óÅÂ ¼³Á¤
-        UpdateSoundIcon(slider.value);
+        // íš¨ê³¼ìŒ ì•„ì´ì½˜ í´ë¦­ ì´ë²¤íŠ¸ ì¶”ê°€
+        if (sfxSoundIcon != null)
+            sfxSoundIcon.GetComponent<Button>().onClick.AddListener(ToggleSFXMute);
+        if (sfxMuteIcon != null)
+            sfxMuteIcon.GetComponent<Button>().onClick.AddListener(ToggleSFXMute);
+
+        // ì´ˆê¸° ì•„ì´ì½˜ ìƒíƒœ ì„¤ì •
+        UpdateSoundIcon(bgmSlider.value, true);
+        UpdateSoundIcon(sfxSlider.value, false);
     }
 
     private void OnDestroy()
     {
-        // ½ºÅ©¸³Æ®°¡ ÆÄ±«µÉ ¶§ ÀÌº¥Æ® ¸®½º³Ê¸¦ Á¦°ÅÇÕ´Ï´Ù.
         SceneManager.sceneLoaded -= OnSceneLoaded;
     }
 
@@ -47,31 +63,56 @@ public class SetVolume : MonoBehaviour
         UpdateUIForCurrentScene();
     }
 
-    // »õ·Î Ãß°¡ÇÏ´Â ¸Ş¼­µå: À½¼Ò°Å Åä±Û
-    public void ToggleMute()
+    // BGM ìŒì†Œê±° í† ê¸€
+    public void ToggleBGMMute()
     {
-        if (!isMuted)
+        if (!isBgmMuted)
         {
-            // À½¼Ò°Å·Î ÀüÈ¯
-            isMuted = true;
-            slider.value = 0f;
+            isBgmMuted = true;
+            bgmSlider.value = 0f;
         }
         else
         {
-            // À½¼Ò°Å ÇØÁ¦ (º¼·ı 30À¸·Î ¼³Á¤)
-            isMuted = false;
-            slider.value = 0.3f;
+            isBgmMuted = false;
+            bgmSlider.value = 0.3f;
         }
-        SetLevel(slider.value);
+        SetBGMLevel(bgmSlider.value);
     }
 
-    // »õ·Î Ãß°¡ÇÏ´Â ¸Ş¼­µå: ¾ÆÀÌÄÜ »óÅÂ ¾÷µ¥ÀÌÆ®
-    private void UpdateSoundIcon(float volume)
+    // íš¨ê³¼ìŒ ìŒì†Œê±° í† ê¸€
+    public void ToggleSFXMute()
     {
-        if (soundIcon != null && muteIcon != null)
+        if (!isSfxMuted)
         {
-            soundIcon.gameObject.SetActive(volume > 0.0001);
-            muteIcon.gameObject.SetActive(volume <= 0.0001);
+            isSfxMuted = true;
+            sfxSlider.value = 0f;
+        }
+        else
+        {
+            isSfxMuted = false;
+            sfxSlider.value = 0.3f;
+        }
+        SetSFXLevel(sfxSlider.value);
+    }
+
+    // ì‚¬ìš´ë“œ ì•„ì´ì½˜ ì—…ë°ì´íŠ¸ (isBGM: trueë©´ BGM, falseë©´ íš¨ê³¼ìŒ)
+    private void UpdateSoundIcon(float volume, bool isBGM)
+    {
+        if (isBGM)
+        {
+            if (bgmSoundIcon != null && bgmMuteIcon != null)
+            {
+                bgmSoundIcon.gameObject.SetActive(volume > 0.0001);
+                bgmMuteIcon.gameObject.SetActive(volume <= 0.0001);
+            }
+        }
+        else
+        {
+            if (sfxSoundIcon != null && sfxMuteIcon != null)
+            {
+                sfxSoundIcon.gameObject.SetActive(volume > 0.0001);
+                sfxMuteIcon.gameObject.SetActive(volume <= 0.0001);
+            }
         }
     }
 
@@ -80,29 +121,46 @@ public class SetVolume : MonoBehaviour
         string currentSceneName = SceneManager.GetActiveScene().name;
         if (currentSceneName == "Level_1")
         {
-            slider.interactable = false;
-            volumeText.text = "¾øÀ½";
-            // Level_1¿¡¼­´Â ¾ÆÀÌÄÜµµ ºñÈ°¼ºÈ­
-            if (soundIcon != null) soundIcon.gameObject.SetActive(false);
-            if (muteIcon != null) muteIcon.gameObject.SetActive(false);
+            // BGM UI ë¹„í™œì„±í™”
+            bgmSlider.interactable = false;
+            bgmVolumeText.text = "ìŒì†Œê±°";
+            if (bgmSoundIcon != null) bgmSoundIcon.gameObject.SetActive(false);
+            if (bgmMuteIcon != null) bgmMuteIcon.gameObject.SetActive(false);
+
+            // íš¨ê³¼ìŒ UI ë¹„í™œì„±í™”
+            sfxSlider.interactable = false;
+            sfxVolumeText.text = "ìŒì†Œê±°";
+            if (sfxSoundIcon != null) sfxSoundIcon.gameObject.SetActive(false);
+            if (sfxMuteIcon != null) sfxMuteIcon.gameObject.SetActive(false);
         }
         else
         {
-            slider.interactable = true;
-            SetLevel(slider.value);
+            bgmSlider.interactable = true;
+            sfxSlider.interactable = true;
+            SetBGMLevel(bgmSlider.value);
+            SetSFXLevel(sfxSlider.value);
         }
     }
 
-    public void SetLevel(float sliderVal)
+    public void SetBGMLevel(float sliderVal)
     {
         if (SceneManager.GetActiveScene().name != "Level_1")
         {
             mixer.SetFloat("BGM", Mathf.Log10(sliderVal) * 20);
             int volumePercent = Mathf.RoundToInt(sliderVal * 100);
-            volumeText.text = volumePercent.ToString();
+            bgmVolumeText.text = volumePercent.ToString();
+            UpdateSoundIcon(sliderVal, true);
+        }
+    }
 
-            // ¾ÆÀÌÄÜ »óÅÂ ¾÷µ¥ÀÌÆ®
-            UpdateSoundIcon(sliderVal);
+    public void SetSFXLevel(float sliderVal)
+    {
+        if (SceneManager.GetActiveScene().name != "Level_1")
+        {
+            mixer.SetFloat("Other", Mathf.Log10(sliderVal) * 20);
+            int volumePercent = Mathf.RoundToInt(sliderVal * 100);
+            sfxVolumeText.text = volumePercent.ToString();
+            UpdateSoundIcon(sliderVal, false);
         }
     }
 }

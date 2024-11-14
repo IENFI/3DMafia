@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class DoorScript : MonoBehaviour {
 
+    AudioSource audioSource;
     public bool open = false;
     public bool ghostOpen = false;
     public float doorOpenAngle = 90f;
@@ -17,6 +18,7 @@ public class DoorScript : MonoBehaviour {
     void Start()
     {
         photonView = GetComponent<PhotonView>();
+        audioSource = GetComponent<AudioSource>();
     }
 
     [PunRPC]
@@ -53,6 +55,7 @@ public class DoorScript : MonoBehaviour {
         }
 
         currentCoroutine = StartCoroutine(RotateDoor(targetRotation));
+        audioSource.Play();
     }
 
     private IEnumerator RotateDoor(Quaternion targetRotation)

@@ -8,6 +8,7 @@ using UnityEngine.SceneManagement;
 
 public class InteractScript : MonoBehaviourPun
 {
+
     private float interactDistance = 5f;
     private float minigameInteractDistance = 15f;
     private float merchantInteractDistance = 4f;
