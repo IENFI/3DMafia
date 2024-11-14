@@ -8,7 +8,6 @@ using UnityEngine.SceneManagement;
 
 public class InteractScript : MonoBehaviourPun
 {
-
     private float interactDistance = 5f;
     private float minigameInteractDistance = 15f;
     private float merchantInteractDistance = 4f;
@@ -89,13 +88,22 @@ public class InteractScript : MonoBehaviourPun
             if (hit.collider.CompareTag("Door"))
             {
                 PhotonView doorPhotonView = hit.collider.transform.GetComponent<PhotonView>();
+                DoorScript doorScript = hit.collider.transform.GetComponent<DoorScript>(); // DoorScript 가져오기
 
                 // Activate toolTipUI
                 toolTipUI.SetActive(true);
 
                 // Update StateText and KeyText when interacting with Door
-                stateText.text = "문 열기";
-                keyText.text = "E";
+                if (doorScript.open)
+                {
+                    stateText.text = "문 닫기";
+                    keyText.text = "E";
+                }
+                else
+                {
+                    stateText.text = "문 열기";
+                    keyText.text = "E";
+                }
 
                 if (doorPhotonView != null && Input.GetKeyDown(KeyCode.E))
                 {
@@ -110,8 +118,10 @@ public class InteractScript : MonoBehaviourPun
                 // 현재 충돌체를 lastDoorCollider로 저장
                 lastDoorCollider = hit.collider;
             }
-            else {
-                if (lastDoorCollider != null){
+            else
+            {
+                if (lastDoorCollider != null)
+                {
                     toolTipUI.SetActive(false);
                     lastDoorCollider = null;
                 }
