@@ -9,6 +9,10 @@ using UnityEngine.UI;
 using Photon.Pun.Demo.PunBasics;
 using System.Threading;
 using UnityEngine.SceneManagement;
+using Photon.Voice.Unity;
+using Photon.Voice.PUN;
+using MySql.Data.MySqlClient.Memcached;
+using Photon.Realtime;
 
 public class PlayerController : MonoBehaviourPun, IPunObservable
 {
@@ -66,6 +70,15 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
     float x_;
     float z_;
     // 플레이어 컨트롤 활성화/비활성화 함수
+
+    [Header("보이스")]
+    private const byte PlayerGroup = 1; // 플레이어 그룹 ID
+    private const byte GhostGroup = 2; // 유령 그룹 ID
+    Recorder recorder;
+    Speaker speaker;
+    private PunVoiceClient punVoiceClient; // PunVoiceClient 참조
+
+
     public void EnableControl(bool enable)
     {
         Debug.Log("Player EnableControl() : enable : " + enable);
@@ -120,6 +133,44 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
             CreateMiniMapPoint(); // MiniMapPoint 생성
             CharacterController characterController = GetComponent<CharacterController>();
             characterController.enabled = true;
+
+            recorder = GetComponent<Recorder>();
+            speaker = GetComponentInChildren<Speaker>();
+            if (recorder != null) {
+                // recorder.RestartingRecording();
+                Debug.Log("Recorder started recording.");
+            }
+            else {
+                Debug.LogWarning("Recorder component not found on this object.");
+            }
+
+            punVoiceClient = GameManager.instance.GetComponent<PunVoiceClient>();
+            if (punVoiceClient != null)
+            {
+                // LocalPlayer의 Recorder와 Speaker를 PunVoiceClient에 설정
+                punVoiceClient.PrimaryRecorder = GetComponent<Recorder>();
+                punVoiceClient.SpeakerPrefab = GetComponentInChildren<Speaker>().gameObject;
+            }
+
+            StartCoroutine(ConfigureVoiceSetting());
+        }
+    }
+
+    private IEnumerator ConfigureVoiceSetting(){
+        yield return new WaitUntil(() => PhotonNetwork.InRoom && PunVoiceClient.Instance.Client.State == ClientState.Joined);
+
+        // 모든 플레이어의 Recorder에 동일한 InterestGroup 설정
+        if (recorder != null) {
+            recorder.InterestGroup = PlayerGroup;
+            recorder.TransmitEnabled = true;
+            Debug.Log("PlayerController : Recorder configured for PlayerGroup (1) for all players.");
+        }
+
+        // PunVoiceClient를 통해 수신 그룹 설정
+        if (PunVoiceClient.Instance.Client.State == ClientState.Joined)
+        {
+            PunVoiceClient.Instance.Client.OpChangeGroups(new byte[] { GhostGroup }, new byte[] { PlayerGroup });
+            Debug.Log("PlayerController : Listening to PlayerGroup (1) for all players.");
         }
     }
 
@@ -300,6 +351,11 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
             // 기존 레이어 저장
         ShowObjects();
         cameraController.ShowTPCamera();
+
+        // Player가 비활성화 되기 직전에 추가
+        punVoiceClient.PrimaryRecorder = null;
+        punVoiceClient.SpeakerPrefab = null;
+
         StartCoroutine(HandleDeath());
         ExitGames.Client.Photon.Hashtable props = new ExitGames.Client.Photon.Hashtable
         {

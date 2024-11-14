@@ -1,9 +1,10 @@
 using System.Collections;
-using System.Collections.Generic;
 using Photon.Pun;
 using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
+using Photon.Voice.Unity;
+using Photon.Voice.PUN;
+using Photon.Realtime;
 
 public class GhostController : MonoBehaviourPun, IPunObservable
 {
@@ -31,6 +32,12 @@ public class GhostController : MonoBehaviourPun, IPunObservable
     public bool GhostIsMafia = false;
     private GameObject GameUIManager;
 
+    [Header("보이스")]
+    private const byte PlayerGroup = 1; // 플레이어 그룹 ID
+    private const byte GhostGroup = 2; // 유령 그룹 ID
+    Recorder recorder;
+    Speaker speaker;
+    private PunVoiceClient punVoiceClient; // PunVoiceClient 참조
 
     public void InitializeAsGhost()
     {
@@ -74,8 +81,28 @@ public class GhostController : MonoBehaviourPun, IPunObservable
 
             GameUIManager.transform.Find("Canvas/KillImage").gameObject.SetActive(false);
             GameUIManager.transform.Find("Canvas/ReportImage").gameObject.SetActive(false);
+
+            recorder = GetComponent<Recorder>();
+            speaker = GetComponentInChildren<Speaker>();
+            if (recorder != null){
+                // recorder.RestartRecording();
+                Debug.Log("Recorder started recording.");
+            }
+            else {
+                Debug.LogWarning("Recorder component not found on this object.");
+            }
+
+            punVoiceClient = GameManager.instance.GetComponent<PunVoiceClient>();
+            if (punVoiceClient != null)
+            {
+                // LocalPlayer의 Recorder와 Speaker를 PunvoiceClient에 설정
+                punVoiceClient.PrimaryRecorder = GetComponent<Recorder>();
+                punVoiceClient.SpeakerPrefab = GetComponentInChildren<Speaker>().gameObject;
+            }
+
+            StartCoroutine(ConfigureVoiceSetting());
         }
-        
+
         if (PhotonNetwork.LocalPlayer.CustomProperties.ContainsKey("isMafia") && (bool)PhotonNetwork.LocalPlayer.CustomProperties["isMafia"])
         {
             GhostIsMafia = true;
@@ -91,6 +118,22 @@ public class GhostController : MonoBehaviourPun, IPunObservable
         UpdateMafiaNicknames();
 
         CreateMiniMapPoint2();
+    }
+
+    private IEnumerator ConfigureVoiceSetting() {
+        yield return new WaitUntil(() => PhotonNetwork.InRoom && PunVoiceClient.Instance.Client.State == ClientState.Joined);
+
+        if (recorder != null){
+            recorder.InterestGroup = GhostGroup;
+            recorder.TransmitEnabled = true;
+            Debug.Log("GhostController : Recorder configured for GhostGroup (2) for all ghosts.");
+        }
+
+        if (PunVoiceClient.Instance.Client.State == ClientState.Joined)
+        {
+            PunVoiceClient.Instance.Client.OpChangeGroups(null, new byte[] { GhostGroup });
+            Debug.Log("GhostController : Listening to GhostGroup (2) for all ghosts.");
+        }
     }
 
     [PunRPC]
@@ -145,6 +188,15 @@ public class GhostController : MonoBehaviourPun, IPunObservable
 
             cameraController.RotateTo(mouseX, mouseY);
             UpdateMiniMapPointPosition2();
+
+            // Update엔 필요 없지 않을까?
+            // punVoiceClient = GameManager.instance.GetComponent<PunVoiceClient>();
+            // if (punVoiceClient != null)
+            // {
+            //     // LocalPlayer의 Recorder와 Speaker를 PunvoiceClient에 설정
+            //     punVoiceClient.PrimaryRecorder = GetComponent<Recorder>();
+            //     punVoiceClient.SpeakerPrefab = GetComponentInChildren<Speaker>().gameObject;
+            // }
         }
     }
     private void CreateMiniMapPoint2()
