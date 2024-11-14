@@ -119,21 +119,21 @@ public class SetVolume : MonoBehaviour
     void UpdateUIForCurrentScene()
     {
         string currentSceneName = SceneManager.GetActiveScene().name;
-        if (currentSceneName == "Level_1")
-        {
-            // BGM UI 비활성화
-            bgmSlider.interactable = false;
-            bgmVolumeText.text = "음소거";
-            if (bgmSoundIcon != null) bgmSoundIcon.gameObject.SetActive(false);
-            if (bgmMuteIcon != null) bgmMuteIcon.gameObject.SetActive(false);
+        //if (currentSceneName == "Level_1")
+        //{
+        //    // BGM UI 비활성화
+        //    bgmSlider.interactable = false;
+        //    bgmVolumeText.text = "음소거";
+        //    if (bgmSoundIcon != null) bgmSoundIcon.gameObject.SetActive(false);
+        //    if (bgmMuteIcon != null) bgmMuteIcon.gameObject.SetActive(false);
 
-            // 효과음 UI 비활성화
-            sfxSlider.interactable = false;
-            sfxVolumeText.text = "음소거";
-            if (sfxSoundIcon != null) sfxSoundIcon.gameObject.SetActive(false);
-            if (sfxMuteIcon != null) sfxMuteIcon.gameObject.SetActive(false);
-        }
-        else
+        //    // 효과음 UI 비활성화
+        //    sfxSlider.interactable = false;
+        //    sfxVolumeText.text = "음소거";
+        //    if (sfxSoundIcon != null) sfxSoundIcon.gameObject.SetActive(false);
+        //    if (sfxMuteIcon != null) sfxMuteIcon.gameObject.SetActive(false);
+        //}
+        //else
         {
             bgmSlider.interactable = true;
             sfxSlider.interactable = true;
@@ -144,23 +144,23 @@ public class SetVolume : MonoBehaviour
 
     public void SetBGMLevel(float sliderVal)
     {
-        if (SceneManager.GetActiveScene().name != "Level_1")
-        {
+        
+       
             mixer.SetFloat("BGM", Mathf.Log10(sliderVal) * 20);
             int volumePercent = Mathf.RoundToInt(sliderVal * 100);
             bgmVolumeText.text = volumePercent.ToString();
             UpdateSoundIcon(sliderVal, true);
-        }
+       
     }
 
     public void SetSFXLevel(float sliderVal)
     {
-        if (SceneManager.GetActiveScene().name != "Level_1")
-        {
+       
+        
             mixer.SetFloat("Other", Mathf.Log10(sliderVal) * 20);
             int volumePercent = Mathf.RoundToInt(sliderVal * 100);
             sfxVolumeText.text = volumePercent.ToString();
             UpdateSoundIcon(sliderVal, false);
-        }
+        
     }
 }

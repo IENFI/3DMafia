@@ -22,7 +22,7 @@ public class OpenSetting : MonoBehaviour
     {
         Scene currentScene = SceneManager.GetActiveScene();
         // ESC 키가 눌렸을 때
-        if (Input.GetKeyDown(KeyCode.Escape) && currentScene.name == "Level_0")
+        if (Input.GetKeyDown(KeyCode.Escape) && (currentScene.name == "Level_0" || currentScene.name == "Level_1"))
         {
             ToggleSettingsPanel();
         }
