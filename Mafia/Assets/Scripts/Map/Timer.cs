@@ -496,29 +496,30 @@ public class Timer : MonoBehaviourPunCallbacks, IPunObservable
 
     public void SwitchOnFewLights(bool state)
     {
-        if (reportLight != null)
+        if (state)
         {
-            reportLight.enabled = state;
+            reportLight.enabled = true;
         }
+        if ((bool)PhotonNetwork.LocalPlayer.CustomProperties["isDead"])
+        {
+            ghostTag = "Ghost";
+            GhostList = GameObject.FindGameObjectsWithTag(ghostTag);
 
-        if (PhotonNetwork.LocalPlayer?.CustomProperties != null &&
-            (bool)PhotonNetwork.LocalPlayer.CustomProperties["isDead"])
-        {
-            foreach (var ghostLight in ghostLights.Values)
+            foreach (GameObject ghost in GhostList)
             {
-                if (ghostLight != null)
-                {
-                    ghostLight.enabled = true;
-                }
+                Transform FPCamera = ghost.transform.Find("FPCamera");
+                Transform PointLight = FPCamera.transform.Find("PointLight");
+                Light pointLight = PointLight.GetComponent<Light>();
+                pointLight.enabled = true;
             }
         }
-        else if (PhotonNetwork.LocalPlayer?.TagObject is GameObject player)
+        else
         {
-            Light playerLight = player.transform.Find("FPCamera/PointLight")?.GetComponent<Light>();
-            if (playerLight != null)
-            {
-                playerLight.enabled = !state;
-            }
+            GameObject Player = PhotonNetwork.LocalPlayer.TagObject as GameObject;
+            Transform FPCamera = Player.transform.Find("FPCamera");
+            Transform PointLight = FPCamera.transform.Find("PointLight");
+            Light pointLight = PointLight.GetComponent<Light>();
+            pointLight.enabled = !state;
         }
     }
 
