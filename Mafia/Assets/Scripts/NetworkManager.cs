@@ -283,8 +283,6 @@ public class NetworkManager : MonoBehaviourPunCallbacks // 안현석 똑바로�
         }
         else
         {
-            PhotonNetwork.ConnectUsingSettings();
-            ConnectBtn.interactable = false;
             NickNameError.text = "이미 사용 중인 닉네임입니다.";
             return;
         }
