@@ -168,7 +168,7 @@ public class ChatManager : MonoBehaviourPunCallbacks
             }
         }
 
-        if(RoomPanel.activeSelf && Input.GetKeyDown(KeyCode.Return)){
+        if(RoomPanel.activeSelf && Input.GetKeyDown(KeyCode.Return) && !ChatInput.isFocused){
             ChatInput.ActivateInputField();
         }
     }
