@@ -140,11 +140,13 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
 
             recorder = GetComponent<Recorder>();
             speaker = GetComponentInChildren<Speaker>();
-            if (recorder != null) {
+            if (recorder != null)
+            {
                 // recorder.RestartingRecording();
                 Debug.Log("Recorder started recording.");
             }
-            else {
+            else
+            {
                 Debug.LogWarning("Recorder component not found on this object.");
             }
 
@@ -161,11 +163,13 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
         }
     }
 
-    private IEnumerator ConfigureVoiceSetting(){
+    private IEnumerator ConfigureVoiceSetting()
+    {
         yield return new WaitUntil(() => PhotonNetwork.InRoom && PunVoiceClient.Instance.Client.State == ClientState.Joined);
 
         // 모든 플레이어의 Recorder에 동일한 InterestGroup 설정
-        if (recorder != null) {
+        if (recorder != null)
+        {
             recorder.InterestGroup = PlayerGroup;
             recorder.TransmitEnabled = true;
             Debug.Log("PlayerController : Recorder configured for PlayerGroup (1) for all players.");
@@ -236,7 +240,7 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
             {
                 playerAnimator.OnMovement(x * offset, z * offset);
             }
-            else if(!GameManager.instance.CheckRoomPanel())
+            else if (!GameManager.instance.CheckRoomPanel())
             {
                 // 플레이어가 제어 불가능할 때의 파라미터 값을 부드럽게 0으로 줄이기
                 x_ = Mathf.Lerp(x_, 0f, Time.deltaTime * 5f);
@@ -296,7 +300,7 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
                 recorder.TransmitEnabled = !recorder.TransmitEnabled;
 
                 microphoneVolumeIndicator.UpdateMicrophoneUI(recorder.TransmitEnabled);
-                
+
                 // 마이크가 켜졌는지 꺼졌는지 상태를 로그로 출력
                 Debug.Log("마이크 상태: " + (recorder.TransmitEnabled ? "켜짐" : "꺼짐"));
             }
@@ -304,7 +308,7 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
             // Kill 시뮬레이트
             if (Input.GetKeyDown(KeyCode.P) && canControl)
             {
-               photonView.RPC("Death", RpcTarget.All);
+                photonView.RPC("Death", RpcTarget.All);
             }
 
             /*// 마우스 오른쪽 버튼을 누르면 무기 공격 (연계)
@@ -317,7 +321,7 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
                if (Input.GetKeyDown(KeyCode.K))
                {
                    photonView.RPC("DisableAllCorpses", RpcTarget.All);
-               }*/            
+               }*/
 
             if (canControl)
             {
@@ -357,7 +361,7 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
     }
     private void CloseAllActiveUIs()
     {
-        if ( GameManager.instance.GetUIWindows() == null)
+        if (GameManager.instance.GetUIWindows() == null)
             return;
         // 활성화된 UI 목록을 새로운 리스트로 복사
         var activeUIs = GameManager.instance.GetUIWindows().ToList();
@@ -406,6 +410,16 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
 
         StartCoroutine(HandleDeathWithAvatar(currentAvatar));
 
+        // 미니맵 포인트 제거
+        if (miniMapPoint1 != null)
+        {
+            Destroy(miniMapPoint1);
+        }
+        if (miniMapPoint2 != null)
+        {
+            Destroy(miniMapPoint2);
+        }
+
         ExitGames.Client.Photon.Hashtable props = new ExitGames.Client.Photon.Hashtable
         {
             { "isDead" , true }
@@ -423,6 +437,17 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
     {
         // 애니메이션 길이만큼 대기
         yield return new WaitForSeconds(playerAnimator.GetAnimatorTime().length);
+
+        // 유령 생성
+        GameObject ghostObj = PhotonNetwork.Instantiate(ghostPrefab.name, transform.position, transform.rotation);
+        GhostController ghostController = ghostObj.GetComponent<GhostController>();
+
+        // MinimapCameraManager 찾아서 유령 상태 업데이트
+        MinimapCameraManager minimapManager = FindObjectOfType<MinimapCameraManager>();
+        if (minimapManager != null)
+        {
+            minimapManager.OnPlayerDeath(ghostController);
+        }
 
         PhotonNetwork.Instantiate(ghostPrefab.name, transform.position, transform.rotation);
 

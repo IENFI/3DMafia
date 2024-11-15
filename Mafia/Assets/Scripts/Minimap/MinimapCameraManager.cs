@@ -13,15 +13,16 @@ public class MinimapCameraManager : MonoBehaviour
     public RawImage rawImage2F; // 2층을 위한 RawImage
     public float switchHeight = 12f; // 1층과 2층을 나누는 Y값
     private PlayerController player;
+    private GhostController ghostPlayer; // 유령 컨트롤러 참조 추가
 
     void Start()
     {
         // 초기 상태 설정
-       
-        StartCoroutine(FindLocalPlayerController());
+
+        StartCoroutine(FindLocalPlayer());
 
     }
-    private IEnumerator FindLocalPlayerController()
+    private IEnumerator FindLocalPlayer()
     {
         while (player == null)
         {
@@ -33,29 +34,28 @@ public class MinimapCameraManager : MonoBehaviour
                     break;
                 }
             }
-
-            if (player == null)
-            {
-                //Debug.Log("(MinimapCameraManager) PlayerController를 찾는 중...");
-            }
-
-            // 다음 프레임까지 대기
             yield return null;
         }
-
-        //Debug.Log("(MinimapCameraManager) PlayerController를 찾았습니다.");
-
         UpdateCamera();
+    }
+    // 플레이어가 죽었을 때 호출될 메서드
+    public void OnPlayerDeath(GhostController ghost)
+    {
+        player = null;
+        ghostPlayer = ghost;
+        UpdateGhostCamera();
     }
 
     void Update()
     {
-        // 매 프레임마다 플레이어의 Y값을 체크하고 카메라를 업데이트
         if (player != null)
         {
             UpdateCamera();
         }
-
+        else if (ghostPlayer != null)
+        {
+            UpdateGhostCamera();
+        }
     }
 
     void UpdateCamera()
@@ -64,6 +64,25 @@ public class MinimapCameraManager : MonoBehaviour
         //Debug.Log("Player Y position: " + playerY);
 
         if (playerY < switchHeight)
+        {
+            // 플레이어가 1층에 있을 때
+            //Debug.Log("Switching to 1F camera");
+            SetCameraAndRawImage(camera1F, camera2F, rawImage1F, rawImage2F);
+        }
+        else
+        {
+            // 플레이어가 2층에 있을 때
+            //Debug.Log("Switching to 2F camera");
+            SetCameraAndRawImage(camera2F, camera1F, rawImage2F, rawImage1F);
+        }
+    }
+
+    void UpdateGhostCamera()
+    {
+        float ghostPlayerY = ghostPlayer.transform.position.y;
+        //Debug.Log("Player Y position: " + playerY);
+
+        if (ghostPlayerY < switchHeight)
         {
             // 플레이어가 1층에 있을 때
             //Debug.Log("Switching to 1F camera");
