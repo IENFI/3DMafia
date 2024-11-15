@@ -474,10 +474,30 @@ public class Timer : MonoBehaviourPunCallbacks, IPunObservable
 
     public void ToggleAllLights(bool state)
     {
-        Light[] allLights = FindObjectsOfType<Light>();
-        foreach (Light light in allLights)
+        if (state)
         {
-            if (light != null) light.enabled = state;
+            Light[] allLights = FindObjectsOfType<Light>();
+            GameObject[] PlayerList = GameObject.FindGameObjectsWithTag("Player");
+            List<Light> FlashLightList = new List<Light>();
+            foreach (GameObject player in PlayerList)
+            {
+                Transform FPCamera = player.transform.Find("FPCamera");
+                Transform FlashLight = FPCamera.transform.Find("FlashLight");
+                Light flashLight = FlashLight.GetComponent<Light>();
+                FlashLightList.Add(flashLight);
+            }
+            foreach (Light light in allLights)
+            {
+                if (!FlashLightList.Contains(light)) light.enabled = state;
+            }
+        }
+        else
+        {
+            Light[] allLights = FindObjectsOfType<Light>();
+            foreach (Light light in allLights)
+            {
+                light.enabled = state;
+            }
         }
     }
 
