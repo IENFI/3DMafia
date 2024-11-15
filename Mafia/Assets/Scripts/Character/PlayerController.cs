@@ -77,6 +77,7 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
     Recorder recorder;
     Speaker speaker;
     private PunVoiceClient punVoiceClient; // PunVoiceClient 참조
+    public MicrophoneVolumeIndicator microphoneVolumeIndicator;
 
 
     public void EnableControl(bool enable)
@@ -153,8 +154,8 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
             }
 
             StartCoroutine(ConfigureVoiceSetting());
+            microphoneVolumeIndicator.UpdateMicrophoneUI(recorder.TransmitEnabled);
         }
-        GetComponentInChildren<MicrophoneVolumeIndicator>().UpdateMicrophoneUI(recorder.TransmitEnabled);
     }
 
     private IEnumerator ConfigureVoiceSetting(){
@@ -291,7 +292,7 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
                 // 마이크 상태를 토글합니다.
                 recorder.TransmitEnabled = !recorder.TransmitEnabled;
 
-                GetComponentInChildren<MicrophoneVolumeIndicator>().UpdateMicrophoneUI(recorder.TransmitEnabled);
+                microphoneVolumeIndicator.UpdateMicrophoneUI(recorder.TransmitEnabled);
                 
                 // 마이크가 켜졌는지 꺼졌는지 상태를 로그로 출력
                 Debug.Log("마이크 상태: " + (recorder.TransmitEnabled ? "켜짐" : "꺼짐"));

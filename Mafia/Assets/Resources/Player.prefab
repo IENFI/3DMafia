@@ -2300,7 +2300,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &4226935966905795023
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2512,7 +2512,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &8757987533889078689
 RectTransform:
   m_ObjectHideFlags: 0
@@ -6377,7 +6377,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &8325947679188260297
 RectTransform:
   m_ObjectHideFlags: 0
@@ -6573,6 +6573,7 @@ MonoBehaviour:
   miniMapPointPrefab2: {fileID: 1075559343291363416, guid: 217a988d720bbf947836cd19ea5bb2e9, type: 3}
   smoothing: 10
   canControl: 1
+  microphoneVolumeIndicator: {fileID: 4399770477386331692}
 --- !u!114 &6667265159653745265
 MonoBehaviour:
   m_ObjectHideFlags: 0

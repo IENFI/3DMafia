@@ -38,6 +38,7 @@ public class GhostController : MonoBehaviourPun, IPunObservable
     Recorder recorder;
     Speaker speaker;
     private PunVoiceClient punVoiceClient; // PunVoiceClient 참조
+    public MicrophoneVolumeIndicator microphoneVolumeIndicator;
 
     public void InitializeAsGhost()
     {
@@ -101,6 +102,7 @@ public class GhostController : MonoBehaviourPun, IPunObservable
             }
 
             StartCoroutine(ConfigureVoiceSetting());
+            microphoneVolumeIndicator.UpdateMicrophoneUI(recorder.TransmitEnabled);
         }
 
         if (PhotonNetwork.LocalPlayer.CustomProperties.ContainsKey("isMafia") && (bool)PhotonNetwork.LocalPlayer.CustomProperties["isMafia"])
@@ -180,6 +182,17 @@ public class GhostController : MonoBehaviourPun, IPunObservable
             {
                 //playerAnimator.OnJump();    // 애니메이션 파라미터 설정 (onJump)
                 movement.JumpTo();        // 점프 함수 호출
+            }
+
+            if (Input.GetKeyDown(KeyCode.V))
+            {
+                // 마이크 상태를 토글합니다.
+                recorder.TransmitEnabled = !recorder.TransmitEnabled;
+
+                microphoneVolumeIndicator.UpdateMicrophoneUI(recorder.TransmitEnabled);
+                
+                // 마이크가 켜졌는지 꺼졌는지 상태를 로그로 출력
+                Debug.Log("마이크 상태: " + (recorder.TransmitEnabled ? "켜짐" : "꺼짐"));
             }
 
 

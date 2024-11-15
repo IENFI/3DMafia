@@ -2526,7 +2526,7 @@ Canvas:
   m_AdditionalShaderChannelsFlag: 25
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 1
   m_TargetDisplay: 0
 --- !u!1 &475498198
 GameObject:
@@ -13701,10 +13701,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mixer: {fileID: 24100000, guid: 908f5bb461c55484d8fb681458542806, type: 2}
-  slider: {fileID: 1955618347}
-  volumeText: {fileID: 1708344923}
-  soundIcon: {fileID: 1625908123}
-  muteIcon: {fileID: 2065663317}
+  bgmSlider: {fileID: 0}
+  bgmVolumeText: {fileID: 0}
+  bgmSoundIcon: {fileID: 0}
+  bgmMuteIcon: {fileID: 0}
+  sfxSlider: {fileID: 0}
+  sfxVolumeText: {fileID: 0}
+  sfxSoundIcon: {fileID: 0}
+  sfxMuteIcon: {fileID: 0}
 --- !u!114 &1955618347
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -31428,6 +31432,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3cdf3c76092454ee688f462a722180f8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playerController: {fileID: 0}
   chatInput: {fileID: 6608893845953510801}
 --- !u!1 &6371934911947238555
 GameObject:
