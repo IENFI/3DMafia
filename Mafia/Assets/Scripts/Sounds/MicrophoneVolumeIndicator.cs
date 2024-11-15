@@ -33,7 +33,7 @@ public class MicrophoneVolumeIndicator : MonoBehaviour
             {
                 // 현재 볼륨에 따라 투명도 조절 (0~1 범위로 조절)
                 float alpha = Mathf.Clamp01(currentVolume * 10);
-                Debug.Log("alpha : " + alpha);
+                // Debug.Log("alpha : " + alpha);
                 Color color = volumeIndicator.color;
                 color.a = alpha; // 투명도 설정
                 volumeIndicator.color = color;
