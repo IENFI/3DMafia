@@ -35,6 +35,8 @@ public class VoteManager : MonoBehaviourPunCallbacks
     public Button btn7;
     public Button btn8;
     public Button btn9;
+    public Button btn10;
+    public Button btn11;
 
     public Button btn_skip;
 
@@ -48,6 +50,8 @@ public class VoteManager : MonoBehaviourPunCallbacks
     private TMP_Text btnText7;
     private TMP_Text btnText8;
     private TMP_Text btnText9;
+    private TMP_Text btnText10;
+    private TMP_Text btnText11;
 
     private TMP_Text btn_skipText;
 
@@ -69,7 +73,7 @@ public class VoteManager : MonoBehaviourPunCallbacks
     public bool isMeetingActivated = false;
 
     //voteList       client 鿡       .
-    private int[] voteList = new int[10]; //10    ִ   ÷  ̾    ,     list  ƴϰ  array  , 0      ʱ ȭ
+    private int[] voteList = new int[12]; //10    ִ   ÷  ̾    ,     list  ƴϰ  array  , 0      ʱ ȭ
     private int criterion; // ÷  ̾       ݼ 
     private int remainingPlayerNum;
     private int skiped;
@@ -121,6 +125,8 @@ public class VoteManager : MonoBehaviourPunCallbacks
         btnText7 = btn7.GetComponentInChildren<TMP_Text>();
         btnText8 = btn8.GetComponentInChildren<TMP_Text>();
         btnText9 = btn9.GetComponentInChildren<TMP_Text>();
+        btnText10 = btn10.GetComponentInChildren<TMP_Text>();
+        btnText11 = btn11.GetComponentInChildren<TMP_Text>();
 
         btn_skipText = btn_skip.GetComponentInChildren<TMP_Text>();
 
@@ -138,6 +144,8 @@ public class VoteManager : MonoBehaviourPunCallbacks
             { 7, btn7 },
             { 8, btn8 },
             { 9, btn9 },
+            { 10, btn10 },
+            { 11, btn11 },
         };
 
         btnTexts = new Dictionary<int, TMP_Text>
@@ -151,7 +159,9 @@ public class VoteManager : MonoBehaviourPunCallbacks
             { 6, btnText6 },
             { 7, btnText7 },
             { 8, btnText8 },
-            { 9, btnText9 }
+            { 9, btnText9 },
+            { 10, btnText10 },
+            { 11, btnText11 }
         };
 
         gameTimer = FindObjectOfType<Timer>();
@@ -317,7 +327,7 @@ public class VoteManager : MonoBehaviourPunCallbacks
     {
         btn_skip.GetComponent<Button>().interactable = true;
 
-        for (int i = 0; i < 10; i++)
+        for (int i = 0; i < 12; i++)
         {
             btnTexts[i].text = " ";
         }
@@ -328,14 +338,14 @@ public class VoteManager : MonoBehaviourPunCallbacks
         };
         PhotonNetwork.LocalPlayer.SetCustomProperties(props);
 
-        for (int i = 0; i < 10; i++)
+        for (int i = 0; i < 12; i++)
         {
             voteList[i] = 0;
         }
 
         skiped = 0;
 
-        for (int i = 0; i < 10; i++)
+        for (int i = 0; i < 12; i++)
         {
             if (i < PhotonNetwork.PlayerList.Length)
             {
@@ -409,7 +419,7 @@ public class VoteManager : MonoBehaviourPunCallbacks
                         if (PhotonNetwork.LocalPlayer == player)
                         {
                             // 버튼 비활성화 전에 null 체크
-                            for (int i = 0; i < 10; i++)
+                            for (int i = 0; i < 12; i++)
                             {
                                 if (btns.ContainsKey(i) && btns[i] != null)
                                 {
@@ -435,7 +445,7 @@ public class VoteManager : MonoBehaviourPunCallbacks
                         if (PhotonNetwork.LocalPlayer == player)
                         {
                             // 버튼 비활성화 전에 null 체크
-                            for (int i = 0; i < 10; i++)
+                            for (int i = 0; i < 12; i++)
                             {
                                 if (btns.ContainsKey(i) && btns[i] != null)
                                 {
@@ -590,6 +600,28 @@ public class VoteManager : MonoBehaviourPunCallbacks
         };
         PhotonNetwork.LocalPlayer.SetCustomProperties(props);
     }
+
+    public void Vote10()
+    {
+        int btnNum;
+        btnNum = 10;
+        ExitGames.Client.Photon.Hashtable props = new ExitGames.Client.Photon.Hashtable
+        {
+        { "voted" , btnNum }
+        };
+        PhotonNetwork.LocalPlayer.SetCustomProperties(props);
+    }
+
+    public void Vote11()
+    {
+        int btnNum;
+        btnNum = 11;
+        ExitGames.Client.Photon.Hashtable props = new ExitGames.Client.Photon.Hashtable
+        {
+        { "voted" , btnNum }
+        };
+        PhotonNetwork.LocalPlayer.SetCustomProperties(props);
+    }
     #endregion
 
     private void VotingResult()
@@ -599,7 +631,7 @@ public class VoteManager : MonoBehaviourPunCallbacks
         {
             Timer timer = timerObject.GetComponent<Timer>();
 
-            for (int i = 0; i < 10; i++)
+            for (int i = 0; i < 12; i++)
             {
                 if (voteList[i] >= criterion)
                 {
