@@ -20,7 +20,7 @@ public class AvatarChanger : MonoBehaviourPunCallbacks
     public GameObject worker;
     public GameObject naked;
 
-    private Dictionary<string, GameObject> avatarDict = new Dictionary<string, GameObject>();
+    public Dictionary<string, GameObject> avatarDict = new Dictionary<string, GameObject>();
     private const string targetSceneName = "Level_0";
     private string currentSceneName;
 
@@ -303,6 +303,10 @@ public class AvatarChanger : MonoBehaviourPunCallbacks
 
             DBInteraction.ResetUnusedAppearances(roomID, activeClientIDs);
         }
+    }
+    public Dictionary<string, GameObject> GetAvatarDict()
+    {
+        return avatarDict;
     }
 
     private void RestoreAvatarState(string roomID, int clientID)

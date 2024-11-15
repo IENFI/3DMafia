@@ -30,6 +30,7 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
     private Movement movement;
     private PlayerAnimator playerAnimator;
     private PlayerAttack playerAttackCollision;
+    private AvatarChanger avatarChanger;
 
 
     [SerializeField]
@@ -103,6 +104,7 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
         fpCameraController = GetComponentInChildren<FPCameraController>();
         playerAttackCollision = GetComponentInChildren<PlayerAttack>();
         FPcamera.cullingMask &= ~LayerMask.GetMask("Ghost");
+        avatarChanger = GetComponent<AvatarChanger>();
 
         // 유령으로 변환할 때 필요한 설정
         int playerLayer = LayerMask.NameToLayer("Player");
@@ -375,18 +377,33 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
 
         isDead = true;
 
-        // 죽은 즉시 모든 UI 창 닫기
+        // 죽기 전 현재 아바타 상태를 저장
+        string currentAvatar = avatarChanger.getCurrentAvatarName();
+
+        // UI 창 닫기
         CloseAllActiveUIs();
+
+        // 죽는 애니메이션 동안 다른 아바타들이 보이지 않도록 처리
+        if (avatarChanger != null)
+        {
+            foreach (var avatar in avatarChanger.avatarDict.Values)
+            {
+                if (avatar != null && avatar != avatarChanger.avatarDict[currentAvatar])
+                {
+                    avatar.SetActive(false);
+                }
+            }
+        }
 
         playerAnimator.Death();
         ShowObjects();
         cameraController.ShowTPCamera();
 
-        // Player가 비활성화 되기 직전에 추가
         punVoiceClient.PrimaryRecorder = null;
         punVoiceClient.SpeakerPrefab = null;
 
-        StartCoroutine(HandleDeath());
+        StartCoroutine(HandleDeathWithAvatar(currentAvatar));
+
         ExitGames.Client.Photon.Hashtable props = new ExitGames.Client.Photon.Hashtable
         {
             { "isDead" , true }
@@ -400,23 +417,19 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
         gameObject.SetActive(false);
     }
 
-    private IEnumerator HandleDeath()
+    private IEnumerator HandleDeathWithAvatar(string avatarName)
     {
-        // 애니메이션의 길이를 대기합니다.
+        // 애니메이션 길이만큼 대기
         yield return new WaitForSeconds(playerAnimator.GetAnimatorTime().length);
 
         PhotonNetwork.Instantiate(ghostPrefab.name, transform.position, transform.rotation);
 
-        // 현재 아바타 이름을 기반으로 한 corpseAvatar 문자열 생성
-        string corpseAvatar = "corpse_"+GetComponent<AvatarChanger>().getCurrentAvatarName();
-
-        // Resources 폴더에서 corpseAvatar 이름과 동일한 프리팹을 로드
+        // 죽은 아바타에 맞는 시체 프리팹 생성
+        string corpseAvatar = "corpse_" + avatarName;
         GameObject corpsePrefab = Resources.Load<GameObject>(corpseAvatar);
 
-        // 프리팹이 로드되었는지 확인 (null 체크)
         if (corpsePrefab != null)
         {
-            // PhotonNetwork를 사용하여 프리팹을 인스턴스화
             PhotonNetwork.Instantiate(corpsePrefab.name, transform.position, transform.rotation);
         }
         else
@@ -426,7 +439,6 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
 
         cameraController.ShowFPCamera();
         HideObjects();
-        // RPC를 통해 모든 클라이언트에서 gameObject를 비활성화합니다.
         photonView.RPC("DisableGameObject", RpcTarget.All);
     }
 
