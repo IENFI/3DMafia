@@ -13,6 +13,7 @@ using Photon.Voice.Unity;
 using Photon.Voice.PUN;
 using MySql.Data.MySqlClient.Memcached;
 using Photon.Realtime;
+using System.Linq;
 
 public class PlayerController : MonoBehaviourPun, IPunObservable
 {
@@ -271,7 +272,7 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
 
             if (currentScene.name == "Level_1")
             {
-                if (Input.GetKeyDown(KeyCode.Z) && canControl)
+                if (Input.GetKeyDown(KeyCode.Z) && canControl && !GameManager.instance.IsAnyUIOpen())
                 {
                     if (Time.time - lastKillTime >= killCooldown && (bool)PhotonNetwork.LocalPlayer.CustomProperties["isMafia"])
                     {
@@ -352,16 +353,32 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
             miniMapPoint2.transform.position = transform.position + new Vector3(300f, 0, 0);
         }
     }
+    private void CloseAllActiveUIs()
+    {
+        // 활성화된 UI 목록을 새로운 리스트로 복사
+        var activeUIs = GameManager.instance.GetUIWindows().ToList();
+
+        foreach (var window in activeUIs)
+        {
+            if (window != null && window.activeSelf)
+            {
+                window.SetActive(false);
+            }
+        }
+    }
 
     [PunRPC]
     void Death()
     {
-        if (!photonView.IsMine) return; // 로컬 플레이어가 아니면 중지
-
+        if (!photonView.IsMine) return;
         if (isDead) return;
+
         isDead = true;
+
+        // 죽은 즉시 모든 UI 창 닫기
+        CloseAllActiveUIs();
+
         playerAnimator.Death();
-            // 기존 레이어 저장
         ShowObjects();
         cameraController.ShowTPCamera();
 
@@ -372,7 +389,7 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
         StartCoroutine(HandleDeath());
         ExitGames.Client.Photon.Hashtable props = new ExitGames.Client.Photon.Hashtable
         {
-        { "isDead" , true }
+            { "isDead" , true }
         };
         PhotonNetwork.LocalPlayer.SetCustomProperties(props);
     }

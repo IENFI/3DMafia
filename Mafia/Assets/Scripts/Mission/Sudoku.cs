@@ -67,6 +67,9 @@ public class Sudoku : MinigameBase
 
     private void OnEnable()
     {
+        // UI 창으로 등록
+        GameManager.instance.RegisterUIWindow(gameObject);
+
         buttons = ConvertListTo2DArray(buttonList, 4, 4);
         // 버튼 초기화 및 랜덤 빈칸 만들기
         InitializeButtons();
@@ -78,13 +81,16 @@ public class Sudoku : MinigameBase
     // Update 함수에 키보드 입력 처리 추가
     void Update()
     {
+        if (!active)
+            return;
+
         // ESC로 게임 종료
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             gameObject.SetActive(false);
         }
 
-        // 키보드 입력 처리
+        // 키보드 입력 처리    
         if (selectedButton != null)
         {
             if (Input.GetKeyDown(KeyCode.Alpha1) || Input.GetKeyDown(KeyCode.Keypad1))
@@ -320,6 +326,9 @@ public class Sudoku : MinigameBase
     // OnDisable에서 아웃라인 초기화
     private void OnDisable()
     {
+        // UI 창 등록 해제
+        GameManager.instance.UnregisterUIWindow(gameObject);
+
         ResetAllOutlines();
         SetKeypadButtonsInteractable(false);
         selectedButton = null;

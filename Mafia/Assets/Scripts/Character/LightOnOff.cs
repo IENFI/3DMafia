@@ -14,6 +14,10 @@ public class LightOnOff : MonoBehaviourPun
 
     void Update()
     {
+        // UIOpen
+        if (GameManager.instance.IsAnyUIOpen())
+            return;
+
         if (photonView.IsMine && Input.GetKeyDown(KeyCode.Alpha1))
         {
             Light lightComponent = flashlight.GetComponent<Light>();
