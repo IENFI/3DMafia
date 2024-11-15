@@ -21,14 +21,15 @@ public class SettingsUI : MonoBehaviour
 
     private void OnEnable()
     {
-        //Debug.Log("Setting UI Enable");
+        Debug.Log("Setting UI Enable");
         if (!(GameManager.instance == null))
         {
             GameManager.instance.RegisterUIWindow(gameObject);
             GameManager.instance.CheckUIState();
         }
-        if (!(playerController == null))
+        if (!(playerController == null)){
             playerController.EnableControl(false);
+        }
 
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
@@ -36,14 +37,15 @@ public class SettingsUI : MonoBehaviour
 
     private void OnDisable()
     {
-        //Debug.Log("Setting UI Disable");
+        Debug.Log("Setting UI Disable");
         if (!(GameManager.instance == null))
         {
             GameManager.instance.UnregisterUIWindow(gameObject);
             GameManager.instance.CheckUIState();
         }
-        if (!(playerController == null))
+        if (!(playerController == null)){
             playerController.EnableControl(true);
+        }
 
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;

@@ -126,7 +126,9 @@ public class RandomSpawn : MonoBehaviourPunCallbacks
             //LogSpawnError("No valid child spawn points found");
             photonView.RPC("UpdateSpawnStatistics", RpcTarget.All, false, false, -1);
             isSpawning = false;
-            if (playerController != null) playerController.EnableControl(true);
+            if (playerController != null) {
+                playerController.EnableControl(true);
+            }
             yield break;
         }
 

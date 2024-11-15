@@ -53,7 +53,12 @@ public class GameManager : MonoBehaviour
     // UI 창 목록을 반환하는 메서드 추가
     public List<GameObject> GetUIWindows()
     {
-        return uiWindows;
+        if (IsAnyUIOpen()){
+            return uiWindows;
+        }
+        else {
+            return null;
+        }
     }
 
     void Update()

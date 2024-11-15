@@ -8,20 +8,17 @@ public class OpenSetting : MonoBehaviour
 {
     public GameObject settingsPanel; // 설정 패널 (비활성화 상태로 시작)
     AudioSource audioSource;
-    // Start is called before the first frame update
-
-    // Update is called once per frame
 
     void Start()
     {
-        settingsPanel.SetActive(false);
+        // settingsPanel.SetActive(false);
         audioSource = GetComponent<AudioSource>();
 
         // 설정 패널을 UI 관리 목록에 등록
-        if (settingsPanel != null)
-        {
-            GameManager.instance.RegisterUIWindow(settingsPanel);
-        }
+        // if (settingsPanel != null)
+        // {
+        //     GameManager.instance.RegisterUIWindow(settingsPanel);
+        // }
     }
 
     void Update()
@@ -32,6 +29,7 @@ public class OpenSetting : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Escape) &&
             (currentScene.name == "Level_0" || currentScene.name == "Level_1"))
         {
+            Debug.Log("설정 창 열기 시도");
             // 설정 패널이 열려있지 않은 상태에서 다른 UI가 열려있다면 무시
             if (!settingsPanel.activeSelf && GameManager.instance.IsAnyUIOpen())
             {
@@ -41,13 +39,14 @@ public class OpenSetting : MonoBehaviour
             ToggleSettingsPanel();
         }
     }
+    
     void OnDestroy()
     {
         // 설정 패널을 UI 관리 목록에서 제거
-        if (settingsPanel != null)
-        {
-            GameManager.instance.UnregisterUIWindow(settingsPanel);
-        }
+        // if (settingsPanel != null)
+        // {
+        //     GameManager.instance.UnregisterUIWindow(settingsPanel);
+        // }
     }
 
     public void ToggleSettingsPanel()
@@ -55,7 +54,14 @@ public class OpenSetting : MonoBehaviour
         Debug.Log("OpenSetting.cs : ToggleSettingsPanel.activeSelf : " + settingsPanel.activeSelf);
 
         // 패널의 활성화 상태를 토글
-        settingsPanel.SetActive(!settingsPanel.activeSelf);
+        if (settingsPanel.activeSelf ){
+            settingsPanel.SetActive(false);
+        }
+        else if ( !GameManager.instance.IsAnyUIOpen()) {
+            Debug.Log("settingsPanel.SetActive(true)");
+            settingsPanel.SetActive(true);
+        }
+        // settingsPanel.SetActive(!settingsPanel.activeSelf);
     }
 
     public void onClick()

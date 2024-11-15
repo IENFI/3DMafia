@@ -357,6 +357,8 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
     }
     private void CloseAllActiveUIs()
     {
+        if ( GameManager.instance.GetUIWindows() == null)
+            return;
         // 활성화된 UI 목록을 새로운 리스트로 복사
         var activeUIs = GameManager.instance.GetUIWindows().ToList();
 

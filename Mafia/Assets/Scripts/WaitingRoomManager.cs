@@ -10,7 +10,6 @@ using Photon.Voice.Unity;
 
 public class WaitingRoomManager : MonoBehaviourPunCallbacks
 {
-    public static GameManager instance = null;
     public Button ReadyBtn;
     public Button StartBtn;
 
@@ -35,7 +34,6 @@ public class WaitingRoomManager : MonoBehaviourPunCallbacks
 
     public TMP_Text playerCountText;
 
-    public GameObject CreateRoomUI;
 
     void Awake()
     {
@@ -246,16 +244,6 @@ public class WaitingRoomManager : MonoBehaviourPunCallbacks
         else
         {
             startBtnText.text = "모두 준비해야 합니다";
-        }
-
-        // ESC 누르면 방 설정 변경 UI 띄우기
-        if (!CreateRoomUI.activeSelf && Input.GetKeyDown(KeyCode.Escape) && PhotonNetwork.IsMasterClient && !GameManager.instance.IsAnyUIOpen())
-        {
-            CreateRoomUI.SetActive(true);
-        }
-        else if (CreateRoomUI.activeSelf && Input.GetKeyDown(KeyCode.Escape) && PhotonNetwork.IsMasterClient && GameManager.instance.IsAnyUIOpen())
-        {
-            CreateRoomUI.SetActive(false);
         }
     }
 

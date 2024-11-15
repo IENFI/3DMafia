@@ -182,6 +182,7 @@ public class ChatManager : MonoBehaviourPunCallbacks
         }
         else if (Input.GetKeyDown(closeKey) && RoomPanel.activeSelf )
         {
+            Debug.Log("ChatManager.cs : playerController.EnableControl(true)");
             RoomPanel.GetComponent<SettingsChatUI>().playerController.EnableControl(true);
             RoomPanel.SetActive(false);
             if (Cursor.lockState == CursorLockMode.None && Cursor.visible){
