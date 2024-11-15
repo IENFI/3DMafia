@@ -49,7 +49,7 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
 
     public PlayerReportRadius reportRadius; // ReportRadius 스크립트 참조
 
-    public TextMeshProUGUI nickName;
+    public TextMeshPro nickName;
     public PhotonView PV;
 
     public GameObject[] objectsToHide;
