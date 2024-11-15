@@ -55,6 +55,8 @@ public class VoteManager : MonoBehaviourPunCallbacks
 
     private TMP_Text btn_skipText;
 
+    public TMP_Text remainingTimeText;
+
     [SerializeField]
     public GameObject voteManager;
 
@@ -80,6 +82,8 @@ public class VoteManager : MonoBehaviourPunCallbacks
 
     private bool VoteResultBool;
     private int VoteSelectPlayerNum = -1;
+
+    public int timeRemaining;
 
     private void Awake()
     {
@@ -197,6 +201,22 @@ public class VoteManager : MonoBehaviourPunCallbacks
         VoteUI.SetActive(true);
         Debug.Log("[VoteManager] Meeting started successfully");
 
+        timeRemaining = 60;
+
+        Invoke("Skip", 60f);
+
+        TimeLimit();
+
+    }
+
+    public void TimeLimit()
+    {
+        if (timeRemaining >= 0)
+        {
+            remainingTimeText.text = "남은 시간: " + $"{timeRemaining}";
+            timeRemaining -= 1;
+            Invoke("TimeLimit", 1f);
+        }
     }
 
     /*
