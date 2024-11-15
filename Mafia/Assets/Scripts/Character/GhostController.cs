@@ -103,6 +103,8 @@ public class GhostController : MonoBehaviourPun, IPunObservable
 
             StartCoroutine(ConfigureVoiceSetting());
             microphoneVolumeIndicator.UpdateMicrophoneUI(recorder.TransmitEnabled);
+
+            UpdateMafiaNicknames();
         }
 
         if (PhotonNetwork.LocalPlayer.CustomProperties.ContainsKey("isMafia") && (bool)PhotonNetwork.LocalPlayer.CustomProperties["isMafia"])
@@ -116,8 +118,6 @@ public class GhostController : MonoBehaviourPun, IPunObservable
         {
             PV.RPC("SetNicknameColorRed", RpcTarget.AllBuffered);
         }
-
-        UpdateMafiaNicknames();
 
         CreateMiniMapPoint2();
     }
