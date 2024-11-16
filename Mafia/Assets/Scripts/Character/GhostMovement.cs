@@ -9,9 +9,11 @@ public class GhostMovement : MonoBehaviour
     private float moveSpeed = 4;        // 이동 속도
     private Vector3 moveDirection;      // 이동 방향
     [SerializeField]
-    private float gravity = -9.0f; // 중력 계수
+    private float gravity = -9.81f; // 중력 계수
     [SerializeField]
-    private float jumpForce = 3.0f; // 뛰어 오르는 힘
+    private float jumpForce = 5.0f; // 뛰어 오르는 힘
+    [SerializeField]
+    private float gravityScale = 0.5f; // 유령의 중력 감소 비율 (0.5f = 느린 낙하)
 
     private CharacterController characterController;
 
@@ -32,7 +34,7 @@ public class GhostMovement : MonoBehaviour
     {
         if (characterController.isGrounded == false)
         {
-            moveDirection.y += gravity * Time.deltaTime;
+            moveDirection.y += gravity * gravityScale * Time.deltaTime;
         }
 
         // 이동 설정. CharacterController의 Move() 함수를 이용한 이동
