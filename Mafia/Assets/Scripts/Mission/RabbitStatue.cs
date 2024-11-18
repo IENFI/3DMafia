@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 
-public class RabbitStatue : MonoBehaviour
+public class RabbitStatue : MonoBehaviourPun
 {
     public string targetTag = "Player";
 
@@ -11,11 +11,12 @@ public class RabbitStatue : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
+        // 두 명이 동시에 부딪히면 혹시 오류 안 생기나?
         if (other.CompareTag(targetTag))
         {
             SpawnRabbit();
             RabbitUI.SetActive(true);
-            Destroy(gameObject);
+            other.GetComponent<PhotonView>().RPC("DestroyRabbit", RpcTarget.All);
         }
     }
 
@@ -25,5 +26,14 @@ public class RabbitStatue : MonoBehaviour
         Vector3 spawnPosition = transform.position;
         spawnPosition.y += 1;
         PhotonNetwork.Instantiate("Rabbit", spawnPosition, Quaternion.identity, 0);
+    }
+
+    [PunRPC]
+    void DestroyRabbit()
+    {
+        if (gameObject != null)
+        {
+            Destroy(gameObject);
+        }
     }
 }
