@@ -2,16 +2,11 @@ using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using ExitGames.Client.Photon;
 using TMPro;
 using UnityEngine.Rendering;
-using UnityEngine.UI;
-using Photon.Pun.Demo.PunBasics;
-using System.Threading;
 using UnityEngine.SceneManagement;
 using Photon.Voice.Unity;
 using Photon.Voice.PUN;
-using MySql.Data.MySqlClient.Memcached;
 using Photon.Realtime;
 using System.Linq;
 
@@ -160,6 +155,8 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
 
             StartCoroutine(ConfigureVoiceSetting());
             microphoneVolumeIndicator.UpdateMicrophoneUI(recorder.TransmitEnabled);
+            // 초기화 및 장치 변경 이벤트 연결
+            // Microphone.devicesChanged += OnAudioDevicesChanged;
         }
     }
 
@@ -182,6 +179,29 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
             Debug.Log("PlayerController : Listening to PlayerGroup (1) for all players.");
         }
     }
+
+    // private void OnAudioDevicesChanged()
+    // {
+    //     Debug.Log("Audio input devices changed!");
+
+    //     // 새로운 장치로 Recorder 업데이트
+    //     if (Microphone.devices.Length > 0)
+    //     {
+    //         recorder.MicrophoneType = Recorder.MicType.Unity; // Unity 마이크로 업데이트
+    //         recorder.MicrophoneDevice = Microphone.devices[0]; // 첫 번째 장치를 선택
+    //         Debug.Log($"Updated microphone to: {Microphone.devices[0]}");
+    //     }
+    //     else
+    //     {
+    //         Debug.LogError("No microphone devices available!");
+    //     }
+    // }
+
+    // private void OnDestroy()
+    // {
+    //     // 이벤트 해제
+    //     Microphone.devicesChanged -= OnAudioDevicesChanged;
+    // }
 
     public void UpdateNicknameColor(Color color)
     {
@@ -576,6 +596,5 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
             networkPosition = (Vector3)stream.ReceiveNext();
             networkRotation = (Quaternion)stream.ReceiveNext();
         }
-
     }
 }
