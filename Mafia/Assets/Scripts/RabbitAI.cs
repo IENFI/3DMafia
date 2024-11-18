@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 
-public class RabbitAI : MonoBehaviour
+public class RabbitAI : MonoBehaviourPun
 {
     public string targetTag = "Player";
     public float detectionRadius = 5f;
@@ -18,6 +18,8 @@ public class RabbitAI : MonoBehaviour
     public float triggerMomentum = 20;
     private float momentum;
     private float gravity = -9.81f;
+
+    private PlayerCoinController player;
 
     void Start()
     {
@@ -114,10 +116,43 @@ public class RabbitAI : MonoBehaviour
     void OnTriggerEnter(Collider other)
     {
         momentum = triggerMomentum;
+
+        if (other.CompareTag(targetTag))
+        {
+            StartCoroutine(FindLocalPlayerCoinController());
+            player.GetCoin(100);
+            PhotonNetwork.Destroy(this.gameObject);
+        }
     }
 
     void OnTriggerExit(Collider other)
     {
         momentum = initialMomentum;
     }
+
+    private IEnumerator FindLocalPlayerCoinController()
+    {
+        while (player == null)
+        {
+            foreach (var pcc in FindObjectsOfType<PlayerCoinController>())
+            {
+                if (pcc.photonView.IsMine)
+                {
+                    player = pcc;
+                    break;
+                }
+            }
+
+            if (player == null)
+            {
+                //Debug.Log("(MinigameInteraction) PlayerCoinController를 찾는 중...");
+            }
+
+            // 다음 프레임까지 대기
+            yield return null;
+        }
+
+        //Debug.Log("(MinigameInteraction) PlayerCoinController를 찾았습니다.");
+    }
+
 }
