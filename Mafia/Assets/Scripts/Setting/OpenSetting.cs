@@ -32,13 +32,18 @@ public class OpenSetting : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Escape) &&
             (currentScene.name == "Level_0" || currentScene.name == "Level_1"))
         {
-            Debug.Log("설정 창 열기 시도");
             // 설정 패널이 열려있지 않은 상태에서 다른 UI가 열려있다면 무시
             if (!settingsPanel.activeSelf && GameManager.instance.IsAnyUIOpen())
             {
                 return;
             }
 
+            ToggleSettingsPanel(currentScene.name);
+        }       
+        
+        if (Input.GetKeyDown(KeyCode.Escape) &&
+            (currentScene.name == "ServerScene"))
+        {
             ToggleSettingsPanel(currentScene.name);
         }
     }
@@ -54,22 +59,24 @@ public class OpenSetting : MonoBehaviour
 
     public void ToggleSettingsPanel(string scene)
     {
-        Debug.Log("OpenSetting.cs : ToggleSettingsPanel.activeSelf : " + settingsPanel.activeSelf);
+        if (scene == "ServerScene")
+        {
+            settingsPanel.SetActive(!settingsPanel.activeSelf);
+            return;
+        }
 
-        // 패널의 활성화 상태를 토글
-        if (settingsPanel.activeSelf){
+        if (settingsPanel.activeSelf)
+        {
             settingsPanel.SetActive(false);
         }
-        else if ( !GameManager.instance.IsAnyUIOpen()) {
-            Debug.Log("settingsPanel.SetActive(true)");
+        else if (!GameManager.instance.IsAnyUIOpen())
+        {
             settingsPanel.SetActive(true);
-
             if (!PhotonNetwork.IsMasterClient && scene == "Level_0")
             {
                 createRoomPanel.SetActive(false);
             }
         }
-        // settingsPanel.SetActive(!settingsPanel.activeSelf);
     }
 
     public void onClick()

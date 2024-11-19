@@ -56,13 +56,19 @@ public class CreateRoomUI : MonoBehaviour
         if(roomData.maxPlayerCount < limitMaxPlayer)
         {
             UpdateMaxPlayerCount(limitMaxPlayer);
-            waitingRoomManager.maxPlayerNum = limitMaxPlayer;
-
+            if(waitingRoomManager != null)
+            {
+                waitingRoomManager.maxPlayerNum = limitMaxPlayer;
+            }
         }
         else
         {
             UpdateMaxPlayerCount(roomData.maxPlayerCount);
-            waitingRoomManager.maxPlayerNum = roomData.maxPlayerCount;
+            if (waitingRoomManager != null)
+            {
+                waitingRoomManager.maxPlayerNum = roomData.maxPlayerCount;
+            }
+
         }
 
         for (int i = 0; i < maxPlayerCountButtons.Count; i++)

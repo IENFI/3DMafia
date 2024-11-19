@@ -73,10 +73,10 @@ public class MafiaManager : MonoBehaviourPunCallbacks
         remainingCitizenText.text = "남은 시민 수: " + remainingCitizenNum.ToString();
         remainingMafiaText.text = "남은 마피아 수: " + remainingMafiaNum.ToString();
 
-        
+
         // 테스트시 키고 끌 목록
-        
-/*       {
+
+        {
             if (remainingMafiaNum == 0 || shopIn.SaveCoin >= 1000)
             {
                 CitizenWin.SetActive(true);
@@ -107,7 +107,7 @@ public class MafiaManager : MonoBehaviourPunCallbacks
                 MafiaWin.SetActive(false);
             }
         }
-        */
+
 
         // if (Input.GetKeyDown(KeyCode.Tab))
         // {
