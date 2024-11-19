@@ -217,7 +217,7 @@ public class VoteManager : MonoBehaviourPunCallbacks
         }
         if (timeRemaining == 0)
         {
-            if ((bool)PhotonNetwork.LocalPlayer.CustomProperties["isDead"] && ((int)PhotonNetwork.LocalPlayer.CustomProperties["voted"] == -1))
+            if ((!(bool)PhotonNetwork.LocalPlayer.CustomProperties["isDead"]) && ((int)PhotonNetwork.LocalPlayer.CustomProperties["voted"] == -1))
             {
                 Skip();
             }
