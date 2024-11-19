@@ -370,7 +370,7 @@ public class WaitingRoomManager : MonoBehaviourPunCallbacks
 
     public void LeaveRoom()
     {
-        GameManager.instance = null;
+        // GameManager.instance = null;
         if (voiceConnection != null)
         {
             // 음성 채팅 연결 해제

@@ -6314,7 +6314,7 @@ MonoBehaviour:
   cameraController: {fileID: 871562808728903264}
   FPcamera: {fileID: 1455724720101697617}
   playerMoveSpeedUnit: 1
-  killCooldown: 15
+  killCooldown: 30
   ghostPrefab: {fileID: 498253721416304272, guid: 5d038d49c0a8549e1a9990876c743077, type: 3}
   corpsePrefab: {fileID: 3432362266963976815, guid: 7cbddf71319934f53a8a06b4edbf7e96, type: 3}
   reportRadius: {fileID: 3377680712331106696}

@@ -537,7 +537,7 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
             minimapManager.OnPlayerDeath(ghostController);
         }
 
-        PhotonNetwork.Instantiate(ghostPrefab.name, transform.position, transform.rotation);
+        // PhotonNetwork.Instantiate(ghostPrefab.name, transform.position, transform.rotation);
 
         // 죽은 아바타에 맞는 시체 프리팹 생성
         string corpseAvatar = "corpse_" + avatarName;
