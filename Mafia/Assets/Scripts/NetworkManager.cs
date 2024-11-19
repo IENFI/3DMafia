@@ -278,6 +278,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks // 안현석 똑바로�
         }
         else if (DBInteraction.Login(PhotonNetwork.NickName))
         {
+            NickNameError.text = "";
             PhotonNetwork.ConnectUsingSettings();
             ConnectBtn.interactable = false;
         }
@@ -286,7 +287,6 @@ public class NetworkManager : MonoBehaviourPunCallbacks // 안현석 똑바로�
             NickNameError.text = "이미 사용 중인 닉네임입니다.";
             return;
         }
-
     }
 
     public override void OnConnectedToMaster() => PhotonNetwork.JoinLobby();
