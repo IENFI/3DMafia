@@ -6211,6 +6211,7 @@ GameObject:
   - component: {fileID: 8832396538167572935}
   - component: {fileID: 5555381154398041621}
   - component: {fileID: 1543525584200621016}
+  - component: {fileID: -1111975734888618736}
   m_Layer: 6
   m_Name: Player
   m_TagString: Player
@@ -6635,6 +6636,18 @@ MonoBehaviour:
   useOnAudioFilterRead: 0
   useMicrophoneTypeFallback: 1
   recordWhenJoined: 1
+--- !u!114 &-1111975734888618736
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6946556922499648511}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc7e52bc930b7624d87f449de0c8a390, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &7001936556836551561
 GameObject:
   m_ObjectHideFlags: 0

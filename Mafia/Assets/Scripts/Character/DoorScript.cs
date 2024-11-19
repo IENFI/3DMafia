@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using Photon.Pun;
 using UnityEngine;
 
-public class DoorScript : MonoBehaviour {
+public class DoorScript : MonoBehaviour
+{
 
+    public AudioClip doorSound;
     AudioSource audioSource;
     public bool open = false;
     public bool ghostOpen = false;
@@ -21,13 +23,22 @@ public class DoorScript : MonoBehaviour {
         audioSource = GetComponent<AudioSource>();
     }
 
+
     [PunRPC]
     public void ChangeDoorState()
     {
         open = !open;
         UpdateDoorState(false);
+        audioSource.PlayOneShot(doorSound); // 소리 재생
     }
+    public void OpenDoor()
+    {
+        // 네트워크의 모든 클라이언트에서 소리 재생
+        photonView.RPC("ChangeDoorState", RpcTarget.All);
 
+        // 문 열기 로직 추가 (예: 애니메이션 트리거)
+        Debug.Log("문이 열렸습니다!");
+    }
     public void GhostChangeDoorState()
     {
         ghostOpen = !ghostOpen;
@@ -81,6 +92,6 @@ public class DoorScript : MonoBehaviour {
     //        transform.localRotation = Quaternion.Slerp(transform.localRotation, targetRotation2, smooth * Time.deltaTime);
     //    }
     //}
-    
-  
+
+
 }
