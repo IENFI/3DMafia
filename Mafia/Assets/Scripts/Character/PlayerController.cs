@@ -493,6 +493,28 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
         PhotonNetwork.LocalPlayer.SetCustomProperties(props);
     }
 
+    void OnEnable()
+    {
+        Scene currentScene = SceneManager.GetActiveScene();
+        if (currentScene.name == "Level_0")
+        {
+            if (PhotonNetwork.LocalPlayer.CustomProperties.ContainsKey("isMafia") && (bool)PhotonNetwork.LocalPlayer.CustomProperties["isMafia"])
+            {
+                // 다른 플레이어의 isMafia가 true인지 확인
+                if (photonView.Owner.CustomProperties.ContainsKey("isMafia") && (bool)photonView.Owner.CustomProperties["isMafia"])
+                {
+                    // 닉네임을 빨갛게 보이도록 설정
+                    nickName.color = Color.red;
+                }
+                else
+                {
+                    // 닉네임을 기본 색상으로 설정
+                    nickName.color = Color.white;
+                }
+            }
+        }
+    }
+
     [PunRPC]
     public void DisableGameObject()
     {

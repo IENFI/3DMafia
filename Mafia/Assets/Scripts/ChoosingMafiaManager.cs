@@ -105,7 +105,7 @@ public class ChoosingMafiaManager : MonoBehaviourPunCallbacks
             Debug.Log("Player ID: " + player.ActorNumber + ", Player Name: " + player.NickName + ", isMafia = " + (player.CustomProperties.ContainsKey("isMafia") && (bool)player.CustomProperties["isMafia"]).ToString());
         }
     }
-    void Initializing()
+    public void Initializing()
     {
         foreach (Player player in PhotonNetwork.PlayerList)
         {
