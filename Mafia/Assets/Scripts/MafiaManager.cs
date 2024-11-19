@@ -97,7 +97,7 @@ public class MafiaManager : MonoBehaviourPunCallbacks
                 CitizenWin.SetActive(false);
             }
 
-            if (remainingCitizenNum == 0)
+            if (remainingCitizenNum <= remainingMafiaNum)
             {
                 MafiaWin.SetActive(true);
                 if (!gameOver)
