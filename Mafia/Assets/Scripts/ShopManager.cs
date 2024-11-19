@@ -21,19 +21,19 @@ public class ShopManager : MonoBehaviourPunCallbacks
     private PlayerCoinController player;
     public TMP_Text ShowErrorText;
 
-    [Header("ì•„ì´í…œ ë ˆì´ì•„ì›ƒ")]
-    [SerializeField] private Transform itemLayoutParent; // ì•„ì´í…œ ì´ë¯¸ì§€ë“¤ì˜ ë¶€ëª¨ ì˜¤ë¸Œì íŠ¸
+    [Header("¾ÆÀÌÅÛ ·¹ÀÌ¾Æ¿ô")]
+    [SerializeField] private Transform itemLayoutParent; // ¾ÆÀÌÅÛ ÀÌ¹ÌÁöµéÀÇ ºÎ¸ğ ¿ÀºêÁ§Æ®
 
-    [Header("ì•„ì´í…œ ì´ë¯¸ì§€")]
-    public Image[] itemImages;  // ì•„ì´í…œ ì´ë¯¸ì§€ ë°°ì—´
+    [Header("¾ÆÀÌÅÛ ÀÌ¹ÌÁö")]
+    public Image[] itemImages;  // ¾ÆÀÌÅÛ ÀÌ¹ÌÁö ¹è¿­
 
-    [Header("ì•„ì´í…œ ë²„íŠ¼")]
-    public Button[] itemButtons;  // ì•„ì´í…œ ë²„íŠ¼ ë°°ì—´
+    [Header("¾ÆÀÌÅÛ ¹öÆ°")]
+    public Button[] itemButtons;  // ¾ÆÀÌÅÛ ¹öÆ° ¹è¿­
 
-    [Header("ì•„ì´í…œ íƒ€ì´ë¨¸ í…ìŠ¤íŠ¸")]
-    public TMP_Text[] itemTimerTexts;  // ê° ì•„ì´í…œ ì´ë¯¸ì§€ì˜ ìì‹ TMP_Text
+    [Header("¾ÆÀÌÅÛ Å¸ÀÌ¸Ó ÅØ½ºÆ®")]
+    public TMP_Text[] itemTimerTexts;  // °¢ ¾ÆÀÌÅÛ ÀÌ¹ÌÁöÀÇ ÀÚ½Ä TMP_Text
 
-    [Header("ìŠ¹ë¦¬ëª¨ê¸ˆ")]
+    [Header("½Â¸®¸ğ±İ")]
     public TMP_Text SaveCoinText;
     public int SaveCoin = 0;
 
@@ -42,13 +42,13 @@ public class ShopManager : MonoBehaviourPunCallbacks
     private List<ShopInteraction> shopInteractions;
     private XRayVisionItem xRayVisionItem;
     private DeathAnnounce deathAnnounceItem;
-    // ì•„ì´í…œ í™œì„±í™” ìƒíƒœë¥¼ ì¶”ì í•˜ëŠ” ë¦¬ìŠ¤íŠ¸
+    // ¾ÆÀÌÅÛ È°¼ºÈ­ »óÅÂ¸¦ ÃßÀûÇÏ´Â ¸®½ºÆ®
     private List<(int originalIndex, GameObject imageObj)> activeItems = new List<(int, GameObject)>();
-    // í˜„ì¬ ì‹¤í–‰ ì¤‘ì¸ íƒ€ì´ë¨¸ ì½”ë£¨í‹´ì„ ì €ì¥í•  Dictionary ì¶”ê°€
+    // ÇöÀç ½ÇÇà ÁßÀÎ Å¸ÀÌ¸Ó ÄÚ·çÆ¾À» ÀúÀåÇÒ Dictionary Ãß°¡
     private Dictionary<int, Coroutine> activeTimers = new Dictionary<int, Coroutine>();
-    // ì•„ì´í…œ êµ¬ë§¤ ì¿¨íƒ€ì„ ê´€ë ¨ ë³€ìˆ˜ë“¤
+    // ¾ÆÀÌÅÛ ±¸¸Å ÄğÅ¸ÀÓ °ü·Ã º¯¼öµé
     private Dictionary<int, float> lastPurchaseTime = new Dictionary<int, float>();
-    private const float PURCHASE_COOLDOWN = 0.5f; // êµ¬ë§¤ ëŒ€ê¸°ì‹œê°„ (0.5ì´ˆ)
+    private const float PURCHASE_COOLDOWN = 0.5f; // ±¸¸Å ´ë±â½Ã°£ (0.5ÃÊ)
 
     private void Awake()
     {
@@ -70,19 +70,19 @@ public class ShopManager : MonoBehaviourPunCallbacks
             }
         }
 
-        // XRayVisionItem ì»´í¬ë„ŒíŠ¸ ì´ˆê¸°í™”
+        // XRayVisionItem ÄÄÆ÷³ÍÆ® ÃÊ±âÈ­
         xRayVisionItem = GetComponent<XRayVisionItem>();
         if (xRayVisionItem == null)
         {
             xRayVisionItem = gameObject.AddComponent<XRayVisionItem>();
         }
 
-/*        // ë²„íŠ¼ ì´ë²¤íŠ¸ ì„¤ì •
-        if (itemButtons.Length >= 6)  // 6ê°œ ë²„íŠ¼ í™•ì¸
+/*        // ¹öÆ° ÀÌº¥Æ® ¼³Á¤
+        if (itemButtons.Length >= 6)  // 6°³ ¹öÆ° È®ÀÎ
         {
             itemButtons[0].onClick.AddListener(BuyDoubleCoin);
             itemButtons[1].onClick.AddListener(BuySpeedUp);
-            itemButtons[2].onClick.AddListener(BuyXRayVision);  // X-Ray ë¹„ì „ êµ¬ë§¤ í•¨ìˆ˜ ì—°ê²°
+            itemButtons[2].onClick.AddListener(BuyXRayVision);  // X-Ray ºñÀü ±¸¸Å ÇÔ¼ö ¿¬°á
             itemButtons[3].onClick.AddListener(SaveMoney);
             itemButtons[4].onClick.AddListener(DeleteMoney);
             itemButtons[5].onClick.AddListener(BuyDeathAnnounce);
@@ -102,7 +102,7 @@ public class ShopManager : MonoBehaviourPunCallbacks
 
     private void InitializeShopItems()
     {
-        // ëª¨ë“  ì•„ì´í…œ ì´ë¯¸ì§€ì™€ íƒ€ì´ë¨¸ í…ìŠ¤íŠ¸ ë¹„í™œì„±í™”
+        // ¸ğµç ¾ÆÀÌÅÛ ÀÌ¹ÌÁö¿Í Å¸ÀÌ¸Ó ÅØ½ºÆ® ºñÈ°¼ºÈ­
         for (int i = 0; i < itemImages.Length; i++)
         {
             if (itemImages[i] != null)
@@ -116,7 +116,7 @@ public class ShopManager : MonoBehaviourPunCallbacks
         }
     }
 
-    // ì•„ì´í…œ êµ¬ë§¤ ê°€ëŠ¥ ì—¬ë¶€ í™•ì¸ í•¨ìˆ˜
+    // ¾ÆÀÌÅÛ ±¸¸Å °¡´É ¿©ºÎ È®ÀÎ ÇÔ¼ö
     private bool CanPurchaseItem(int itemIndex)
     {
         if (!lastPurchaseTime.ContainsKey(itemIndex))
@@ -132,7 +132,7 @@ public class ShopManager : MonoBehaviourPunCallbacks
 
         return true;
     }
-    // Buy í•¨ìˆ˜ë“¤ ìˆ˜ì •
+    // Buy ÇÔ¼öµé ¼öÁ¤
     public void BuyXRayVision()
     {
         if (player != null  && CanPurchaseItem(2))
@@ -160,29 +160,29 @@ public class ShopManager : MonoBehaviourPunCallbacks
                 }
 
                 itemImages[2].enabled = true;
-                ShowError("X-Ray ë¹„ì „ ì ìš©ì™„ë£Œ!");
+                ShowError("X-Ray ºñÀü Àû¿ë¿Ï·á!");
 
                 xRayVisionItem.SendMessage("OnActivationButtonClick");
 
                 Coroutine newTimer = StartCoroutine(UpdateItemTimer(2, xRayVisionItem.duration));
                 activeTimers[2] = newTimer;
 
-                UpdatePurchaseTime(2);  // êµ¬ë§¤ ì‹œê°„ ê°±ì‹ 
+                UpdatePurchaseTime(2);  // ±¸¸Å ½Ã°£ °»½Å
             }
             else
             {
-                ShowError("ì½”ì¸ì´ ë¶€ì¡±í•©ë‹ˆë‹¤!");
+                ShowError("ÄÚÀÎÀÌ ºÎÁ·ÇÕ´Ï´Ù!");
             }
         }
         else
         {
-            Debug.Log("ì•„ì œë°œì¢€");
+            Debug.Log("¾ÆÁ¦¹ßÁ»");
         }
     }
 
     public void BuyDeathAnnounce()
     {
-        if (player != null  && CanPurchaseItem(5)) // ì¸ë±ìŠ¤ë¥¼ 5ë¡œ ë³€ê²½
+        if (player != null  && CanPurchaseItem(5)) // ÀÎµ¦½º¸¦ 5·Î º¯°æ
         {
             int itemCost = 100;
             if (player.coin >= itemCost)
@@ -207,7 +207,7 @@ public class ShopManager : MonoBehaviourPunCallbacks
                 }
 
                 itemImages[3].enabled = true;
-                ShowError("ì‚¬ë§ ì•Œë¦¼ í™œì„±í™”!");
+                ShowError("»ç¸Á ¾Ë¸² È°¼ºÈ­!");
 
                 deathAnnounceItem.OnActivationButtonClick();
 
@@ -220,7 +220,7 @@ public class ShopManager : MonoBehaviourPunCallbacks
             }
             else
             {
-                ShowError("ì½”ì¸ì´ ë¶€ì¡±í•©ë‹ˆë‹¤!");
+                ShowError("ÄÚÀÎÀÌ ºÎÁ·ÇÕ´Ï´Ù!");
             }
         }
     }
@@ -250,16 +250,16 @@ public class ShopManager : MonoBehaviourPunCallbacks
 
                 player.ActivateDoubleCoin();
                 itemImages[0].enabled = true;
-                ShowError("ì½”ì¸ë‘ë°° ì ìš©ì™„ë£Œ!");
+                ShowError("ÄÚÀÎµÎ¹è Àû¿ë¿Ï·á!");
 
                 Coroutine newTimer = StartCoroutine(UpdateItemTimer(0, 60.0f, () => player.DeactivateDoubleCoin()));
                 activeTimers[0] = newTimer;
 
-                UpdatePurchaseTime(0);  // êµ¬ë§¤ ì‹œê°„ ê°±ì‹ 
+                UpdatePurchaseTime(0);  // ±¸¸Å ½Ã°£ °»½Å
             }
             else
             {
-                ShowError("ì½”ì¸ì´ ë¶€ì¡±í•©ë‹ˆë‹¤!");
+                ShowError("ÄÚÀÎÀÌ ºÎÁ·ÇÕ´Ï´Ù!");
             }
         }
     }
@@ -280,36 +280,36 @@ public class ShopManager : MonoBehaviourPunCallbacks
                     player.coin -= itemCost;
                     player.UpdateCoinUI();
 
-                    // ì´ë¯¸ ìŠ¤í”¼ë“œì—…ì´ í™œì„±í™”ë˜ì–´ ìˆëŠ”ì§€ í™•ì¸
+                    // ÀÌ¹Ì ½ºÇÇµå¾÷ÀÌ È°¼ºÈ­µÇ¾î ÀÖ´ÂÁö È®ÀÎ
                     bool isAlreadyActive = activeTimers.ContainsKey(1);
 
                     if (isAlreadyActive)
                     {
-                        // ê¸°ì¡´ íƒ€ì´ë¨¸ ì¤‘ì§€
+                        // ±âÁ¸ Å¸ÀÌ¸Ó ÁßÁö
                         StopCoroutine(activeTimers[1]);
                         activeTimers.Remove(1);
                     }
                     else
                     {
-                        // ì²˜ìŒ í™œì„±í™”ë˜ëŠ” ê²½ìš°ì—ë§Œ ì†ë„ ë³€ê²½
+                        // Ã³À½ È°¼ºÈ­µÇ´Â °æ¿ì¿¡¸¸ ¼Óµµ º¯°æ
                         playerController.ChangeMoveSpeed(increasedSpeed);
                     }
 
                     itemImages[1].enabled = true;
-                    ShowError("ìŠ¤í”¼ë“œì—… ì ìš©ì™„ë£Œ!");
+                    ShowError("½ºÇÇµå¾÷ Àû¿ë¿Ï·á!");
 
-                    // ìƒˆë¡œìš´ íƒ€ì´ë¨¸ ì‹œì‘
+                    // »õ·Î¿î Å¸ÀÌ¸Ó ½ÃÀÛ
                     Coroutine newTimer = StartCoroutine(UpdateItemTimer(1, 60.0f, () =>
                     {
                         playerController.OriginMoveSpeed();
                     }));
                     activeTimers[1] = newTimer;
 
-                    UpdatePurchaseTime(1);  // êµ¬ë§¤ ì‹œê°„ ê°±ì‹ 
+                    UpdatePurchaseTime(1);  // ±¸¸Å ½Ã°£ °»½Å
                 }
                 else
                 {
-                    ShowError("ì½”ì¸ì´ ë¶€ì¡±í•©ë‹ˆë‹¤!");
+                    ShowError("ÄÚÀÎÀÌ ºÎÁ·ÇÕ´Ï´Ù!");
                 }
             }
             else
@@ -320,7 +320,7 @@ public class ShopManager : MonoBehaviourPunCallbacks
     }
     private void ReorderActiveItems()
     {
-        // í™œì„±í™”ëœ ëª¨ë“  ì•„ì´í…œì„ ìˆœì„œëŒ€ë¡œ ì •ë ¬
+        // È°¼ºÈ­µÈ ¸ğµç ¾ÆÀÌÅÛÀ» ¼ø¼­´ë·Î Á¤·Ä
         for (int i = 0; i < activeItems.Count; i++)
         {
             if (activeItems[i].imageObj != null)
@@ -333,32 +333,32 @@ public class ShopManager : MonoBehaviourPunCallbacks
     {
         if (activate)
         {
-            // ê°™ì€ ì•„ì´í…œì´ ì´ë¯¸ í™œì„±í™”ë˜ì–´ ìˆëŠ”ì§€ í™•ì¸
+            // °°Àº ¾ÆÀÌÅÛÀÌ ÀÌ¹Ì È°¼ºÈ­µÇ¾î ÀÖ´ÂÁö È®ÀÎ
             var existingItemIndex = activeItems.FindIndex(item => item.originalIndex == itemIndex);
 
             if (existingItemIndex != -1)
             {
-                // ê¸°ì¡´ ì•„ì´í…œì„ ì œê±°í•˜ê³ 
+                // ±âÁ¸ ¾ÆÀÌÅÛÀ» Á¦°ÅÇÏ°í
                 activeItems.RemoveAt(existingItemIndex);
             }
 
-            // ìƒˆë¡œìš´ ì•„ì´í…œì„ ë§¨ ë’¤ì— ì¶”ê°€
+            // »õ·Î¿î ¾ÆÀÌÅÛÀ» ¸Ç µÚ¿¡ Ãß°¡
             itemImages[itemIndex].enabled = true;
             activeItems.Add((itemIndex, itemImages[itemIndex].gameObject));
 
-            // ëª¨ë“  í™œì„±í™”ëœ ì•„ì´í…œ ì¬ì •ë ¬
+            // ¸ğµç È°¼ºÈ­µÈ ¾ÆÀÌÅÛ ÀçÁ¤·Ä
             ReorderActiveItems();
         }
         else
         {
-            // ì•„ì´í…œ ë¹„í™œì„±í™”
+            // ¾ÆÀÌÅÛ ºñÈ°¼ºÈ­
             itemImages[itemIndex].enabled = false;
             activeItems.RemoveAll(item => item.originalIndex == itemIndex);
             ReorderActiveItems();
         }
     }
 
-    // êµ¬ë§¤ ì‹œê°„ ê°±ì‹ 
+    // ±¸¸Å ½Ã°£ °»½Å
     private void UpdatePurchaseTime(int itemIndex)
     {
         lastPurchaseTime[itemIndex] = Time.time;
@@ -368,7 +368,7 @@ public class ShopManager : MonoBehaviourPunCallbacks
     {
         float remainingTime = duration;
 
-        // ì•„ì´í…œ í™œì„±í™” ë° ì •ë ¬
+        // ¾ÆÀÌÅÛ È°¼ºÈ­ ¹× Á¤·Ä
         UpdateItemActivation(itemIndex, true);
 
         while (remainingTime > 0)
@@ -381,13 +381,13 @@ public class ShopManager : MonoBehaviourPunCallbacks
             yield return null;
         }
 
-        // íƒ€ì´ë¨¸ ì™„ë£Œ ì‹œ Dictionaryì—ì„œ ì œê±°
+        // Å¸ÀÌ¸Ó ¿Ï·á ½Ã Dictionary¿¡¼­ Á¦°Å
         if (activeTimers.ContainsKey(itemIndex))
         {
             activeTimers.Remove(itemIndex);
         }
 
-        // ì•„ì´í…œ ë¹„í™œì„±í™” ë° ì •ë ¬
+        // ¾ÆÀÌÅÛ ºñÈ°¼ºÈ­ ¹× Á¤·Ä
         UpdateItemActivation(itemIndex, false);
 
         if (itemTimerTexts[itemIndex] != null)
@@ -395,7 +395,7 @@ public class ShopManager : MonoBehaviourPunCallbacks
             itemTimerTexts[itemIndex].text = "";
         }
 
-        // SpeedUp ì•„ì´í…œì˜ ê²½ìš°ì—ë§Œ ì›ë˜ ì†ë„ë¡œ ëŒë¦¬ê¸°
+        // SpeedUp ¾ÆÀÌÅÛÀÇ °æ¿ì¿¡¸¸ ¿ø·¡ ¼Óµµ·Î µ¹¸®±â
         if (itemIndex == 1 && playerController != null)
         {
             playerController.OriginMoveSpeed();
@@ -412,7 +412,7 @@ public class ShopManager : MonoBehaviourPunCallbacks
             if (player.coin >= itemCost)
             {
                 player.coin -= itemCost;
-                ShowError("ëª¨ê¸ˆì™„ë£Œ!");
+                ShowError("¸ğ±İ¿Ï·á!");
                 player.UpdateCoinUI();
                 SaveCoin += 100;
                 photonView.RPC("UpdateSaveCoin", RpcTarget.All, SaveCoin);
@@ -420,7 +420,7 @@ public class ShopManager : MonoBehaviourPunCallbacks
             }
             else
             {
-                ShowError("ì½”ì¸ì´ ë¶€ì¡±í•©ë‹ˆë‹¤!");
+                ShowError("ÄÚÀÎÀÌ ºÎÁ·ÇÕ´Ï´Ù!");
             }
         }
     }
@@ -440,11 +440,11 @@ public class ShopManager : MonoBehaviourPunCallbacks
             }
             else if (player.coin >= itemCost)
             {
-                ShowError("0ì› ë°‘ìœ¼ë¡œëŠ” ì¤„ì¼ ìˆ˜ ì—†ìŠµë‹ˆë‹¤!!");
+                ShowError("0¿ø ¹ØÀ¸·Î´Â ÁÙÀÏ ¼ö ¾ø½À´Ï´Ù!!");
             }
             else
             {
-                ShowError("ì½”ì¸ì´ ë¶€ì¡±í•©ë‹ˆë‹¤!");
+                ShowError("ÄÚÀÎÀÌ ºÎÁ·ÇÕ´Ï´Ù!");
             }
         }
     }

@@ -183,7 +183,7 @@ public class WaitingRoomManager : MonoBehaviourPunCallbacks
             }
         }
 
-        if (PhotonNetwork.IsMasterClient)
+        /*if (PhotonNetwork.IsMasterClient)
         {
             // 최소 4명의 플레이어가 있는지 확인
             if (PhotonNetwork.PlayerList.Length >= 4)
@@ -216,7 +216,7 @@ public class WaitingRoomManager : MonoBehaviourPunCallbacks
                 StartBtn.GetComponent<Button>().interactable = false;
                 startBtnText.text = "최소 4명이 있어야 합니다.";
             }
-        }
+        }*/
 
         if (!PhotonNetwork.IsMasterClient && Input.GetKeyDown(KeyCode.F5))
         {
