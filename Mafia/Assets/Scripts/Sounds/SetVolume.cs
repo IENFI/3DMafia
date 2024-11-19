@@ -112,7 +112,11 @@ public class SetVolume : MonoBehaviour
         }
         else
         {
+            #if TEST_ENVIRONMENT
+            bgmSlider.value = 0f; // 기본값
+            #else
             bgmSlider.value = 0.5f; // 기본값
+            #endif
         }
 
         if (prefs.HasKey(SFX_VOLUME_KEY))

@@ -2,18 +2,14 @@ using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using ExitGames.Client.Photon;
 using TMPro;
 using UnityEngine.Rendering;
-using UnityEngine.UI;
-using Photon.Pun.Demo.PunBasics;
-using System.Threading;
 using UnityEngine.SceneManagement;
 using Photon.Voice.Unity;
 using Photon.Voice.PUN;
-using MySql.Data.MySqlClient.Memcached;
 using Photon.Realtime;
 using System.Linq;
+// using Photon.Voice;
 
 public class PlayerController : MonoBehaviourPun, IPunObservable
 {
@@ -80,6 +76,7 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
     Speaker speaker;
     private PunVoiceClient punVoiceClient; // PunVoiceClient 참조
     public MicrophoneVolumeIndicator microphoneVolumeIndicator;
+    // private AudioChangesHandler audioChangesHandler;
 
 
     public void EnableControl(bool enable)
@@ -96,6 +93,20 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
         x_ = Input.GetAxis("Horizontal");
         z_ = Input.GetAxis("Vertical");
     }
+
+    // void Awake() 
+    // {
+    //     // AudioChangesHandler 초기화
+    //     if (photonView.IsMine){
+    //         audioChangesHandler = GetComponent<AudioChangesHandler>();
+
+    //         if (audioChangesHandler == null)
+    //         {
+    //             Debug.LogError("AudioChangesHandler component is missing.");
+    //             return;
+    //         }
+    //     }
+    // }
 
     void Start()
     {
@@ -160,6 +171,8 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
 
             StartCoroutine(ConfigureVoiceSetting());
             microphoneVolumeIndicator.UpdateMicrophoneUI(recorder.TransmitEnabled);
+            // 초기화 및 장치 변경 이벤트 연결
+            // Microphone.devicesChanged += OnAudioDevicesChanged;
         }
     }
 
@@ -182,6 +195,59 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
             Debug.Log("PlayerController : Listening to PlayerGroup (1) for all players.");
         }
     }
+
+    // 입력 장치 바뀌면 안 되는 오류 수정 했는데 안 됨
+    // private void OnEnable()
+    // {
+    //     if (!photonView.IsMine)
+    //         return;
+    //     AudioSettings.OnAudioConfigurationChanged += OnAudioConfigurationChanged;
+    // }
+
+    // private void OnDisable()
+    // {
+    //     if (!photonView.IsMine)
+    //         return;
+    //     AudioSettings.OnAudioConfigurationChanged -= OnAudioConfigurationChanged;
+    // }
+
+    // private void OnAudioConfigurationChanged(bool deviceWasChanged)
+    // {
+    //     if (!photonView.IsMine)
+    //         return;
+    //     if (deviceWasChanged)
+    //     {
+    //         Debug.Log("Audio device change detected. Restarting Recorder with new device.");
+    //         AssignNewMicrophoneDevice();
+    //     }
+    // }
+
+    // private void AssignNewMicrophoneDevice()
+    // {
+    //     if (!photonView.IsMine)
+    //         return;
+
+    //     var devices = Microphone.devices;
+    //     if (devices.Length == 0)
+    //     {
+    //         Debug.LogError("No microphone devices found.");
+    //         return;
+    //     }
+
+    //     string preferredDevice = devices[0];
+    //     Debug.Log($"Assigning new microphone: {preferredDevice}");
+
+    //     if (recorder != null)
+    //     {
+    //         // Create a DeviceInfo instance with the selected device name
+    //         DeviceInfo deviceInfo = new DeviceInfo(preferredDevice);
+
+    //         recorder.MicrophoneDevice = deviceInfo;
+    //         recorder.RestartRecording();
+    //         Debug.Log("Recorder restarted with the new microphone device.");
+    //         punVoiceClient.PrimaryRecorder = recorder;
+    //     }
+    // }
 
     public void UpdateNicknameColor(Color color)
     {
@@ -576,6 +642,5 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
             networkPosition = (Vector3)stream.ReceiveNext();
             networkRotation = (Quaternion)stream.ReceiveNext();
         }
-
     }
 }
