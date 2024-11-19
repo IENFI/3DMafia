@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 
-public class RabbitAI : MonoBehaviour
+public class RabbitAI : MonoBehaviourPun
 {
     public string targetTag = "Player";
     public float detectionRadius = 5f;
@@ -19,6 +19,8 @@ public class RabbitAI : MonoBehaviour
     private float momentum;
     private float gravity = -9.81f;
 
+    private PlayerCoinController player;
+
     void Start()
     {
         // Initialize the CharacterController
@@ -29,33 +31,34 @@ public class RabbitAI : MonoBehaviour
 
     void Update()
     {
-        if (!PhotonNetwork.IsMasterClient) return;
-
-        if (isRunningAway) return;
-
-        GameObject target = DetectPlayer();
-        if (target != null)
+        if (PhotonNetwork.IsMasterClient)
         {
-            RunAway(target);
-        }
-        else
-        {
-            float randomX = Random.Range(-10f, 10f);
-            float randomZ = Random.Range(-10f, 10f);
-            Vector3 move_vector = new Vector3(randomX, 0f, randomZ);
-            vector = momentum * vector + move_vector;
-            vector = vector.normalized * 1 / 10 * moveSpeed;
-            if (characterController.isGrounded == false)
+            if (isRunningAway) return;
+
+            GameObject target = DetectPlayer();
+            if (target != null)
             {
-                vector.y += gravity * Time.deltaTime;
+                RunAway(target);
             }
-
             else
             {
-                vector.y = 0f;
-            }
+                float randomX = Random.Range(-10f, 10f);
+                float randomZ = Random.Range(-10f, 10f);
+                Vector3 move_vector = new Vector3(randomX, 0f, randomZ);
+                vector = momentum * vector + move_vector;
+                vector = vector.normalized * 1 / 10 * moveSpeed;
+                if (characterController.isGrounded == false)
+                {
+                    vector.y += gravity * Time.deltaTime;
+                }
 
-            characterController.Move(vector);
+                else
+                {
+                    vector.y = 0f;
+                }
+
+                characterController.Move(vector);
+            }
         }
     }
 
@@ -114,10 +117,51 @@ public class RabbitAI : MonoBehaviour
     void OnTriggerEnter(Collider other)
     {
         momentum = triggerMomentum;
+
+        if (other.CompareTag(targetTag))
+        {
+            StartCoroutine(FindLocalPlayerCoinController(other));
+            player.GetCoin(100);
+            photonView.RPC("DestroyRabbit", RpcTarget.All);
+        }
     }
 
     void OnTriggerExit(Collider other)
     {
         momentum = initialMomentum;
+    }
+
+    private IEnumerator FindLocalPlayerCoinController(Collider other)
+    {
+        while (player == null)
+        {
+            foreach (var pcc in FindObjectsOfType<PlayerCoinController>())
+            {
+                if (pcc.photonView.IsMine && other.GetComponent<PhotonView>().IsMine)
+                {
+                    player = pcc;
+                    break;
+                }
+            }
+
+            if (player == null)
+            {
+                //Debug.Log("(MinigameInteraction) PlayerCoinController를 찾는 중...");
+            }
+
+            // 다음 프레임까지 대기
+            yield return null;
+        }
+
+        //Debug.Log("(MinigameInteraction) PlayerCoinController를 찾았습니다.");
+    }
+
+    [PunRPC]
+    void DestroyRabbit()
+    {
+        if (PhotonNetwork.IsMasterClient)
+        {
+            PhotonNetwork.Destroy(this.gameObject);
+        }
     }
 }

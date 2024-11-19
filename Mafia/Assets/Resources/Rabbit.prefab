@@ -186,7 +186,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_SynchronizePosition: 1
-  m_SynchronizeRotation: 1
+  m_SynchronizeRotation: 0
   m_SynchronizeScale: 0
   m_UseLocal: 1
 --- !u!143 &7920757737508968606
@@ -296,6 +296,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5807be5c374f7214b920bec71688b9f8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  rotationSpeed: 20
 --- !u!4 &7987062555490535767 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 400040, guid: 0962bdca27eaca34aaa15f7fdf608faf, type: 3}
