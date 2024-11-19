@@ -372,10 +372,10 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
             }
 
             // Kill 시뮬레이트
-            if (Input.GetKeyDown(KeyCode.P) && canControl)
+            /*if (Input.GetKeyDown(KeyCode.P) && canControl)
             {
                 photonView.RPC("Death", RpcTarget.All);
-            }
+            }*/
 
             /*// 마우스 오른쪽 버튼을 누르면 무기 공격 (연계)
             if (Input.GetMouseButtonDown(1))
@@ -493,6 +493,28 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
         PhotonNetwork.LocalPlayer.SetCustomProperties(props);
     }
 
+    void OnEnable()
+    {
+        Scene currentScene = SceneManager.GetActiveScene();
+        if (currentScene.name == "Level_0")
+        {
+            if (PhotonNetwork.LocalPlayer.CustomProperties.ContainsKey("isMafia") && (bool)PhotonNetwork.LocalPlayer.CustomProperties["isMafia"])
+            {
+                // 다른 플레이어의 isMafia가 true인지 확인
+                if (photonView.Owner.CustomProperties.ContainsKey("isMafia") && (bool)photonView.Owner.CustomProperties["isMafia"])
+                {
+                    // 닉네임을 빨갛게 보이도록 설정
+                    nickName.color = Color.red;
+                }
+                else
+                {
+                    // 닉네임을 기본 색상으로 설정
+                    nickName.color = Color.white;
+                }
+            }
+        }
+    }
+
     [PunRPC]
     public void DisableGameObject()
     {
@@ -515,7 +537,7 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
             minimapManager.OnPlayerDeath(ghostController);
         }
 
-        PhotonNetwork.Instantiate(ghostPrefab.name, transform.position, transform.rotation);
+        // PhotonNetwork.Instantiate(ghostPrefab.name, transform.position, transform.rotation);
 
         // 죽은 아바타에 맞는 시체 프리팹 생성
         string corpseAvatar = "corpse_" + avatarName;

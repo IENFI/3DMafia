@@ -1,13 +1,8 @@
 using System.Collections;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 using Photon.Pun;
 using Photon.Realtime;
-using ExitGames.Client.Photon;
 using TMPro;
-using UnityEngine.UI;
 
 public class MafiaManager : MonoBehaviourPunCallbacks
 {
@@ -180,6 +175,7 @@ public class MafiaManager : MonoBehaviourPunCallbacks
         if (PhotonNetwork.IsMasterClient)
         {
             PhotonNetwork.DestroyAll();
+            choosingMafiaManager.GetComponent<ChoosingMafiaManager>().Initializing();
             PhotonNetwork.LoadLevel("Level_0");
         }
     }

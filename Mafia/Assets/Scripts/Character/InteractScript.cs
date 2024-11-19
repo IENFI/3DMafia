@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine;
-using TMPro; 
+using TMPro;
 using UnityEngine.SceneManagement;
 
 public class InteractScript : MonoBehaviourPun
@@ -74,7 +74,7 @@ public class InteractScript : MonoBehaviourPun
 
     void Update()
     {
-        if(!photonView.IsMine)
+        if (!photonView.IsMine)
         {
             return;
         }
@@ -108,7 +108,13 @@ public class InteractScript : MonoBehaviourPun
                 if (doorPhotonView != null && Input.GetKeyDown(KeyCode.E))
                 {
                     Debug.Log("Open the Door");
+                    GameObject doorObject = doorPhotonView.gameObject;
+                    Collider collider = doorObject.GetComponent<Collider>();
+                    collider.enabled = false;
+
                     doorPhotonView.RPC("ChangeDoorState", RpcTarget.All);
+
+                    StartCoroutine(TurnOnDoorPhysics(2f, doorObject));
                 }
                 else
                 {
@@ -127,11 +133,13 @@ public class InteractScript : MonoBehaviourPun
                 }
             }
         }
-        else {
-            if (lastDoorCollider != null){
-                    toolTipUI.SetActive(false);
-                    lastDoorCollider = null;
-                }
+        else
+        {
+            if (lastDoorCollider != null)
+            {
+                toolTipUI.SetActive(false);
+                lastDoorCollider = null;
+            }
         }
 
         if (fpCamera != null)
@@ -152,11 +160,13 @@ public class InteractScript : MonoBehaviourPun
 
                     // 선택된 미니게임의 MinigameBase 클래스 참조 (Fix Wiring은 최상위 UI에 스크립트가 없어서 다시 선언해야 할 듯..?)
                     MinigameBase minigameScript = hit.collider.GetComponent<MinigameInteraction>().TaskUI.GetComponent<MinigameBase>();
-                    if (minigameScript.GetActive()){
+                    if (minigameScript.GetActive())
+                    {
                         // true가 light
                         hit.collider.GetComponent<MinigameInteraction>().ChangeAllChildMaterials(hit.collider.transform, true);
-                        if (! hit.collider.GetComponent<MinigameInteraction>().TaskUI.activeSelf){
-                            
+                        if (!hit.collider.GetComponent<MinigameInteraction>().TaskUI.activeSelf)
+                        {
+
                             // Activate toolTipUI
                             toolTipUI.SetActive(true);
 
@@ -283,7 +293,8 @@ public class InteractScript : MonoBehaviourPun
                     characterController = GetComponent<CharacterController>();
                     playerController = GetComponent<PlayerController>();
 
-                    if (reportChance == 1){
+                    if (reportChance == 1)
+                    {
                         hit.collider.GetComponent<ReportButtonScript>().ChangeOutlineRenderer(true);
                         // Activate toolTipUI
                         toolTipUI.SetActive(true);
@@ -293,7 +304,8 @@ public class InteractScript : MonoBehaviourPun
                         keyText.text = "R";
                     }
 
-                    if (reportChance != 1){
+                    if (reportChance != 1)
+                    {
                         hit.collider.GetComponent<ReportButtonScript>().ChangeOutlineRenderer(false);
                     }
                     if (characterController.isGrounded && Input.GetKeyDown(KeyCode.R) && (reportChance == 1))
@@ -306,7 +318,7 @@ public class InteractScript : MonoBehaviourPun
                             reportChance = 0;
                             toolTipUI.SetActive(false);
                         }
-                }
+                    }
 
                     // 현재 충돌체를 lastMinigameCollider로 저장
                     lastReportCollider = hit.collider;
@@ -329,7 +341,7 @@ public class InteractScript : MonoBehaviourPun
                     }
                 }
 
-                
+
 
                 // 커스터마이징 UI 활성화
                 if (hit.collider.CompareTag("Customize"))
@@ -337,8 +349,8 @@ public class InteractScript : MonoBehaviourPun
                     characterController = GetComponent<CharacterController>();
                     originCustomizeObjectColor = hit.collider.GetComponent<CustomizeScript>().originColor;
                     hit.collider.transform.GetComponent<Renderer>().material.color = Color.black;
-                    
-                    if (! hit.collider.GetComponent<CustomizeScript>().CustomizingUI.activeSelf)
+
+                    if (!hit.collider.GetComponent<CustomizeScript>().CustomizingUI.activeSelf)
                     {
                         // Activate toolTipUI
                         toolTipUI.SetActive(true);
@@ -347,7 +359,7 @@ public class InteractScript : MonoBehaviourPun
                         stateText.text = "커스터마이징";
                         keyText.text = "E";
                     }
-                    
+
                     if (characterController.isGrounded && Input.GetKeyDown(KeyCode.E))
                     {
                         toolTipUI.SetActive(false);
@@ -412,6 +424,13 @@ public class InteractScript : MonoBehaviourPun
             }
 
         }
-        
+
+    }
+
+    IEnumerator TurnOnDoorPhysics(float delay, GameObject targetObject)
+    {
+        yield return new WaitForSeconds(delay);
+        Collider collider = targetObject.GetComponent<Collider>();
+        collider.enabled = true;
     }
 }

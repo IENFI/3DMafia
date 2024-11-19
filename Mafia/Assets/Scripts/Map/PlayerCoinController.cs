@@ -28,7 +28,7 @@ public class PlayerCoinController : MonoBehaviourPunCallbacks, IPunObservable
 
     }
 
-    void Update()
+    /*void Update()
     {
         if (photonView.IsMine || !PhotonNetwork.IsConnected)
         {
@@ -37,7 +37,7 @@ public class PlayerCoinController : MonoBehaviourPunCallbacks, IPunObservable
                 GetCoin(60);
             }
         }
-    }
+    }*/
 
     public void GetCoin(int amount)
     {

@@ -71,7 +71,7 @@ public class DeathAnnounce : MonoBehaviour
         if (previousPlayerNum - currentPlayerNum >= 1)
         {
             DeathAnnounceText.text = "누군가 사망하였습니다.";
-            Invoke("ClearDeathMessage", 5f); // 10초 후에 메시지를 지움
+            Invoke("ClearDeathMessage", 5f); // 5초 후에 메시지를 지움
         }
         previousPlayerNum = currentPlayerNum;
     }

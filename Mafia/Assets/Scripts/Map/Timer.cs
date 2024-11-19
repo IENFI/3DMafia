@@ -486,6 +486,9 @@ public class Timer : MonoBehaviourPunCallbacks, IPunObservable
                 Light flashLight = FlashLight.GetComponent<Light>();
                 FlashLightList.Add(flashLight);
             }
+
+            FlashLightList.Add(reportLight);
+
             foreach (Light light in allLights)
             {
                 if (!FlashLightList.Contains(light)) light.enabled = state;
@@ -516,10 +519,6 @@ public class Timer : MonoBehaviourPunCallbacks, IPunObservable
 
     public void SwitchOnFewLights(bool state)
     {
-        if (state)
-        {
-            reportLight.enabled = true;
-        }
         if ((bool)PhotonNetwork.LocalPlayer.CustomProperties["isDead"])
         {
             ghostTag = "Ghost";
