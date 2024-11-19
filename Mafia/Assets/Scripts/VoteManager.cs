@@ -203,8 +203,6 @@ public class VoteManager : MonoBehaviourPunCallbacks
 
         timeRemaining = 60;
 
-        Invoke("Skip", 60f);
-
         TimeLimit();
 
     }
@@ -216,6 +214,13 @@ public class VoteManager : MonoBehaviourPunCallbacks
             remainingTimeText.text = "남은 시간: " + $"{timeRemaining}";
             timeRemaining -= 1;
             Invoke("TimeLimit", 1f);
+        }
+        if (timeRemaining == 0)
+        {
+            if ((!(bool)PhotonNetwork.LocalPlayer.CustomProperties["isDead"]) && ((int)PhotonNetwork.LocalPlayer.CustomProperties["voted"] == -1))
+            {
+                Skip();
+            }
         }
     }
 
