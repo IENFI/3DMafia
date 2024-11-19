@@ -319,11 +319,7 @@ public class BookSortingGame : MinigameBase
     {
         if (activeBooks.TrueForAll(book => book.IsPlaced))
         {
-            if (successMessageCoroutine != null)
-            {
-                StopCoroutine(successMessageCoroutine);
-            }
-            successMessageCoroutine = StartCoroutine(ShowSuccessMessage());
+            CloseGame();
         }
     }
 
@@ -352,21 +348,6 @@ public class BookSortingGame : MinigameBase
                 successMessageText.gameObject.SetActive(false);
                 successMessageText.text = "";
             }
-        }
-    }
-    // OnDisable to ensure cleanup when the game object is disabled
-    private void OnDisable()
-    {
-        if (successMessageCoroutine != null)
-        {
-            StopCoroutine(successMessageCoroutine);
-            successMessageCoroutine = null;
-        }
-
-        if (successMessageText != null && successMessageText.gameObject != null)
-        {
-            successMessageText.gameObject.SetActive(false);
-            successMessageText.text = "";
         }
     }
 }
