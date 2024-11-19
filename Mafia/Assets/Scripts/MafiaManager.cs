@@ -21,9 +21,9 @@ public class MafiaManager : MonoBehaviourPunCallbacks
     public GameObject RemainingUI;
 
     [SerializeField]
-    public GameObject Merchent;
+    public GameObject ShopManager;
 
-    private ShopInteraction shopIn;
+    private ShopManager shopIn;
 
     public int remainingMafiaNum;
     public int remainingCitizenNum;
@@ -53,7 +53,7 @@ public class MafiaManager : MonoBehaviourPunCallbacks
     {
         //actually, this one manage the whole level
         GameManager.instance.isConnected = true;
-        shopIn = Merchent.GetComponent<ShopInteraction>();
+        shopIn = ShopManager.GetComponent<ShopManager>();
         StartCoroutine(WaitForSync());
 
         StartCoroutine(WaitForPlayers());        
@@ -81,7 +81,7 @@ public class MafiaManager : MonoBehaviourPunCallbacks
         
         // 테스트시 키고 끌 목록
         
-       {
+/*       {
             if (remainingMafiaNum == 0 || shopIn.SaveCoin >= 1000)
             {
                 CitizenWin.SetActive(true);
@@ -112,7 +112,7 @@ public class MafiaManager : MonoBehaviourPunCallbacks
                 MafiaWin.SetActive(false);
             }
         }
-        
+        */
 
         // if (Input.GetKeyDown(KeyCode.Tab))
         // {

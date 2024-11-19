@@ -535,14 +535,14 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
         photonView.RPC("DisableGameObject", RpcTarget.All);
     }
 
-    public void ChangeMoveSpeed(float multiplier = 2f)
+    public void ChangeMoveSpeed(float speed)
     {
-        playerMoveSpeedUnit *= multiplier;
+        playerMoveSpeedUnit = speed;
     }
 
-    public void OriginMoveSpeed(float divider = 2f)
+    public void OriginMoveSpeed()
     {
-        playerMoveSpeedUnit /= divider;
+        playerMoveSpeedUnit = 1;
     }
 
     private void ReportCorpse()

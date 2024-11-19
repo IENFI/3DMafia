@@ -10,7 +10,7 @@ public class DeathAnnounce : MonoBehaviour
     private int previousPlayerNum;
 
     public TMP_Text DeathAnnounceText;
-    public float duration = 600f; // 알림의 지속 시간
+    public float duration = 30f; // 알림의 지속 시간
     private bool isActive = false;
 
     GameObject deathAnnounceObj;
