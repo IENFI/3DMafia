@@ -372,10 +372,10 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
             }
 
             // Kill 시뮬레이트
-            if (Input.GetKeyDown(KeyCode.P) && canControl)
+            /*if (Input.GetKeyDown(KeyCode.P) && canControl)
             {
                 photonView.RPC("Death", RpcTarget.All);
-            }
+            }*/
 
             /*// 마우스 오른쪽 버튼을 누르면 무기 공격 (연계)
             if (Input.GetMouseButtonDown(1))
