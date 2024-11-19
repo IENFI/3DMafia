@@ -34,7 +34,7 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
 
     private float lastKillTime; // 킬한 시간 저장
 
-    public float killCooldown = 15.0f; // 쿨타임 설정 (15초) 
+    public float killCooldown = 30.0f; // 쿨타임 설정 (15초) 
 
     [SerializeField]
     public GameObject ghostPrefab; // 유령 프리팹

@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Photon.Pun;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using static UnityEngine.Rendering.DebugUI;
@@ -8,6 +9,8 @@ public class OpenSetting : MonoBehaviour
 {
     public GameObject settingsPanel; // 설정 패널 (비활성화 상태로 시작)
     AudioSource audioSource;
+    [SerializeField]
+    private GameObject createRoomPanel;
 
     void Start()
     {
@@ -36,7 +39,7 @@ public class OpenSetting : MonoBehaviour
                 return;
             }
 
-            ToggleSettingsPanel();
+            ToggleSettingsPanel(currentScene.name);
         }
     }
     
@@ -49,17 +52,22 @@ public class OpenSetting : MonoBehaviour
         // }
     }
 
-    public void ToggleSettingsPanel()
+    public void ToggleSettingsPanel(string scene)
     {
         Debug.Log("OpenSetting.cs : ToggleSettingsPanel.activeSelf : " + settingsPanel.activeSelf);
 
         // 패널의 활성화 상태를 토글
-        if (settingsPanel.activeSelf ){
+        if (settingsPanel.activeSelf){
             settingsPanel.SetActive(false);
         }
         else if ( !GameManager.instance.IsAnyUIOpen()) {
             Debug.Log("settingsPanel.SetActive(true)");
             settingsPanel.SetActive(true);
+
+            if (!PhotonNetwork.IsMasterClient && scene == "Level_0")
+            {
+                createRoomPanel.SetActive(false);
+            }
         }
         // settingsPanel.SetActive(!settingsPanel.activeSelf);
     }

@@ -3651,6 +3651,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   settingsPanel: {fileID: 1720907017576848429}
+  createRoomPanel: {fileID: 0}
 --- !u!1 &1061942221
 GameObject:
   m_ObjectHideFlags: 0
@@ -5307,6 +5308,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   settingsPanel: {fileID: 1720907017576848429}
+  createRoomPanel: {fileID: 0}
 --- !u!114 &1526355428
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12977,7 +12979,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!1 &5154126761653951706
 GameObject:
   m_ObjectHideFlags: 0
@@ -16524,7 +16526,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!1 &8560818576548203597
 GameObject:
   m_ObjectHideFlags: 0
