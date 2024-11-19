@@ -9,6 +9,7 @@ using Photon.Voice.Unity;
 using Photon.Voice.PUN;
 using Photon.Realtime;
 using System.Linq;
+// using Photon.Voice;
 
 public class PlayerController : MonoBehaviourPun, IPunObservable
 {
@@ -75,6 +76,7 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
     Speaker speaker;
     private PunVoiceClient punVoiceClient; // PunVoiceClient 참조
     public MicrophoneVolumeIndicator microphoneVolumeIndicator;
+    // private AudioChangesHandler audioChangesHandler;
 
 
     public void EnableControl(bool enable)
@@ -91,6 +93,20 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
         x_ = Input.GetAxis("Horizontal");
         z_ = Input.GetAxis("Vertical");
     }
+
+    // void Awake() 
+    // {
+    //     // AudioChangesHandler 초기화
+    //     if (photonView.IsMine){
+    //         audioChangesHandler = GetComponent<AudioChangesHandler>();
+
+    //         if (audioChangesHandler == null)
+    //         {
+    //             Debug.LogError("AudioChangesHandler component is missing.");
+    //             return;
+    //         }
+    //     }
+    // }
 
     void Start()
     {
@@ -180,27 +196,57 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
         }
     }
 
-    // private void OnAudioDevicesChanged()
+    // 입력 장치 바뀌면 안 되는 오류 수정 했는데 안 됨
+    // private void OnEnable()
     // {
-    //     Debug.Log("Audio input devices changed!");
+    //     if (!photonView.IsMine)
+    //         return;
+    //     AudioSettings.OnAudioConfigurationChanged += OnAudioConfigurationChanged;
+    // }
 
-    //     // 새로운 장치로 Recorder 업데이트
-    //     if (Microphone.devices.Length > 0)
+    // private void OnDisable()
+    // {
+    //     if (!photonView.IsMine)
+    //         return;
+    //     AudioSettings.OnAudioConfigurationChanged -= OnAudioConfigurationChanged;
+    // }
+
+    // private void OnAudioConfigurationChanged(bool deviceWasChanged)
+    // {
+    //     if (!photonView.IsMine)
+    //         return;
+    //     if (deviceWasChanged)
     //     {
-    //         recorder.MicrophoneType = Recorder.MicType.Unity; // Unity 마이크로 업데이트
-    //         recorder.MicrophoneDevice = Microphone.devices[0]; // 첫 번째 장치를 선택
-    //         Debug.Log($"Updated microphone to: {Microphone.devices[0]}");
-    //     }
-    //     else
-    //     {
-    //         Debug.LogError("No microphone devices available!");
+    //         Debug.Log("Audio device change detected. Restarting Recorder with new device.");
+    //         AssignNewMicrophoneDevice();
     //     }
     // }
 
-    // private void OnDestroy()
+    // private void AssignNewMicrophoneDevice()
     // {
-    //     // 이벤트 해제
-    //     Microphone.devicesChanged -= OnAudioDevicesChanged;
+    //     if (!photonView.IsMine)
+    //         return;
+
+    //     var devices = Microphone.devices;
+    //     if (devices.Length == 0)
+    //     {
+    //         Debug.LogError("No microphone devices found.");
+    //         return;
+    //     }
+
+    //     string preferredDevice = devices[0];
+    //     Debug.Log($"Assigning new microphone: {preferredDevice}");
+
+    //     if (recorder != null)
+    //     {
+    //         // Create a DeviceInfo instance with the selected device name
+    //         DeviceInfo deviceInfo = new DeviceInfo(preferredDevice);
+
+    //         recorder.MicrophoneDevice = deviceInfo;
+    //         recorder.RestartRecording();
+    //         Debug.Log("Recorder restarted with the new microphone device.");
+    //         punVoiceClient.PrimaryRecorder = recorder;
+    //     }
     // }
 
     public void UpdateNicknameColor(Color color)

@@ -3263,7 +3263,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a5f2e55849b8362459c923f3c4a9ecc8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Spooky1: {fileID: 8300000, guid: 18eb9eaa7f84e7243838882424de1105, type: 3}
+  Spooky1: {fileID: 8300000, guid: 297234eec599ac844b2dbeccd1e676ec, type: 3}
 --- !u!1 &1035128785
 GameObject:
   m_ObjectHideFlags: 0

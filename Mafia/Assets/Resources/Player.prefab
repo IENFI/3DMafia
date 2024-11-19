@@ -3572,7 +3572,7 @@ AudioSource:
   m_GameObject: {fileID: 4439509512177974740}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: 24300002, guid: ece25526f3a39472e95690bc5032928c, type: 2}
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 1
   m_Volume: 1
@@ -3586,7 +3586,7 @@ AudioSource:
   MinDistance: 1
   MaxDistance: 500
   Pan2D: 0
-  rolloffMode: 0
+  rolloffMode: 2
   BypassEffects: 0
   BypassListenerEffects: 0
   BypassReverbZones: 0
@@ -6211,9 +6211,8 @@ GameObject:
   - component: {fileID: 8832396538167572935}
   - component: {fileID: 5555381154398041621}
   - component: {fileID: 1543525584200621016}
-  - component: {fileID: 8283125376265208097}
-  - component: {fileID: -7334155142863505203}
-  - component: {fileID: 2296921611801803178}
+  - component: {fileID: 8037171656736506831}
+  - component: {fileID: 7211336615459665484}
   m_Layer: 6
   m_Name: Player
   m_TagString: Player
@@ -6607,7 +6606,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 91175dcc15224463780e01a8a98b1b60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  voiceDetection: 0
+  voiceDetection: 1
   voiceDetectionThreshold: 0.01
   voiceDetectionDelayMs: 500
   interestGroup: 0
@@ -6638,7 +6637,7 @@ MonoBehaviour:
   useOnAudioFilterRead: 0
   useMicrophoneTypeFallback: 1
   recordWhenJoined: 1
---- !u!114 &8283125376265208097
+--- !u!114 &8037171656736506831
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -6650,8 +6649,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a3986deb98168394684c41606a9495af, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  amplificationFactor: 10
---- !u!114 &-7334155142863505203
+  amplificationFactor: 5
+--- !u!114 &7211336615459665484
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -6660,31 +6659,16 @@ MonoBehaviour:
   m_GameObject: {fileID: 6946556922499648511}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b7f95aa3c06eaa84bba4eafdedf12758, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  HandleDeviceChange: 1
-  HandleDeviceChangeIOS: 0
-  HandleDeviceChangeAndroid: 0
---- !u!114 &2296921611801803178
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6946556922499648511}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7ddec46cf6a4c4addbf21b6be8442124, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   aec: 1
-  aecHighPass: 0
+  aecHighPass: 1
   agc: 1
-  agcCompressionGain: 9
-  agcTargetLevel: 3
+  agcCompressionGain: 4
+  agcTargetLevel: 2
   vad: 1
-  highPass: 0
+  highPass: 1
   noiseSuppression: 1
   reverseStreamDelayMs: 120
 --- !u!1 &7001936556836551561
@@ -8808,7 +8792,6 @@ GameObject:
   m_Component:
   - component: {fileID: 3613124189489242483}
   - component: {fileID: 6956665568023318941}
-  - component: {fileID: 8261737663240489663}
   - component: {fileID: 7821145725132704492}
   - component: {fileID: 379726994377277973}
   m_Layer: 6
@@ -8884,14 +8867,6 @@ Camera:
   m_OcclusionCulling: 1
   m_StereoConvergence: 10
   m_StereoSeparation: 0.022
---- !u!81 &8261737663240489663
-AudioListener:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9212007353448015810}
-  m_Enabled: 0
 --- !u!114 &7821145725132704492
 MonoBehaviour:
   m_ObjectHideFlags: 0
