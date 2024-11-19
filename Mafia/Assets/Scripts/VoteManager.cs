@@ -209,13 +209,13 @@ public class VoteManager : MonoBehaviourPunCallbacks
 
     public void TimeLimit()
     {
-        if (timeRemaining > 0)
+        if (timeRemaining >= 0)
         {
             remainingTimeText.text = "남은 시간: " + $"{timeRemaining}";
             timeRemaining -= 1;
             Invoke("TimeLimit", 1f);
         }
-        else
+        if (timeRemaining == 0)
         {
             if ((bool)PhotonNetwork.LocalPlayer.CustomProperties["isDead"] && ((int)PhotonNetwork.LocalPlayer.CustomProperties["voted"] == -1))
             {
