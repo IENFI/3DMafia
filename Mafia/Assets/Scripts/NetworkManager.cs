@@ -253,7 +253,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks // 안현석 똑바로�
         // 방장이 혼자 씬을 로딩하면, 나머지 사람들은 자동으로 싱크가 됨
         PhotonNetwork.AutomaticallySyncScene = true;
 
-        PhotonNetwork.ConnectToRegion("kr");
+        // PhotonNetwork.ConnectToRegion("kr");
 
         // 게임 버전 지정
 

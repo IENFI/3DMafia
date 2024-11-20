@@ -31,16 +31,16 @@ public class CameraController : MonoBehaviourPun
     {
         if (!photonView.IsMine) return;
 
-        if (Input.GetKeyDown(KeyCode.Tab) && cam_check == false)
-        {
-            ShowTPCamera();
-            cam_check = true;
-        }
-        else if (Input.GetKeyDown(KeyCode.Tab) && cam_check == true)
-        {
-            ShowFPCamera();
-            cam_check = false;
-        }
+        // if (Input.GetKeyDown(KeyCode.Tab) && cam_check == false)
+        // {
+        //     ShowTPCamera();
+        //     cam_check = true;
+        // }
+        // else if (Input.GetKeyDown(KeyCode.Tab) && cam_check == true)
+        // {
+        //     ShowFPCamera();
+        //     cam_check = false;
+        // }
     }
 
     public void ShowFPCamera()
