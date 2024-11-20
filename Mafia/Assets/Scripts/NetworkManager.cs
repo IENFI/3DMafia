@@ -39,6 +39,44 @@ public class NetworkManager : MonoBehaviourPunCallbacks // 안현석 똑바로�
 
     private int selectedMafiaNum = 1;
     public int selectedMaxPlayerNum = 10;
+    [SerializeField]
+    private TextMeshProUGUI regionText;
+    private Coroutine checkRegionCoroutine;
+
+    void Start()
+    {
+        // 코루틴 시작
+        checkRegionCoroutine = StartCoroutine(CheckRegionRoutine());
+    }
+
+    IEnumerator CheckRegionRoutine()
+    {
+        while (true)
+        {
+            // 1초에 한 번 Region 정보 확인
+            if (PhotonNetwork.IsConnected)
+            {
+                regionText.text = "현재 지역 서버 : " + PhotonNetwork.CloudRegion;
+                Debug.Log("현재 Region: " + PhotonNetwork.CloudRegion);
+            }
+            else
+            {
+                regionText.text = "Photon에 연결되어 있지 않습니다.";
+                Debug.Log("Photon에 연결되어 있지 않습니다.");
+            }
+
+            yield return new WaitForSeconds(1f); // 1초 대기
+        }
+    }
+
+    void OnDestroy()
+    {
+        // 코루틴 중단
+        if (checkRegionCoroutine != null)
+        {
+            StopCoroutine(checkRegionCoroutine);
+        }
+    }
 
     #region 방리스트 갱신
     // ◀버튼 -2 , ▶버튼 -1 , 셀 숫자
@@ -541,5 +579,13 @@ public class NetworkManager : MonoBehaviourPunCallbacks // 안현석 똑바로�
         Connect();
     }
 
+    #endregion
+
+    #region 
+    public void ConnectToRegion(string regionCode)
+    {
+        PhotonNetwork.PhotonServerSettings.AppSettings.FixedRegion = regionCode;
+        Debug.Log("FixedRegion : " + PhotonNetwork.PhotonServerSettings.AppSettings.FixedRegion);
+    }
     #endregion
 }

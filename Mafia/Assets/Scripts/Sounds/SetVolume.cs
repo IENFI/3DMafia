@@ -79,6 +79,12 @@ public class SetVolume : MonoBehaviour
         UpdateSoundIcon(sfxSlider.value, false);
     }
 
+    public void InitializeVolume()
+    {
+        // 사운드 설정 로드
+        LoadSettings();
+    }
+
     private void OnDestroy()
     {
         SceneManager.sceneLoaded -= OnSceneLoaded;
@@ -112,11 +118,7 @@ public class SetVolume : MonoBehaviour
         }
         else
         {
-            #if TEST_ENVIRONMENT
-            bgmSlider.value = 0f; // 기본값
-            #else
             bgmSlider.value = 0.5f; // 기본값
-            #endif
         }
 
         if (prefs.HasKey(SFX_VOLUME_KEY))
