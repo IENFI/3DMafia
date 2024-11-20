@@ -45,6 +45,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks // 안현석 똑바로�
 
     void Start()
     {
+        PhotonNetwork.PhotonServerSettings.AppSettings.FixedRegion = "jp";
         // 코루틴 시작
         checkRegionCoroutine = StartCoroutine(CheckRegionRoutine());
     }
