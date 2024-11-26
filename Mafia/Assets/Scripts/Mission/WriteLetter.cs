@@ -25,11 +25,11 @@ public class WriteLetter : MinigameBase
         // 글자 상태 초기화
         letterCompleted = new bool[letters.Length];
         currentLetterIndex = 0;
-
+        Debug.Log("편지쓰기 첨부터 시작 ㅎㅎ");
         // 글자 색상 초기화 (다시 회색으로 설정)
         foreach (var letter in letters)
         {
-            letter.color = Color.gray; // 초기 색상으로 설정 (원하는 기본 색상)
+            letter.fontStyle = FontStyles.Bold; // 초기 색상으로 설정 (원하는 기본 색상)
         }
     }
 
@@ -46,8 +46,10 @@ public class WriteLetter : MinigameBase
             RectTransform rectTransform = letters[currentLetterIndex].GetComponent<RectTransform>();
             if (RectTransformUtility.RectangleContainsScreenPoint(rectTransform, mousePosition))
             {
+                Debug.Log("마우스 올라옴!");
                 // 마우스가 글자 위에 있으면 색을 검은색으로 바꾼다
-                letters[currentLetterIndex].color = Color.black;
+                letters[currentLetterIndex].fontStyle = FontStyles.Underline;
+
                 letterCompleted[currentLetterIndex] = true;
 
                 // 다음 글자로 넘어감
@@ -98,6 +100,16 @@ public class WriteLetter : MinigameBase
         minigame.ExitCode = true;
         active = false;
         GetMinigameManager().SuccessMission(index);
+
+        // 상태 초기화
+        letterCompleted = new bool[letters.Length];
+        currentLetterIndex = 0;
+        foreach (var letter in letters)
+        {
+            letter.color = Color.gray;
+        }
+
         this.gameObject.SetActive(false);
     }
+
 }

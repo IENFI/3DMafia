@@ -26,7 +26,7 @@ public class MafiaManager : MonoBehaviourPunCallbacks
     private bool isSynced = false;
 
     // 테스트시 키고꺼야하는 목록
-    private bool gameOver = false;
+    //private bool gameOver = false;
 
     [SerializeField]
     public GameObject DeadImage;
@@ -76,37 +76,37 @@ public class MafiaManager : MonoBehaviourPunCallbacks
 
         // 테스트시 키고 끌 목록
 
-        {
-            if (remainingMafiaNum == 0 || shopIn.SaveCoin >= 1000)
-            {
-                CitizenWin.SetActive(true);
-                if (!gameOver)
-                {
-                    StartCoroutine(BackToHome());
-                }
-                gameOver = true;
-                //gameover
-            }
-            else
-            {
-                CitizenWin.SetActive(false);
-            }
+        //{
+        //    if (remainingMafiaNum == 0 || shopIn.SaveCoin >= 1000)
+        //    {
+        //        CitizenWin.SetActive(true);
+        //        if (!gameOver)
+        //        {
+        //            StartCoroutine(BackToHome());
+        //        }
+        //        gameOver = true;
+        //        //gameover
+        //    }
+        //    else
+        //    {
+        //        CitizenWin.SetActive(false);
+        //    }
 
-            if (remainingCitizenNum <= remainingMafiaNum)
-            {
-                MafiaWin.SetActive(true);
-                if (!gameOver)
-                {
-                    StartCoroutine(BackToHome());
-                }
-                gameOver = true;
-                //gameover
-            }
-            else
-            {
-                MafiaWin.SetActive(false);
-            }
-        }
+        //    if (remainingCitizenNum <= remainingMafiaNum)
+        //    {
+        //        MafiaWin.SetActive(true);
+        //        if (!gameOver)
+        //        {
+        //            StartCoroutine(BackToHome());
+        //        }
+        //        gameOver = true;
+        //        //gameover
+        //    }
+        //    else
+        //    {
+        //        MafiaWin.SetActive(false);
+        //    }
+        //}
 
 
         // if (Input.GetKeyDown(KeyCode.Tab))
