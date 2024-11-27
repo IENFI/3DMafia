@@ -160,7 +160,7 @@ public class WaitingRoomManager : MonoBehaviourPunCallbacks
     {
         ReadAllReadyStates();
 
-        if (PhotonNetwork.IsMasterClient)
+        /*if (PhotonNetwork.IsMasterClient)
         {
             // 게임이 시작되지 않았을 때만 버튼 상태를 업데이트
             if (!hasGameStarted)
@@ -181,11 +181,11 @@ public class WaitingRoomManager : MonoBehaviourPunCallbacks
             {
                 GameStart();
             }
-        }
+        }*/
 
-        /*if (PhotonNetwork.IsMasterClient)
+        if (PhotonNetwork.IsMasterClient)
         {
-            // 최소 4명의 플레이어가 있는지 확인
+            // 방에 있는 플레이어 수가 4명 이상이어야 함
             if (PhotonNetwork.PlayerList.Length >= 4)
             {
                 // 게임이 시작되지 않았을 때만 버튼 상태를 업데이트
@@ -199,24 +199,13 @@ public class WaitingRoomManager : MonoBehaviourPunCallbacks
                 {
                     GameStart();
                 }
-
-                // 게임 준비가 완료되었을 때 텍스트 변경
-                if (gameReady)
-                {
-                    startBtnText.text = "게임 시작";
-                }
-                else
-                {
-                    startBtnText.text = "모두 준비해야 합니다";
-                }
             }
             else
             {
-                // 플레이어 수가 4명 미만일 경우 버튼 비활성화 및 텍스트 변경
+                // 플레이어 수가 부족할 때 버튼 비활성화
                 StartBtn.GetComponent<Button>().interactable = false;
-                startBtnText.text = "최소 4명이 있어야 합니다.";
             }
-        }*/
+        }
 
         if (!PhotonNetwork.IsMasterClient && Input.GetKeyDown(KeyCode.F5))
         {
@@ -233,13 +222,17 @@ public class WaitingRoomManager : MonoBehaviourPunCallbacks
         }
         else
         {
-            readyBtnText.text = "준비하기(F5)";
+            readyBtnText.text = "준비하기";
             ReadyBtn.GetComponent<Image>().color = Color.white;
         }
 
-        if (gameReady)
+        if (gameReady && PhotonNetwork.PlayerList.Length >= 4)
         {
             startBtnText.text = "게임 시작";
+        }
+        else if (gameReady && PhotonNetwork.PlayerList.Length < 4)
+        {
+            startBtnText.text = "최소 인원이 부족합니다.";
         }
         else
         {
@@ -387,8 +380,8 @@ public class WaitingRoomManager : MonoBehaviourPunCallbacks
         // 방 고유 ID 가져오기
         string roomID = PhotonNetwork.CurrentRoom.CustomProperties["RoomID"].ToString();
         int clientID = PhotonNetwork.LocalPlayer.ActorNumber;
-        
-       // 방에 남아 있는 플레이어가 없는지 확인하고 마지막 플레이어인 경우 방 정보 삭제
+
+        // 방에 남아 있는 플레이어가 없는지 확인하고 마지막 플레이어인 경우 방 정보 삭제
         if (PhotonNetwork.IsMasterClient && PhotonNetwork.CurrentRoom.PlayerCount == 1)
         {
             // 데이터베이스에서 방 정보 삭제
@@ -465,7 +458,7 @@ public class WaitingRoomManager : MonoBehaviourPunCallbacks
     public void OnButtonClickMaxPlayer(int selectedMaxPlayerNum)
     {
         maxPlayerNum = selectedMaxPlayerNum;
-    }   
+    }
 
     public void UpdateMafiaNum()
     {

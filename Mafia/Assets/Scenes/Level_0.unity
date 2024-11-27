@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.12731722, g: 0.13414752, b: 0.1210787, a: 1}
+  m_IndirectSpecularColor: {r: 0.12731704, g: 0.13414727, b: 0.121078536, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -23359,9 +23359,9 @@ RectTransform:
   - {fileID: 928672868530810815}
   m_Father: {fileID: 3018329620051974840}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -613.98157, y: -256.28992}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 346.01843, y: 283.71008}
   m_SizeDelta: {x: 638.7422, y: 427.6238}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &3534893965405846964
@@ -24225,7 +24225,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!64 &3727015298030561090
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -26439,9 +26439,9 @@ RectTransform:
   - {fileID: 8086349214747560791}
   m_Father: {fileID: 473373338}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 882, y: 372}
+  m_AnchorMin: {x: 1, y: 1}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: -78, y: -168}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &4545655506703478402
@@ -28463,10 +28463,10 @@ RectTransform:
   - {fileID: 3465311129568215730}
   m_Father: {fileID: 3018329620051974840}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -655.21204, y: -488.87787}
-  m_SizeDelta: {x: 556.296, y: 37.552}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 304.78796, y: 51.12213}
+  m_SizeDelta: {x: 556.296, y: 37.552002}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &5171401337883923990
 MonoBehaviour:
@@ -34774,10 +34774,10 @@ RectTransform:
   - {fileID: 1130659392914704573}
   m_Father: {fileID: 3018329620051974840}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -331.35052, y: -488.87787}
-  m_SizeDelta: {x: 73.4947, y: 37.552}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 628.6495, y: 51.12213}
+  m_SizeDelta: {x: 73.49469, y: 37.552002}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &7463420665514380033
 GameObject:
