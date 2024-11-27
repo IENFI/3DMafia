@@ -1,5 +1,6 @@
 using UnityEngine;
 using TMPro;
+using System.Collections;
 
 public class SettingsChatUI : MonoBehaviour
 {
@@ -9,13 +10,27 @@ public class SettingsChatUI : MonoBehaviour
 
     private void Awake()
     {
-        foreach (var pcc in FindObjectsOfType<PlayerController>())
+        StartCoroutine(FindPlayerController());
+    }
+
+    private IEnumerator FindPlayerController()
+    {
+        while (playerController == null)
         {
-            if (pcc.photonView.IsMine)
+            foreach (var pcc in FindObjectsOfType<PlayerController>())
             {
-                playerController = pcc;
-                Debug.Log("SettingsUI에서 playerController를 찾았습니다.");
-                break;
+                if (pcc.photonView.IsMine)
+                {
+                    playerController = pcc;
+                    Debug.Log("SettingsUI에서 playerController를 찾았습니다.");
+                    break;
+                }
+            }
+
+            if (playerController == null)
+            {
+                Debug.LogWarning("PlayerController를 찾는 중입니다...");
+                yield return new WaitForSeconds(0.1f); // 0.1초 간격으로 재시도
             }
         }
     }
