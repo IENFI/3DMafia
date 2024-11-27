@@ -36,11 +36,20 @@ public class LeftWire : MonoBehaviour
 
     public void SetTarget(Vector3 targetPosition, float offset)
     {
-        float angle = Vector2.SignedAngle(transform.position + Vector3.right - transform.position, targetPosition - transform.position);
-        float distance = Vector2.Distance(mWireBody.transform.position, targetPosition) - offset;
+        // 현재 오브젝트의 위치를 RectTransform 기준으로 변환
+        Vector3 localTarget = mGameCanvas.transform.InverseTransformPoint(targetPosition);
+        Vector3 localStart = mGameCanvas.transform.InverseTransformPoint(transform.position);
+
+        // 각도 계산
+        float angle = Vector2.SignedAngle(Vector2.right, localTarget - localStart);
+
+        // 거리 계산 (캔버스 스케일을 고려)
+        float distance = Vector2.Distance(localStart, localTarget) - offset;
+        distance = Mathf.Max(0, distance); // 음수가 되지 않도록 보정
+
+        // 전선의 각도 및 크기 설정
         mWireBody.localRotation = Quaternion.Euler(new Vector3(0f, 0f, angle));
-        mWireBody.sizeDelta = new Vector2(distance * (1 / mGameCanvas.transform.lossyScale.x), mWireBody.sizeDelta.y);
-        //mWireBody.sizeDelta = new Vector2(distance, mWireBody.sizeDelta.y);
+        mWireBody.sizeDelta = new Vector2(distance, mWireBody.sizeDelta.y);
     }
 
     public void ResetTarget()
